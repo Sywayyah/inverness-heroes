@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { charsRegistry } from '../../core/characters';
+import { charsRegistry, CharType } from '../../core/characters';
 import { GameStateService } from '../../services/game-state.service';
 import { ViewsService } from '../../services/views.service';
 
@@ -13,7 +13,7 @@ export class NewGame {
   readonly viewsService = inject(ViewsService);
   readonly gameStateService = inject(GameStateService);
 
-  readonly characters = charsRegistry.entities;
+  readonly characters = charsRegistry.entities.filter((char) => char.type === CharType.Playable);
 
   readonly selectedCharacter = signal(this.characters[0]);
 }

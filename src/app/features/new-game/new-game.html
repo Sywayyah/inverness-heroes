@@ -2,7 +2,7 @@
   Select character:
 
   @for (char of characters; track $index) {
-    <div class="char">
+    <div class="char" (click)="selectedCharacter.set(char)">
       {{ char.name }}
     </div>
   }
