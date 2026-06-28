@@ -1,4 +1,5 @@
 import { Modifiers } from '../modifiers';
+import { EntityRegistry } from '../registries';
 
 export interface Character {
   readonly id: string;
@@ -20,15 +21,7 @@ export interface Character {
   readonly baseModifiers?: Modifiers;
 }
 
-class CharRegistry {
-  readonly characters: Character[] = [];
-
-  register(char: Character): void {
-    this.characters.push(char);
-  }
-}
-
-export const charsRegistry = new CharRegistry();
+export const charsRegistry = new EntityRegistry<Character>({ name: 'Characters' });
 
 charsRegistry.register({
   id: 'char-alch',

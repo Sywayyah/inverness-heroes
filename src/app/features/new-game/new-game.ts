@@ -11,7 +11,7 @@ import { charsRegistry } from '../../core/characters';
 export class NewGame {
   readonly viewsService = inject(ViewsService);
 
-  readonly characters = charsRegistry.characters;
+  readonly characters = charsRegistry.entities;
 
   readonly selectedCharacter = signal(this.characters[0]);
 }
