@@ -1,0 +1,11 @@
+@switch (viewsService.state.activeView()) {
+  @case (viewsService.View.MainScreen) {
+    <app-main-screen></app-main-screen>
+  }
+  @case (viewsService.View.NewGame) {
+    <app-new-game></app-new-game>
+  }
+  @case (viewsService.View.Game) {
+    <app-game></app-game>
+  }
+}
