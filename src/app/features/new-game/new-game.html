@@ -1,3 +1,13 @@
+<div>
+  Select character:
+
+  @for (char of characters; track $index) {
+    <div class="char">
+      {{ char.name }}
+    </div>
+  }
+</div>
+
 <button (click)="viewsService.setActiveView(viewsService.View.Game)">Start Game</button>
 
 <button (click)="viewsService.setActiveView(viewsService.View.MainScreen)">
