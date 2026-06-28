@@ -1,5 +1,5 @@
-import { Component, signal } from '@angular/core';
-import { Views } from "./features/views/views";
+import { Component } from '@angular/core';
+import { Views } from './features/views/views';
 
 @Component({
   selector: 'app-root',
@@ -7,5 +7,4 @@ import { Views } from "./features/views/views";
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
-export class App {
-}
+export class App {}

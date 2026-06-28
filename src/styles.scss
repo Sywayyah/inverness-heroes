@@ -1,8 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
-@import "rpg-awesome/scss/rpg-awesome";
-@import '@angular/cdk/overlay-prebuilt.css';
+@use 'rpg-awesome/scss/rpg-awesome';
+@use '@angular/cdk/overlay-prebuilt.css';
 
-html, body {
+html,
+body {
   background: rgb(50, 50, 53);
   color: white;
   margin: 0;

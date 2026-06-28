@@ -1,10 +1,19 @@
+import { BehaviorSubject } from 'rxjs';
 import { Modifiers } from '../modifiers';
 import { EntityRegistry } from '../registries';
 
-export interface Character {
+export enum CharType {
+  Playable,
+  Neutral,
+}
+
+export interface CharacterBase {
   readonly id: string;
   readonly name: string;
-  readonly description: string;
+  readonly description?: string;
+
+  // neutral if not specified
+  readonly type?: CharType;
 
   readonly baseStats: {
     readonly strength: number;
@@ -15,19 +24,20 @@ export interface Character {
 
   readonly baseValues: {
     readonly health: number;
-    readonly mana: number;
+    readonly mana?: number;
   };
 
   readonly baseModifiers?: Modifiers;
 }
 
-export const charsRegistry = new EntityRegistry<Character>({ name: 'Characters' });
+export const charsRegistry = new EntityRegistry<CharacterBase>({ name: 'Characters' });
 
 charsRegistry.register({
   id: 'char-alch',
   name: 'Alchemist',
   description: `A character well-versed in enchantment, learning and gold gaining`,
   baseStats: { agility: 2, strength: 2, vitality: 3, intelligence: 3 },
+  type: CharType.Playable,
 
   baseValues: {
     health: 50,
@@ -40,6 +50,7 @@ charsRegistry.register({
   name: 'Paladin',
   description: `Faith allows Paladings to endure countless battles`,
   baseStats: { agility: 2, intelligence: 1, strength: 3, vitality: 4 },
+  type: CharType.Playable,
 
   baseValues: {
     health: 60,
@@ -51,6 +62,8 @@ charsRegistry.register({
   id: 'char-bers',
   name: 'Berserk',
   description: `Berserk turns battlefield into a whirlwind of blades`,
+  type: CharType.Playable,
+
   baseStats: {
     agility: 2,
     intelligence: 2,
@@ -63,3 +76,63 @@ charsRegistry.register({
     mana: 13,
   },
 });
+
+charsRegistry.register({
+  id: 'char-zombie',
+  name: 'Zombie',
+  baseStats: {
+    agility: 1,
+    intelligence: 0,
+    strength: 2,
+    vitality: 2,
+  },
+  baseValues: {
+    health: 20,
+  },
+  description: 'A common undead enemy without any outstanding stats',
+});
+
+charsRegistry.register({
+  id: 'char-skeleton-warrior',
+  name: 'Skeleton Warrior',
+  baseStats: {
+    agility: 1,
+    intelligence: 1,
+    strength: 2,
+    vitality: 2,
+  },
+  baseValues: {
+    health: 25,
+  },
+  description: 'A common undead enemy without any outstanding stats',
+});
+
+export class Character {
+  readonly stateSubject$ = new BehaviorSubject({
+    maxHealth: 0,
+    health: 0,
+    maxMana: 0,
+    mana: 0,
+  });
+
+  readonly statsSubject$ = new BehaviorSubject({
+    strength: 0,
+    agility: 0,
+    vitality: 0,
+    intelligence: 0,
+  });
+
+  constructor(readonly params: { readonly base: CharacterBase }) {
+    const health = params.base.baseValues.health;
+    const mana = params.base.baseValues.mana ?? 0;
+
+    this.stateSubject$.next({
+      health: health,
+      maxHealth: health,
+      mana,
+      maxMana: mana,
+    });
+
+    this.statsSubject$.next(params.base.baseStats);
+  }
+}

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { GameStateService } from '../../services/game-state.service';
 
 @Component({
   selector: 'app-game',
@@ -6,4 +7,6 @@ import { Component } from '@angular/core';
   templateUrl: './game.html',
   styleUrl: './game.scss',
 })
-export class Game {}
+export class Game {
+  readonly gameStateService = inject(GameStateService);
+}
