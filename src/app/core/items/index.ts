@@ -1,6 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 import { Character } from '../characters';
 import { EntityRegistry } from '../registries';
+import { RangedValue, rollRangedValue } from '../types/ranged';
 
 export enum WeaponType {
   Weapon = 'weapon',
@@ -27,6 +28,8 @@ export interface ItemBase {
   readonly name: string;
 
   readonly type: WeaponType;
+  // if not specified - item never breaks
+  readonly durability?: RangedValue;
 
   readonly actions?: ItemBaseAction[];
 }
@@ -37,6 +40,7 @@ itemsRegistry.register({
   id: 'iron-sword',
   name: 'Iron Sword',
   type: WeaponType.Weapon,
+  durability: [25, 30],
   actions: [
     {
       name: 'Heavy Slash',
@@ -50,20 +54,31 @@ itemsRegistry.register({
     },
   ],
 });
-itemsRegistry.register({ id: 'iron-helm', name: 'Iron Helm', type: WeaponType.Head });
+
+itemsRegistry.register({
+  id: 'iron-helm',
+  durability: [20, 30],
+  name: 'Iron Helm',
+  type: WeaponType.Head,
+});
 
 // heavy sword: actions damage increased by strength, if strengh is high enough - can give block/uninterruptable status while swinging
 
 export type ItemState = Readonly<{
   ownerCharacter: Character;
+  durability: number;
+  maxDurability: number;
 }>;
 
 export class Item {
   readonly stateSubject$: BehaviorSubject<ItemState>;
 
   constructor(readonly params: { readonly base: ItemBase; readonly ownerChar: Character }) {
+    const durability = params.base.durability ? rollRangedValue(params.base.durability) : Infinity;
     this.stateSubject$ = new BehaviorSubject<ItemState>({
       ownerCharacter: params.ownerChar,
+      durability: durability,
+      maxDurability: durability,
     });
   }
 }
