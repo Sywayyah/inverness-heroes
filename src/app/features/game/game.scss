@@ -1,0 +1,24 @@
+.inventory {
+  display: flex;
+  flex-direction: column;
+
+  .inv-row {
+    display: flex;
+
+    .inv-cell {
+      display: flex;
+
+      $cell-size: 48px;
+
+      width: $cell-size;
+      height: $cell-size;
+      border: 1px solid white;
+    }
+  }
+}
+
+.players {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}

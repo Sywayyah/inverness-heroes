@@ -14,4 +14,14 @@ export class EntityRegistry<T extends { readonly id: string }> {
 
     this.entities.push(entity);
   }
+
+  getEntityById(id: string): T {
+    const entity = this.entitiesByIdsMap.get(id);
+
+    if (!entity) {
+      throw new Error(`${this.params.name} Registry: Cannot find entity with id ${id}`);
+    }
+
+    return entity;
+  }
 }

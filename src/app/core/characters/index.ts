@@ -1,6 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 import { Modifiers } from '../modifiers';
 import { EntityRegistry } from '../registries';
+import { Inventory } from './inventory';
 
 export enum CharType {
   Playable,
@@ -27,6 +28,12 @@ export interface CharacterBase {
     readonly mana?: number;
   };
 
+  // 5 x 2 if not specified
+  readonly inventoryBase?: {
+    readonly width: number;
+    readonly height: number;
+  };
+
   readonly baseModifiers?: Modifiers;
 }
 
@@ -43,6 +50,11 @@ charsRegistry.register({
     health: 50,
     mana: 15,
   },
+
+  inventoryBase: {
+    height: 2,
+    width: 8,
+  },
 });
 
 charsRegistry.register({
@@ -55,6 +67,11 @@ charsRegistry.register({
   baseValues: {
     health: 60,
     mana: 10,
+  },
+
+  inventoryBase: {
+    width: 7,
+    height: 2,
   },
 });
 
@@ -74,6 +91,11 @@ charsRegistry.register({
   baseValues: {
     health: 55,
     mana: 13,
+  },
+
+  inventoryBase: {
+    height: 2,
+    width: 6,
   },
 });
 
@@ -122,6 +144,8 @@ export class Character {
     intelligence: 0,
   });
 
+  readonly inventory: Inventory;
+
   constructor(readonly params: { readonly base: CharacterBase }) {
     const health = params.base.baseValues.health;
     const mana = params.base.baseValues.mana ?? 0;
@@ -134,5 +158,10 @@ export class Character {
     });
 
     this.statsSubject$.next(params.base.baseStats);
+
+    this.inventory = new Inventory({
+      width: params.base.inventoryBase?.width ?? 5,
+      height: params.base.inventoryBase?.height ?? 2,
+    });
   }
 }

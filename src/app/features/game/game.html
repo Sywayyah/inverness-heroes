@@ -1,1 +1,34 @@
-<p>game works!</p>
+<div class="players">
+
+  @for (player of gameStateService.players; track $index) {
+    <div class="player">
+      @for (char of player.chars | async; track $index) {
+        {{ char.params.base.name }}
+
+        @let state = (char.stateSubject$ | async)!;
+
+        <div class="health">
+          Health:
+          {{ state.health }}/{{ state.maxHealth }}
+        </div>
+
+        <div class="inventory">
+          @for (invRow of char.inventory.state$ | async; track $index) {
+            <div class="inv-row">
+              @for (invCell of invRow; track $index) {
+                @let invItem = invCell.slot$ | async;
+                <div class="inv-cell">
+                  @if (invItem) {
+                    {{ invItem.params }}
+                  } @else {}
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<button (click)="beginFight()">Begin fight</button>

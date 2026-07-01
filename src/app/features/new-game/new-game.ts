@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
-import { charsRegistry, CharType } from '../../core/characters';
+import { Character, charsRegistry, CharType } from '../../core/characters';
 import { GameStateService } from '../../services/game-state.service';
-import { ViewsService } from '../../services/views.service';
+import { View, ViewsService } from '../../services/views.service';
 
 @Component({
   selector: 'app-new-game',
@@ -16,4 +16,14 @@ export class NewGame {
   readonly characters = charsRegistry.entities.filter((char) => char.type === CharType.Playable);
 
   readonly selectedCharacter = signal(this.characters[0]);
+
+  startGame(): void {
+    this.viewsService.setActiveView(View.Game);
+    this.gameStateService.mainPlayer.chars.next([
+      new Character({ base: this.selectedCharacter() }),
+    ]);
+    this.gameStateService.neutralPlayer.chars.next([
+      new Character({ base: charsRegistry.getEntityById('char-zombie') }),
+    ]);
+  }
 }
