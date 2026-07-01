@@ -82,7 +82,7 @@ charsRegistry.register({
   type: CharType.Playable,
 
   baseStats: {
-    agility: 2,
+    agility: 4,
     intelligence: 2,
     strength: 3,
     vitality: 3,
