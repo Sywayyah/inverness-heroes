@@ -25,5 +25,7 @@ export class NewGame {
     this.gameStateService.neutralPlayer.chars.next([
       new Character({ base: charsRegistry.getEntityById('char-zombie') }),
     ]);
+
+    this.gameStateService.mainPlayer.gold.set(20);
   }
 }

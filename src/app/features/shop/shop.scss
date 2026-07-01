@@ -1,0 +1,25 @@
+.shop-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+}
+
+.inventory {
+  display: flex;
+  flex-direction: column;
+
+  .row {
+    display: flex;
+
+    .cell {
+      $cell-size: 48px;
+
+      width: $cell-size;
+      height: $cell-size;
+
+      border: 1px solid white;
+
+      font-size: 12px;
+    }
+  }
+}

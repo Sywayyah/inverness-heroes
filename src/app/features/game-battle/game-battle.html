@@ -13,13 +13,13 @@
         </div>
 
         <div class="inventory">
-          @for (invRow of char.inventory.state$ | async; track $index) {
+          @for (invRow of char.inventory.itemsGrid.state$ | async; track $index) {
             <div class="inv-row">
               @for (invCell of invRow; track $index) {
                 @let invItem = invCell.slot$ | async;
                 <div class="inv-cell">
                   @if (invItem) {
-                    {{ invItem.params }}
+                    {{ invItem.params.base.name }}
                   } @else {}
                 </div>
               }

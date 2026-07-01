@@ -1,5 +1,6 @@
 import { BehaviorSubject } from 'rxjs';
 import { Item } from '../items';
+import { Grid2D } from '../grid/grid';
 
 export class InventorySlot {
   readonly slot$ = new BehaviorSubject<Item | null>(null);
@@ -7,18 +8,18 @@ export class InventorySlot {
 
 export class Inventory {
   // rows of cells
-  readonly state$ = new BehaviorSubject<InventorySlot[][]>([]);
+  readonly itemsGrid: Grid2D<InventorySlot>;
 
   readonly itemsSet = new Set<Item>();
 
   readonly items$ = new BehaviorSubject<Item[]>([]);
 
   constructor(readonly params: { readonly width: number; readonly height: number }) {
-    this.state$.next(
-      Array.from({ length: params.height }, (_, i) =>
-        Array.from({ length: params.width }, () => new InventorySlot()),
-      ),
-    );
+    this.itemsGrid = new Grid2D<InventorySlot>({
+      width: params.width,
+      height: params.height,
+      cellGenerator: () => new InventorySlot(),
+    });
   }
 
   getItems(): Item[] {
@@ -32,7 +33,7 @@ export class Inventory {
       return;
     }
 
-    const rowWithEmptyCell = this.state$.getValue().find((row) =>
+    const rowWithEmptyCell = this.itemsGrid.state$.getValue().find((row) =>
       row.find((cell) => {
         const isEmptyCell = cell.slot$.getValue() === null;
 
@@ -59,7 +60,7 @@ export class Inventory {
       return;
     }
 
-    const rowWithItem = this.state$.getValue().find((row) =>
+    const rowWithItem = this.itemsGrid.state$.getValue().find((row) =>
       row.find((cell) => {
         const slotHasItem = cell.slot$.getValue() === item;
 
@@ -81,7 +82,7 @@ export class Inventory {
 
   notify(): void {
     // basic reemit to notify about change
-    this.state$.next(this.state$.getValue());
+    this.itemsGrid.state$.next(this.itemsGrid.state$.getValue());
     this.items$.next(this.getItems());
   }
 }
