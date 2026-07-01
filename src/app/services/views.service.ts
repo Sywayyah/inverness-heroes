@@ -3,7 +3,8 @@ import { Service, signal } from '@angular/core';
 export enum View {
   MainScreen,
   NewGame,
-  Game,
+  Battle,
+  Shop,
   Settings,
 }
 

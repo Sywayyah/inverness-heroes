@@ -3,12 +3,12 @@ import { Component, inject } from '@angular/core';
 import { GameStateService } from '../../services/game-state.service';
 
 @Component({
-  selector: 'app-game',
+  selector: 'app-game-battle',
   imports: [AsyncPipe],
-  templateUrl: './game.html',
-  styleUrl: './game.scss',
+  templateUrl: './game-battle.html',
+  styleUrl: './game-battle.scss',
 })
-export class Game {
+export class GameBattle {
   readonly gameStateService = inject(GameStateService);
 
   beginFight(): void {
