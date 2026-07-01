@@ -11,6 +11,8 @@ export class Inventory {
 
   readonly itemsSet = new Set<Item>();
 
+  readonly items$ = new BehaviorSubject<Item[]>([]);
+
   constructor(readonly params: { readonly width: number; readonly height: number }) {
     this.state$.next(
       Array.from({ length: params.height }, (_, i) =>
@@ -80,5 +82,6 @@ export class Inventory {
   notify(): void {
     // basic reemit to notify about change
     this.state$.next(this.state$.getValue());
+    this.items$.next(this.getItems());
   }
 }

@@ -1,6 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { View, ViewsService } from '../../services/views.service';
 
+class ShopArea {
+  constructor(readonly params: { readonly width: number; readonly height: number }) {}
+}
 @Component({
   selector: 'app-shop',
   imports: [],
