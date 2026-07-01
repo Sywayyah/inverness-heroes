@@ -4,6 +4,8 @@ import { ShopArea, ShopSlotItem } from '../../core/shop/shop-area';
 import { AsyncPipe } from '@angular/common';
 import { GameStateService } from '../../services/game-state.service';
 import { Item, itemsRegistry } from '../../core/items';
+import { InventorySlot } from '../../core/characters/inventory';
+import { getRandomInt } from '../../core/utils/common';
 
 @Component({
   selector: 'app-shop',
@@ -18,6 +20,7 @@ export class Shop {
   readonly shopArea = new ShopArea({ width: 4, height: 4 });
   readonly player = this.stateService.mainPlayer;
 
+  readonly activePlayerSlot = signal<InventorySlot | null>(null);
   readonly activeShopItem = signal<ShopSlotItem | null>(null);
 
   constructor() {
@@ -33,6 +36,27 @@ export class Shop {
     });
   }
 
+  handlePlayerSlotClicked(targetSlot: InventorySlot): void {
+    const activePlayerSlot = this.activePlayerSlot();
+
+    if (!activePlayerSlot) {
+      this.activePlayerSlot.set(targetSlot);
+      return;
+    }
+
+    const slotItem = targetSlot.slot$.getValue()!;
+
+    if (!slotItem && !activePlayerSlot.slot$.getValue()) {
+      this.activePlayerSlot.set(targetSlot);
+      return;
+    }
+
+    targetSlot.slot$.next(activePlayerSlot.slot$.getValue());
+    activePlayerSlot.slot$.next(slotItem);
+
+    this.activePlayerSlot.set(null);
+  }
+
   buyItem(): void {
     const activeShopItem = this.activeShopItem();
 
@@ -41,6 +65,17 @@ export class Shop {
     this.player.gold.update((gold) => gold - activeShopItem.goldCost);
     this.shopArea.removeItem(activeShopItem);
     this.player.chars.getValue()[0].inventory.addItem(activeShopItem.item);
+    this.activeShopItem.set(null);
+  }
+
+  sellItem(): void {
+    const item = this.activePlayerSlot()?.slot$.getValue();
+
+    if (!item) return;
+
+    this.player.chars.getValue()[0].inventory.removeItem(item);
+    this.player.gold.update((gold) => gold + getRandomInt(1, 5));
+    this.activePlayerSlot.set(null);
   }
 
   startBattle(): void {

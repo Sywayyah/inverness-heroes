@@ -6,7 +6,7 @@
     @for (row of player.chars.getValue()[0].inventory.itemsGrid.state$ | async; track $index) {
       <div class="row">
         @for (item of row; track $index) {
-          <div class="cell">
+          <div class="cell" (click)="handlePlayerSlotClicked(item)">
             @let slot = item.slot$ | async;
 
             @if (slot) {
@@ -17,6 +17,16 @@
       </div>
     }
   </div>
+
+  @let selectedPlayerSlot = activePlayerSlot();
+  @let selectedPlayerItem = selectedPlayerSlot?.slot$ | async;
+
+  @if (selectedPlayerItem) {
+    {{ selectedPlayerItem.params.base.name }}
+    Sell for 1-5 gold
+
+    <button (click)="sellItem()">Sell</button>
+  }
 </div>
 
 <div class="shop-container">
@@ -36,16 +46,16 @@
       </div>
     }
   </div>
+
+  @let selectedShopItem = activeShopItem();
+  @if (selectedShopItem) {
+    <div class="item">
+      {{ selectedShopItem.item.params.base.name }}
+      Cost: {{ selectedShopItem.goldCost }}
+    </div>
+
+    <button [disabled]="player.gold() < selectedShopItem.goldCost" (click)="buyItem()">Buy</button>
+  }
 </div>
-
-@let selectedShopItem = activeShopItem();
-@if (selectedShopItem) {
-  <div class="item">
-    {{ selectedShopItem.item.params.base.name }}
-    Cost: {{ selectedShopItem.goldCost }}
-  </div>
-
-  <button [disabled]="player.gold() < selectedShopItem.goldCost" (click)="buyItem()">Buy</button>
-}
 
 <button (click)="startBattle()">Start battle</button>
