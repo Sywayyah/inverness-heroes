@@ -12,11 +12,17 @@ import { GameStateService } from '../../services/game-state.service';
 export class GameBattle {
   readonly gameStateService = inject(GameStateService);
 
-  beginFight(): void {
+  constructor() {
+    this.initFight();
+  }
+
+  initFight(): void {
     this.gameStateService.enemyPlayersMap.forEach((currentPlayer, enemyPlayer) => {
       currentPlayer.chars.getValue().forEach((char) => {
         char.initBattle(enemyPlayer);
       });
     });
   }
+
+  beginFight(): void {}
 }

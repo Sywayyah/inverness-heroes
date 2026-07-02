@@ -25,6 +25,21 @@
             </div>
           }
         </div>
+
+        @let battleState = char.battleState$ | async;
+        @for (item of battleState?.itemActions; track $index) {
+          <div class="actionable-item">
+            {{ item.item.base.name }}
+
+            <div class="item-actions">
+              @for (action of item.actions; track $index) {
+                <div class="item-action">
+                  {{ action.name }}
+                </div>
+              }
+            </div>
+          </div>
+        }
       }
     </div>
   }

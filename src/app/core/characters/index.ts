@@ -4,6 +4,7 @@ import { EntityRegistry } from '../registries';
 import { Inventory } from './inventory';
 import { Player } from '../player';
 import { getRandomItem } from '../utils/common';
+import { Item, ItemBaseAction } from '../items';
 
 export enum CharType {
   Playable,
@@ -148,6 +149,10 @@ export class Character {
 
   readonly inventory: Inventory;
 
+  readonly battleState$ = new BehaviorSubject<{
+    readonly itemActions: { item: Item; actions: ItemBaseAction[] }[];
+  }>({ itemActions: [] });
+
   constructor(readonly params: { readonly base: CharacterBase }) {
     const health = params.base.baseValues.health;
     const mana = params.base.baseValues.mana ?? 0;
@@ -179,5 +184,9 @@ export class Character {
     const action = getRandomItem(itemWithActions.params.base.actions!);
 
     console.log(action?.name);
+
+    this.battleState$.next({
+      itemActions: itemsWithActions.map((item) => ({ item, actions: item.params.base.actions! })),
+    });
   }
 }

@@ -29,3 +29,10 @@
   translate: -50%;
   bottom: 10px;
 }
+
+.actionable-item {
+  .item-actions {
+    display: flex;
+    gap: 12px;
+  }
+}

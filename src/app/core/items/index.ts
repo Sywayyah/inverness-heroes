@@ -75,6 +75,10 @@ export type ItemState = Readonly<{
 export class Item {
   readonly stateSubject$: BehaviorSubject<ItemState>;
 
+  get base(): ItemBase {
+    return this.params.base;
+  }
+
   constructor(readonly params: { readonly base: ItemBase; readonly ownerChar: Character }) {
     const durability = params.base.durability ? rollRangedValue(params.base.durability) : Infinity;
     this.stateSubject$ = new BehaviorSubject<ItemState>({
