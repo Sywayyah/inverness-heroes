@@ -3,6 +3,7 @@ import { Character } from '../characters';
 import { EntityRegistry } from '../registries';
 import { RangedValue, rollRangedValue } from '../types/ranged';
 import { Player } from '../player';
+import { ActivitySource } from '../activities';
 
 export enum WeaponType {
   Weapon = 'weapon',
@@ -23,6 +24,9 @@ export interface ItemBaseAction {
   getStats(params: { readonly owner: Character }): ItemActionStats;
   onActionPerformed?(params: { readonly owner: Character; readonly enemy: Player }): void;
   onActivated?(params: { readonly ownerChar: Character; readonly enemy: Player }): void;
+  onBattleInit?(params: { readonly ownerChar: Character; readonly enemy: Player }): void;
+  readonly activatable?: boolean;
+  readonly sources?: ActivitySource[];
 }
 
 export interface ItemBase {

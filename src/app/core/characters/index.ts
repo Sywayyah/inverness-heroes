@@ -5,6 +5,7 @@ import { Inventory } from './inventory';
 import { Player } from '../player';
 import { getRandomItem } from '../utils/common';
 import { Item, ItemBaseAction } from '../items';
+import { ActivitySource } from '../activities';
 
 export enum CharType {
   Playable,
@@ -38,6 +39,13 @@ export interface CharacterBase {
   };
 
   readonly baseModifiers?: Modifiers;
+
+  readonly baseActivities: CharActivity[];
+}
+
+export interface CharActivity {
+  readonly name: string;
+  readonly sources?: ActivitySource;
 }
 
 export const charsRegistry = new EntityRegistry<CharacterBase>({ name: 'Characters' });
@@ -58,6 +66,8 @@ charsRegistry.register({
     height: 2,
     width: 8,
   },
+
+  baseActivities: [{ name: 'Punch' }, { name: 'Kick' }],
 });
 
 charsRegistry.register({
@@ -76,6 +86,8 @@ charsRegistry.register({
     width: 7,
     height: 2,
   },
+
+  baseActivities: [{ name: 'Punch' }, { name: 'Prayer' }],
 });
 
 charsRegistry.register({
@@ -100,6 +112,8 @@ charsRegistry.register({
     height: 2,
     width: 6,
   },
+
+  baseActivities: [{ name: 'Punch' }, { name: 'Kick' }],
 });
 
 charsRegistry.register({
@@ -115,6 +129,8 @@ charsRegistry.register({
     health: 20,
   },
   description: 'A common undead enemy without any outstanding stats',
+
+  baseActivities: [{ name: 'Bite' }, { name: 'Punch' }],
 });
 
 charsRegistry.register({
@@ -130,6 +146,8 @@ charsRegistry.register({
     health: 25,
   },
   description: 'A common undead enemy without any outstanding stats',
+
+  baseActivities: [{ name: 'Punch' }],
 });
 
 export class Character {
@@ -188,5 +206,7 @@ export class Character {
     this.battleState$.next({
       itemActions: itemsWithActions.map((item) => ({ item, actions: item.params.base.actions! })),
     });
+
+    this.inventory;
   }
 }
