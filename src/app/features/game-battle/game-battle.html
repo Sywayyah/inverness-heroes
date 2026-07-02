@@ -33,7 +33,7 @@
 
             <div class="item-actions">
               @for (action of item.actions; track $index) {
-                <div class="item-action">
+                <div class="item-action" (click)="setCharAction(char, item, action)">
                   {{ action.name }}
                 </div>
               }

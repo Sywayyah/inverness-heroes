@@ -2,6 +2,8 @@ import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { getRandomItem } from '../../core/utils/common';
 import { GameStateService } from '../../services/game-state.service';
+import { Character } from '../../core/characters';
+import { Item, ItemBaseAction } from '../../core/items';
 
 @Component({
   selector: 'app-game-battle',
@@ -25,4 +27,11 @@ export class GameBattle {
   }
 
   beginFight(): void {}
+  // queue via shift?
+
+  setCharAction(
+    char: Character,
+    item: { item: Item; actions: ItemBaseAction[] },
+    action: ItemBaseAction,
+  ) {}
 }
