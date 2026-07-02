@@ -34,6 +34,10 @@ export class Shop {
       goldCost: 8,
       item: new Item({ ownerChar, base: itemsRegistry.getEntityById('iron-helm') }),
     });
+    this.shopArea.addItem({
+      goldCost: 6,
+      item: new Item({ ownerChar, base: itemsRegistry.getEntityById('candle') }),
+    });
   }
 
   handlePlayerSlotClicked(targetSlot: InventorySlot): void {

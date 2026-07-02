@@ -62,6 +62,8 @@ itemsRegistry.register({
   type: WeaponType.Head,
 });
 
+itemsRegistry.register({ id: 'candle', name: 'Candle', type: WeaponType.Charm });
+
 // heavy sword: actions damage increased by strength, if strengh is high enough - can give block/uninterruptable status while swinging
 
 export type ItemState = Readonly<{
