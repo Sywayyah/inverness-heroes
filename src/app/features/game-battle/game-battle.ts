@@ -13,19 +13,9 @@ export class GameBattle {
   readonly gameStateService = inject(GameStateService);
 
   beginFight(): void {
-    this.gameStateService.players.forEach((player) => {
-      player.chars.getValue().forEach((char) => {
-        const itemsWithActions = char.inventory.getItems().filter((item) => {
-          return item.params.base.actions?.length;
-        });
-
-        const itemWithActions = getRandomItem(itemsWithActions);
-
-        if (!itemWithActions) return;
-
-        const action = getRandomItem(itemWithActions.params.base.actions!);
-
-        console.log(action?.name);
+    this.gameStateService.enemyPlayersMap.forEach((currentPlayer, enemyPlayer) => {
+      currentPlayer.chars.getValue().forEach((char) => {
+        char.initBattle(enemyPlayer);
       });
     });
   }

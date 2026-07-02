@@ -2,6 +2,8 @@ import { BehaviorSubject } from 'rxjs';
 import { Modifiers } from '../modifiers';
 import { EntityRegistry } from '../registries';
 import { Inventory } from './inventory';
+import { Player } from '../player';
+import { getRandomItem } from '../utils/common';
 
 export enum CharType {
   Playable,
@@ -163,5 +165,19 @@ export class Character {
       width: params.base.inventoryBase?.width ?? 5,
       height: params.base.inventoryBase?.height ?? 2,
     });
+  }
+
+  initBattle(enemyPlayer: Player): void {
+    const itemsWithActions = this.inventory.getItems().filter((item) => {
+      return item.params.base.actions?.length;
+    });
+
+    const itemWithActions = getRandomItem(itemsWithActions);
+
+    if (!itemWithActions) return;
+
+    const action = getRandomItem(itemWithActions.params.base.actions!);
+
+    console.log(action?.name);
   }
 }
