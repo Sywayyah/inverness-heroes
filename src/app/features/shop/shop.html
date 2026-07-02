@@ -1,9 +1,13 @@
 <!-- Shop -->
 <div class="player">
   Player, Gold Left: {{ player.gold() }}
+  @let char = player.chars.getValue()[0];
+  {{ char.params.base.name }}
 
   <div class="inventory">
-    @for (row of player.chars.getValue()[0].inventory.itemsGrid.state$ | async; track $index) {
+
+    @for (row of char.inventory.itemsGrid.state$ | async; track $index) {
+
       <div class="row">
         @for (item of row; track $index) {
           <div class="cell" (click)="handlePlayerSlotClicked(item)">
