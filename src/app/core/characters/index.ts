@@ -1,11 +1,19 @@
 import { BehaviorSubject } from 'rxjs';
-import { Modifiers } from '../modifiers';
-import { EntityRegistry } from '../registries';
-import { Inventory } from './inventory';
-import { Player } from '../player';
-import { getRandomItem } from '../utils/common';
+import {
+  ActivitySource,
+  BothHandsActivitySource,
+  LeftHandActivitySource,
+  LegActivitySource,
+  MouthActivitySource,
+  RightHandActivitySource,
+} from '../activities';
 import { Item, ItemBaseAction } from '../items';
-import { ActivitySource } from '../activities';
+import { Modifiers } from '../modifiers';
+import { Player } from '../player';
+import { EntityRegistry } from '../registries';
+import { getRandomItem } from '../utils/common';
+import { Inventory } from './inventory';
+import { readonly } from '@angular/forms/signals';
 
 export enum CharType {
   Playable,
@@ -40,15 +48,25 @@ export interface CharacterBase {
 
   readonly baseModifiers?: Modifiers;
 
+  readonly activitySources: ActivitySource[];
+
   readonly baseActivities: CharActivity[];
 }
 
 export interface CharActivity {
   readonly name: string;
-  readonly sources?: ActivitySource;
+  readonly sources?: ActivitySource[];
 }
 
 export const charsRegistry = new EntityRegistry<CharacterBase>({ name: 'Characters' });
+
+const HumanActivitySources: ActivitySource[] = [
+  LeftHandActivitySource,
+  RightHandActivitySource,
+  BothHandsActivitySource,
+  MouthActivitySource,
+  LegActivitySource,
+];
 
 charsRegistry.register({
   id: 'char-alch',
@@ -67,7 +85,12 @@ charsRegistry.register({
     width: 8,
   },
 
-  baseActivities: [{ name: 'Punch' }, { name: 'Kick' }],
+  baseActivities: [
+    { name: 'Punch', sources: [LeftHandActivitySource, RightHandActivitySource] },
+    { name: 'Kick', sources: [LegActivitySource] },
+  ],
+
+  activitySources: HumanActivitySources,
 });
 
 charsRegistry.register({
@@ -87,7 +110,12 @@ charsRegistry.register({
     height: 2,
   },
 
-  baseActivities: [{ name: 'Punch' }, { name: 'Prayer' }],
+  baseActivities: [
+    { name: 'Punch', sources: [LeftHandActivitySource, RightHandActivitySource] },
+    { name: 'Prayer', sources: [MouthActivitySource] },
+  ],
+
+  activitySources: HumanActivitySources,
 });
 
 charsRegistry.register({
@@ -113,7 +141,12 @@ charsRegistry.register({
     width: 6,
   },
 
-  baseActivities: [{ name: 'Punch' }, { name: 'Kick' }],
+  baseActivities: [
+    { name: 'Punch', sources: [LeftHandActivitySource, RightHandActivitySource] },
+    { name: 'Kick', sources: [LegActivitySource] },
+  ],
+
+  activitySources: HumanActivitySources,
 });
 
 charsRegistry.register({
@@ -130,7 +163,15 @@ charsRegistry.register({
   },
   description: 'A common undead enemy without any outstanding stats',
 
-  baseActivities: [{ name: 'Bite' }, { name: 'Punch' }],
+  baseActivities: [
+    { name: 'Bite' },
+    {
+      name: 'Punch',
+      sources: [LeftHandActivitySource, RightHandActivitySource, BothHandsActivitySource],
+    },
+  ],
+
+  activitySources: HumanActivitySources,
 });
 
 charsRegistry.register({
@@ -147,8 +188,15 @@ charsRegistry.register({
   },
   description: 'A common undead enemy without any outstanding stats',
 
-  baseActivities: [{ name: 'Punch' }],
+  baseActivities: [{ name: 'Punch', sources: [LeftHandActivitySource, RightHandActivitySource] }],
+
+  activitySources: HumanActivitySources,
 });
+
+export interface ItemAction {
+  readonly item: Item;
+  readonly actions: ItemBaseAction[];
+}
 
 export class Character {
   readonly stateSubject$ = new BehaviorSubject({
@@ -168,7 +216,7 @@ export class Character {
   readonly inventory: Inventory;
 
   readonly battleState$ = new BehaviorSubject<{
-    readonly itemActions: { item: Item; actions: ItemBaseAction[] }[];
+    readonly itemActions: ItemAction[];
   }>({ itemActions: [] });
 
   constructor(readonly params: { readonly base: CharacterBase }) {

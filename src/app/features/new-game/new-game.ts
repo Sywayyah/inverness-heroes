@@ -26,6 +26,7 @@ export class NewGame {
       new Character({ base: charsRegistry.getEntityById('char-zombie') }),
     ]);
 
-    this.gameStateService.mainPlayer.gold.set(20);
+    // this.gameStateService.mainPlayer.gold.set(20);
+    this.gameStateService.mainPlayer.gold.set(100);
   }
 }

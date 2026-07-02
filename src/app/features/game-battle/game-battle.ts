@@ -1,9 +1,10 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { Character } from '../../core/characters';
+import { Character, ItemAction } from '../../core/characters';
 import { Item, ItemBaseAction } from '../../core/items';
 import { Player } from '../../core/player';
 import { GameStateService } from '../../services/game-state.service';
+import { ActivitySource } from '../../core/activities';
 
 @Component({
   selector: 'app-game-battle',
@@ -29,15 +30,18 @@ export class GameBattle {
   beginFight(): void {}
   // queue via shift?
 
-  setCharAction(
-    char: Character,
-    item: { item: Item; actions: ItemBaseAction[] },
-    action: ItemBaseAction,
-    player: Player,
-  ) {
+  setCharAction(char: Character, item: ItemAction, action: ItemBaseAction, player: Player) {
     action.onActivated?.({
       ownerChar: char,
       enemy: this.gameStateService.enemyPlayersMap.get(player)!,
     });
   }
+
+  setCharSourceAction(
+    char: Character,
+    item: ItemAction,
+    action: ItemBaseAction,
+    player: Player,
+    source: ActivitySource,
+  ): void {}
 }

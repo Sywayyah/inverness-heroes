@@ -1,9 +1,14 @@
 import { BehaviorSubject } from 'rxjs';
+import {
+  ActivitySource,
+  BothHandsActivitySource,
+  LeftHandActivitySource,
+  RightHandActivitySource,
+} from '../activities';
 import { Character } from '../characters';
+import { Player } from '../player';
 import { EntityRegistry } from '../registries';
 import { RangedValue, rollRangedValue } from '../types/ranged';
-import { Player } from '../player';
-import { ActivitySource } from '../activities';
 
 export enum WeaponType {
   Weapon = 'weapon',
@@ -21,7 +26,7 @@ export interface ItemActionStats {
 export interface ItemBaseAction {
   readonly name: string;
   // todo: subscribe to owner stats and update them dynamically here in method
-  getStats(params: { readonly owner: Character }): ItemActionStats;
+  getStats?(params: { readonly owner: Character }): ItemActionStats;
   onActionPerformed?(params: { readonly owner: Character; readonly enemy: Player }): void;
   onActivated?(params: { readonly ownerChar: Character; readonly enemy: Player }): void;
   onBattleInit?(params: { readonly ownerChar: Character; readonly enemy: Player }): void;
@@ -52,11 +57,13 @@ itemsRegistry.register({
       name: 'Heavy Slash',
       getStats: ({ owner }) => ({ baseTime: { min: 1000, max: 1400 } }),
       onActionPerformed: () => {},
+      sources: [LeftHandActivitySource, RightHandActivitySource, BothHandsActivitySource],
     },
     {
       name: 'Light Slash',
       getStats: ({ owner }) => ({ baseTime: { min: 350, max: 500 } }),
       onActionPerformed: () => {},
+      sources: [LeftHandActivitySource, RightHandActivitySource, BothHandsActivitySource],
     },
   ],
 });
@@ -66,6 +73,23 @@ itemsRegistry.register({
   durability: [20, 30],
   name: 'Iron Helm',
   type: WeaponType.Head,
+});
+
+itemsRegistry.register({
+  id: 'shield',
+  durability: [20, 30],
+  name: 'Shield',
+  type: WeaponType.Shield,
+  actions: [
+    {
+      name: 'Block',
+      sources: [LeftHandActivitySource, RightHandActivitySource, BothHandsActivitySource],
+    },
+    {
+      name: 'Shield Strike',
+      sources: [LeftHandActivitySource, RightHandActivitySource, BothHandsActivitySource],
+    },
+  ],
 });
 
 itemsRegistry.register({ id: 'candle', name: 'Candle', type: WeaponType.Charm });

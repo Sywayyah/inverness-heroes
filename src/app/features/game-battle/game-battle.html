@@ -26,6 +26,17 @@
           }
         </div>
 
+        <hr />
+
+        <div class="activity-sources-container">
+          Set Activities:
+          @for (source of char.params.base.activitySources; track $index) {
+            <div class="source">{{ source.name }} ({{ source.shortName }})</div>
+          }
+        </div>
+
+        <hr />
+
         @let battleState = char.battleState$ | async;
         @for (item of battleState?.itemActions; track $index) {
           <div class="actionable-item">
@@ -35,6 +46,14 @@
               @for (action of item.actions; track $index) {
                 <div class="item-action" (click)="setCharAction(char, item, action, player)">
                   {{ action.name }}
+                </div>
+
+                <div class="item-action-sources">
+                  @for (source of action.sources; track $index) {
+                    <button (click)="setCharSourceAction(char, item, action, player, source)">
+                      {{ source.shortName }}
+                    </button>
+                  }
                 </div>
               }
             </div>
