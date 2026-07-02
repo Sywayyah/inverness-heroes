@@ -1,9 +1,9 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { getRandomItem } from '../../core/utils/common';
-import { GameStateService } from '../../services/game-state.service';
 import { Character } from '../../core/characters';
 import { Item, ItemBaseAction } from '../../core/items';
+import { Player } from '../../core/player';
+import { GameStateService } from '../../services/game-state.service';
 
 @Component({
   selector: 'app-game-battle',
@@ -33,5 +33,11 @@ export class GameBattle {
     char: Character,
     item: { item: Item; actions: ItemBaseAction[] },
     action: ItemBaseAction,
-  ) {}
+    player: Player,
+  ) {
+    action.onActivated?.({
+      ownerChar: char,
+      enemy: this.gameStateService.enemyPlayersMap.get(player)!,
+    });
+  }
 }

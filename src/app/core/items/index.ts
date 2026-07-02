@@ -2,6 +2,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Character } from '../characters';
 import { EntityRegistry } from '../registries';
 import { RangedValue, rollRangedValue } from '../types/ranged';
+import { Player } from '../player';
 
 export enum WeaponType {
   Weapon = 'weapon',
@@ -20,7 +21,8 @@ export interface ItemBaseAction {
   readonly name: string;
   // todo: subscribe to owner stats and update them dynamically here in method
   getStats(params: { readonly owner: Character }): ItemActionStats;
-  onActionPerformed?(params: { readonly owner: Character; readonly enemy: Character }): void;
+  onActionPerformed?(params: { readonly owner: Character; readonly enemy: Player }): void;
+  onActivated?(params: { readonly ownerChar: Character; readonly enemy: Player }): void;
 }
 
 export interface ItemBase {
