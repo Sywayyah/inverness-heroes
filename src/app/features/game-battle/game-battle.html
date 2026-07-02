@@ -1,5 +1,4 @@
 <div class="players">
-
   @for (player of gameStateService.players; track $index) {
     <div class="player">
       @for (char of player.chars | async; track $index) {
@@ -31,4 +30,6 @@
   }
 </div>
 
-<button (click)="beginFight()">Begin fight</button>
+<div class="battle-panel">
+  <button (click)="beginFight()">Begin fight</button>
+</div>

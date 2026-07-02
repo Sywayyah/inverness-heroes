@@ -43,15 +43,14 @@ export class Shop {
   handlePlayerSlotClicked(targetSlot: InventorySlot): void {
     const activePlayerSlot = this.activePlayerSlot();
 
-    if (!activePlayerSlot) {
-      this.activePlayerSlot.set(targetSlot);
-      return;
-    }
-
     const slotItem = targetSlot.slot$.getValue()!;
 
-    if (!slotItem && !activePlayerSlot.slot$.getValue()) {
-      this.activePlayerSlot.set(targetSlot);
+    if (!activePlayerSlot) {
+      if (!slotItem) {
+        this.activePlayerSlot.set(null);
+      } else {
+        this.activePlayerSlot.set(targetSlot);
+      }
       return;
     }
 

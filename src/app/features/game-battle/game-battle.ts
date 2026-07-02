@@ -1,5 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { getRandomItem } from '../../core/utils/common';
 import { GameStateService } from '../../services/game-state.service';
 
 @Component({
@@ -14,9 +15,17 @@ export class GameBattle {
   beginFight(): void {
     this.gameStateService.players.forEach((player) => {
       player.chars.getValue().forEach((char) => {
-        char.inventory.getItems().forEach((item) => {
-          item.params.base.actions?.forEach(action => {});
+        const itemsWithActions = char.inventory.getItems().filter((item) => {
+          return item.params.base.actions?.length;
         });
+
+        const itemWithActions = getRandomItem(itemsWithActions);
+
+        if (!itemWithActions) return;
+
+        const action = getRandomItem(itemWithActions.params.base.actions!);
+
+        console.log(action?.name);
       });
     });
   }

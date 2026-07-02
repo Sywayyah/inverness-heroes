@@ -22,3 +22,10 @@
   justify-content: space-between;
   padding: 20px;
 }
+
+.battle-panel {
+  position: fixed;
+  left: 50%;
+  translate: -50%;
+  bottom: 10px;
+}

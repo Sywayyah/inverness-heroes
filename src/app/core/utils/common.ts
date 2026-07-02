@@ -7,3 +7,7 @@ export function getRandomInt(min: number, max: number): number {
 export function rollChance(chance: number = 0.5): boolean {
   return Math.random() <= chance;
 }
+
+export function getRandomItem<T>(arr: T[]): T | undefined {
+  return arr[getRandomInt(0, arr.length - 1)];
+}
