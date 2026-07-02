@@ -5,6 +5,7 @@ import { Item, ItemBaseAction } from '../../core/items';
 import { Player } from '../../core/player';
 import { GameStateService } from '../../services/game-state.service';
 import { ActivitySource } from '../../core/activities';
+import { Battle } from '../../core/battle';
 
 @Component({
   selector: 'app-game-battle',
@@ -14,6 +15,8 @@ import { ActivitySource } from '../../core/activities';
 })
 export class GameBattle {
   readonly gameStateService = inject(GameStateService);
+
+  readonly battle = new Battle();
 
   constructor() {
     this.initFight();
@@ -27,7 +30,9 @@ export class GameBattle {
     });
   }
 
-  beginFight(): void {}
+  beginFight(): void {
+    this.battle.startBattle();
+  }
   // queue via shift?
 
   setCharAction(char: Character, item: ItemAction, action: ItemBaseAction, player: Player) {
