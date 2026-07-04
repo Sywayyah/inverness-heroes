@@ -37,28 +37,13 @@
 
         <hr />
 
-        @let battleState = char.battleState$ | async;
-        @for (item of battleState?.itemActions; track $index) {
-          <div class="actionable-item">
-            {{ item.item.base.name }}
+        @let battleActions = char.battleActions$ | async;
 
-            <div class="item-actions">
-              @for (action of item.actions; track $index) {
-                <div class="item-action" (click)="setCharAction(char, item, action, player)">
-                  {{ action.name }}
-                </div>
-
-                <div class="item-action-sources">
-                  @for (source of action.sources; track $index) {
-                    <button (click)="setCharSourceAction(char, item, action, player, source)">
-                      {{ source.shortName }}
-                    </button>
-                  }
-                </div>
-              }
-            </div>
-          </div>
-        }
+        <div class="actions">
+          @for (action of battleActions?.itemActions; track $index) {
+            <div class="action">{{ action.item.base.name }} - {{ action.action.name }}</div>
+          }
+        </div>
       }
     </div>
   }

@@ -9,11 +9,9 @@ import {
 } from '../activities';
 import { Item, ItemBaseAction } from '../items';
 import { Modifiers } from '../modifiers';
-import { Player } from '../player';
 import { EntityRegistry } from '../registries';
-import { getRandomItem } from '../utils/common';
+import { getNRandomItems } from '../utils/common';
 import { Inventory } from './inventory';
-import { readonly } from '@angular/forms/signals';
 
 export enum CharType {
   Playable,
@@ -215,9 +213,11 @@ export class Character {
 
   readonly inventory: Inventory;
 
-  readonly battleState$ = new BehaviorSubject<{
-    readonly itemActions: ItemAction[];
-  }>({ itemActions: [] });
+  readonly battleActions$ = new BehaviorSubject<{
+    itemActions: { item: Item; action: ItemBaseAction }[];
+  }>({
+    itemActions: [],
+  });
 
   constructor(readonly params: { readonly base: CharacterBase }) {
     const health = params.base.baseValues.health;
@@ -238,23 +238,13 @@ export class Character {
     });
   }
 
-  initBattle(enemyPlayer: Player): void {
-    const itemsWithActions = this.inventory.getItems().filter((item) => {
-      return item.params.base.actions?.length;
-    });
+  initActions(params: { readonly actionPoints: number }): void {
+    const itemsWithActions = this.inventory.getItems().filter((item) => item.base.actions?.length);
+    const itemActions = itemsWithActions.flatMap((item) =>
+      item.base.actions!.map((action) => ({ item, action })),
+    );
 
-    const itemWithActions = getRandomItem(itemsWithActions);
-
-    if (!itemWithActions) return;
-
-    const action = getRandomItem(itemWithActions.params.base.actions!);
-
-    console.log(action?.name);
-
-    this.battleState$.next({
-      itemActions: itemsWithActions.map((item) => ({ item, actions: item.params.base.actions! })),
-    });
-
-    this.inventory;
+    const randomItemActions = getNRandomItems(itemActions, 5);
+    this.battleActions$.next({ itemActions: randomItemActions });
   }
 }

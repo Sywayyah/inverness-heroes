@@ -23,30 +23,11 @@ export class GameBattle {
   }
 
   initFight(): void {
-    this.gameStateService.enemyPlayersMap.forEach((currentPlayer, enemyPlayer) => {
-      currentPlayer.chars.getValue().forEach((char) => {
-        char.initBattle(enemyPlayer);
-      });
+    this.gameStateService.enemyPlayersMap.forEach((player) => {
+      player.chars.getValue().forEach((char) => char.initActions({ actionPoints: 10 }));
     });
   }
 
   beginFight(): void {
-    this.battle.startBattle();
   }
-  // queue via shift?
-
-  setCharAction(char: Character, item: ItemAction, action: ItemBaseAction, player: Player) {
-    action.onActivated?.({
-      ownerChar: char,
-      enemy: this.gameStateService.enemyPlayersMap.get(player)!,
-    });
-  }
-
-  setCharSourceAction(
-    char: Character,
-    item: ItemAction,
-    action: ItemBaseAction,
-    player: Player,
-    source: ActivitySource,
-  ): void {}
 }

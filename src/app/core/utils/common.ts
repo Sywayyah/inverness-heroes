@@ -11,3 +11,33 @@ export function rollChance(chance: number = 0.5): boolean {
 export function getRandomItem<T>(arr: T[]): T | undefined {
   return arr[getRandomInt(0, arr.length - 1)];
 }
+
+export function getNRandomItems<T>(arr: T[], n = 1): T[] {
+  if (!arr.length) return [];
+
+  const newArr: T[] = [];
+
+  for (let i = 0; i < n; i++) {
+    const item = getRandomItem(arr)!;
+    newArr.push(item);
+  }
+
+  return newArr;
+}
+
+export function getNRandomUniqueItems<T>(arr: T[], n = 1): T[] {
+  if (!arr.length) return [];
+
+  const items: T[] = [];
+  const copy = [...arr];
+
+  if (n > arr.length) n = arr.length;
+
+  for (let i = 0; i < n; i++) {
+    const randomIndex = getRandomInt(0, n);
+    items.push(copy[randomIndex]);
+    copy.splice(randomIndex, 1);
+  }
+
+  return items;
+}
