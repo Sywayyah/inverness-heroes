@@ -2,17 +2,17 @@ import { BehaviorSubject } from 'rxjs';
 import {
   ActivitySource,
   BothHandsActivitySource,
-  LeftHandActivitySource,
   LegActivitySource,
   MouthActivitySource,
-  RightHandActivitySource,
+  OneHandActivitySource,
 } from '../activities';
 import { Item, ItemBaseAction } from '../items';
 import { Modifiers } from '../modifiers';
 import { EntityRegistry } from '../registries';
+import { MappedRecordTypes } from '../types/mappings';
 import { getNRandomItems, getNRandomUniqueItems, getRandomInt } from '../utils/common';
 import { Inventory } from './inventory';
-import { MappedRecordTypes } from '../types/mappings';
+import { signal } from '@angular/core';
 
 export enum CharType {
   Playable,
@@ -60,8 +60,7 @@ export interface CharActivity {
 export const charsRegistry = new EntityRegistry<CharacterBase>({ name: 'Characters' });
 
 const HumanActivitySources: ActivitySource[] = [
-  LeftHandActivitySource,
-  RightHandActivitySource,
+  OneHandActivitySource,
   BothHandsActivitySource,
   MouthActivitySource,
   LegActivitySource,
@@ -85,7 +84,7 @@ charsRegistry.register({
   },
 
   baseActivities: [
-    { name: 'Punch', sources: [LeftHandActivitySource, RightHandActivitySource] },
+    { name: 'Punch', sources: [OneHandActivitySource] },
     { name: 'Kick', sources: [LegActivitySource] },
   ],
 
@@ -110,7 +109,7 @@ charsRegistry.register({
   },
 
   baseActivities: [
-    { name: 'Punch', sources: [LeftHandActivitySource, RightHandActivitySource] },
+    { name: 'Punch', sources: [OneHandActivitySource] },
     { name: 'Prayer', sources: [MouthActivitySource] },
   ],
 
@@ -141,7 +140,7 @@ charsRegistry.register({
   },
 
   baseActivities: [
-    { name: 'Punch', sources: [LeftHandActivitySource, RightHandActivitySource] },
+    { name: 'Punch', sources: [OneHandActivitySource] },
     { name: 'Kick', sources: [LegActivitySource] },
   ],
 
@@ -166,7 +165,7 @@ charsRegistry.register({
     { name: 'Bite' },
     {
       name: 'Punch',
-      sources: [LeftHandActivitySource, RightHandActivitySource, BothHandsActivitySource],
+      sources: [OneHandActivitySource, BothHandsActivitySource],
     },
   ],
 
@@ -187,7 +186,7 @@ charsRegistry.register({
   },
   description: 'A common undead enemy without any outstanding stats',
 
-  baseActivities: [{ name: 'Punch', sources: [LeftHandActivitySource, RightHandActivitySource] }],
+  baseActivities: [{ name: 'Punch', sources: [OneHandActivitySource] }],
 
   activitySources: HumanActivitySources,
 });
@@ -227,6 +226,8 @@ export class Character {
     battleActions: [],
   });
 
+  readonly rerollsLeft = signal(1);
+
   constructor(readonly params: { readonly base: CharacterBase }) {
     const health = params.base.baseValues.health;
     const mana = params.base.baseValues.mana ?? 0;
@@ -244,6 +245,10 @@ export class Character {
       width: params.base.inventoryBase?.width ?? 5,
       height: params.base.inventoryBase?.height ?? 2,
     });
+  }
+
+  initBattle(): void {
+    this.rerollsLeft.set(1);
   }
 
   initActions(params: { readonly actionPoints: number }): void {

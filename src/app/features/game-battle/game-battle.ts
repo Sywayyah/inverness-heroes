@@ -28,6 +28,10 @@ export class GameBattle {
     });
   }
 
-  beginFight(): void {
+  beginFight(): void {}
+
+  rerollCharActions(char: Character) {
+    char.initActions({ actionPoints: 10 });
+    char.rerollsLeft.update((rerolls) => rerolls - 1);
   }
 }

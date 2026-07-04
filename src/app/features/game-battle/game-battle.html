@@ -39,6 +39,10 @@
 
         @let battleActions = char.battleActions$ | async;
 
+        <button (click)="rerollCharActions(char)" [disabled]="!char.rerollsLeft()">
+          Rerolls left: {{ char.rerollsLeft() }}
+        </button>
+
         <div class="actions">
           @for (action of battleActions?.battleActions; track $index) {
             @switch (action.type) {

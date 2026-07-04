@@ -1,10 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
-import {
-  ActivitySource,
-  BothHandsActivitySource,
-  LeftHandActivitySource,
-  RightHandActivitySource,
-} from '../activities';
+import { ActivitySource, BothHandsActivitySource, OneHandActivitySource } from '../activities';
 import { Character } from '../characters';
 import { Player } from '../player';
 import { EntityRegistry } from '../registries';
@@ -19,9 +14,7 @@ export enum WeaponType {
   Charm = 'charm',
 }
 
-export interface ItemActionStats {
-
-}
+export interface ItemActionStats {}
 
 export interface ItemBaseAction {
   readonly name: string;
@@ -55,15 +48,15 @@ itemsRegistry.register({
   actions: [
     {
       name: 'Heavy Slash',
-      getStats: ({ owner }) => ({  }),
+      getStats: ({ owner }) => ({}),
       onActionPerformed: () => {},
-      sources: [LeftHandActivitySource, RightHandActivitySource, BothHandsActivitySource],
+      sources: [OneHandActivitySource, BothHandsActivitySource],
     },
     {
       name: 'Light Slash',
-      getStats: ({ owner }) => ({  }),
+      getStats: ({ owner }) => ({}),
       onActionPerformed: () => {},
-      sources: [LeftHandActivitySource, RightHandActivitySource, BothHandsActivitySource],
+      sources: [OneHandActivitySource, BothHandsActivitySource],
     },
   ],
 });
@@ -82,12 +75,8 @@ itemsRegistry.register({
   type: WeaponType.Shield,
   actions: [
     {
-      name: 'Block',
-      sources: [LeftHandActivitySource, RightHandActivitySource, BothHandsActivitySource],
-    },
-    {
       name: 'Shield Strike',
-      sources: [LeftHandActivitySource, RightHandActivitySource, BothHandsActivitySource],
+      sources: [OneHandActivitySource, BothHandsActivitySource],
     },
   ],
 });

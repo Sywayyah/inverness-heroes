@@ -4,14 +4,9 @@ export interface ActivitySource {
   readonly shortName: string;
 }
 
-export const LeftHandActivitySource: ActivitySource = {
-  name: 'Left Hand',
-  shortName: 'LH',
-};
-
-export const RightHandActivitySource: ActivitySource = {
-  name: 'Right Hand',
-  shortName: 'RH',
+export const OneHandActivitySource: ActivitySource = {
+  name: 'One Hand',
+  shortName: 'OH',
 };
 
 export const BothHandsActivitySource: ActivitySource = {
