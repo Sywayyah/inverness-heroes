@@ -15,4 +15,6 @@
 
   also, there might be additional states, which would enable combos in theory
   additional states could be achieved with correctly inputting complex combinations
+
+  add ability to reroll (specific or all, different characters may have different roll caps)
 */

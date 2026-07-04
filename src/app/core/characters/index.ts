@@ -269,6 +269,7 @@ export class Character {
       })),
     ];
 
-    this.battleActions$.next({ battleActions: getNRandomUniqueItems(finalList, 6) });
+    const randomizedFinalList = getNRandomUniqueItems(finalList, 6);
+    this.battleActions$.next({ battleActions: randomizedFinalList });
   }
 }

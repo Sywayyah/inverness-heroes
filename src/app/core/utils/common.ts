@@ -34,7 +34,7 @@ export function getNRandomUniqueItems<T>(arr: T[], n = 1): T[] {
   if (n > arr.length) n = arr.length;
 
   for (let i = 0; i < n; i++) {
-    const randomIndex = getRandomInt(0, n);
+    const randomIndex = getRandomInt(0, copy.length - 1);
     items.push(copy[randomIndex]);
     copy.splice(randomIndex, 1);
   }
