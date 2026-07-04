@@ -3,7 +3,11 @@ import { ActivitySource, BothHandsActivitySource, OneHandActivitySource } from '
 import { Character } from '../characters';
 import { Player } from '../player';
 import { EntityRegistry } from '../registries';
-import { RangedValue, rollRangedValue } from '../types/ranged';
+import { RangedNumber, rollRangedValue } from '../types/ranged';
+import { ModGroup } from '../modifiers/mod-group';
+import { Modifiers } from '../modifiers';
+import { ReactiveList } from '../reactive/reactive-list';
+import { ItemModifiers } from './item-modifiers';
 
 export enum WeaponType {
   Weapon = 'weapon',
@@ -33,7 +37,7 @@ export interface ItemBase {
 
   readonly type: WeaponType;
   // if not specified - item never breaks
-  readonly durability?: RangedValue;
+  readonly durability?: RangedNumber;
 
   readonly actions?: ItemBaseAction[];
 }
@@ -93,6 +97,13 @@ export type ItemState = Readonly<{
 
 export class Item {
   readonly stateSubject$: BehaviorSubject<ItemState>;
+
+  readonly mods = new ModGroup<Modifiers>();
+
+  readonly modifiersList = new ReactiveList<{
+    readonly itemModifier: ItemModifiers;
+    readonly mods: Modifiers;
+  }>();
 
   get base(): ItemBase {
     return this.params.base;

@@ -22,6 +22,19 @@ export class ShopArea {
     });
   }
 
+  getSlotsWithItems(): ShopSlotItem[] {
+    const items: ShopSlotItem[] = [];
+
+    this.itemsGrid.state$.getValue().forEach((row) =>
+      row.forEach((slot) => {
+        const cellItem = slot.cell$.getValue();
+        if (cellItem) items.push(cellItem);
+      }),
+    );
+
+    return items;
+  }
+
   addItem(item: ShopSlotItem): void {
     this.itemsGrid.state$.getValue().find((row) =>
       row.find((cell) => {

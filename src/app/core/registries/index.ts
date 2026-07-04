@@ -4,7 +4,7 @@ export class EntityRegistry<T extends { readonly id: string }> {
 
   constructor(readonly params: { readonly name: string }) {}
 
-  register(entity: T): void {
+  register<const E extends T>(entity: E): void {
     if (this.entitiesByIdsMap.has(entity.id))
       throw new Error(
         `${this.params.name} Registry: Entity with id ${entity.id} is already registered`,

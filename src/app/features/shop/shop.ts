@@ -1,11 +1,12 @@
-import { Component, inject, signal } from '@angular/core';
-import { View, ViewsService } from '../../services/views.service';
-import { ShopArea, ShopSlotItem } from '../../core/shop/shop-area';
 import { AsyncPipe } from '@angular/common';
-import { GameStateService } from '../../services/game-state.service';
-import { Item, itemsRegistry } from '../../core/items';
+import { Component, inject, signal } from '@angular/core';
 import { InventorySlot } from '../../core/characters/inventory';
-import { getRandomInt } from '../../core/utils/common';
+import { Item, itemsRegistry } from '../../core/items';
+import { ShopArea, ShopSlotItem } from '../../core/shop/shop-area';
+import { getNRandomUniqueItems, getRandomInt } from '../../core/utils/common';
+import { GameStateService } from '../../services/game-state.service';
+import { View, ViewsService } from '../../services/views.service';
+import { itemModifiersRegistry } from '../../core/items/item-modifiers';
 
 @Component({
   selector: 'app-shop',
@@ -41,6 +42,27 @@ export class Shop {
     this.shopArea.addItem({
       goldCost: 6,
       item: new Item({ ownerChar, base: itemsRegistry.getEntityById('shield') }),
+    });
+
+    this.shopArea.getSlotsWithItems().forEach((slot) => {
+      const mods = getNRandomUniqueItems(
+        itemModifiersRegistry.entities,
+        getRandomInt(0, Math.min(itemModifiersRegistry.entities.length, 6)),
+      );
+
+      mods.forEach((mod) => {
+        const { mods } = mod.generateStats({ item: slot.item });
+        slot.item.modifiersList.push({ itemModifier: mod, mods });
+        slot.item.mods.addMods(mods);
+      });
+    });
+
+    this.shopArea.getSlotsWithItems().forEach((slot) => {
+      console.log('----');
+      console.log(slot.item.base.name, slot.item.mods.getAllCombinedValues());
+      slot.item.modifiersList.getValue().forEach(({ itemModifier, mods }) => {
+        console.log(itemModifier.title, mods, itemModifier.getDescription({ item: slot.item }));
+      });
     });
   }
 

@@ -5,6 +5,20 @@ export interface ModifiersModel {
   fireResist: number;
   coldResist: number;
   lightningResist: number;
+  magicResist: number;
+
+  allResist: number;
+
+  lifeLeach: number;
+  manaLeach: number;
+
+  defence: number;
+  minDamage: number;
+  maxDamage: number;
+  enhancedDamage: number;
+
+  health: number;
+  mana: number;
 }
 
 export type Modifiers = Partial<Readonly<ModifiersModel>>;
