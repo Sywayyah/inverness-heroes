@@ -40,8 +40,19 @@
         @let battleActions = char.battleActions$ | async;
 
         <div class="actions">
-          @for (action of battleActions?.itemActions; track $index) {
-            <div class="action">{{ action.item.base.name }} - {{ action.action.name }}</div>
+          @for (action of battleActions?.battleActions; track $index) {
+            @switch (action.type) {
+              @case ('char') {
+                <div class="action">
+                  {{ char.params.base.name }} - {{ action.params.activity.name }}
+                </div>
+              }
+              @case ('item') {
+                <div class="action">
+                  {{ action.params.item.base.name }} - {{ action.params.action.name }}
+                </div>
+              }
+            }
           }
         </div>
       }

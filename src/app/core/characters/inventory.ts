@@ -26,6 +26,10 @@ export class Inventory {
     return [...this.itemsSet];
   }
 
+  getItemsCount(): number {
+    return this.getItems().length;
+  }
+
   // adds item to first empty slot
   addItem(item: Item): void {
     if (this.itemsSet.has(item)) {

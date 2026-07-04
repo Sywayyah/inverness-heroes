@@ -10,8 +10,9 @@ import {
 import { Item, ItemBaseAction } from '../items';
 import { Modifiers } from '../modifiers';
 import { EntityRegistry } from '../registries';
-import { getNRandomItems } from '../utils/common';
+import { getNRandomItems, getNRandomUniqueItems, getRandomInt } from '../utils/common';
 import { Inventory } from './inventory';
+import { MappedRecordTypes } from '../types/mappings';
 
 export enum CharType {
   Playable,
@@ -196,6 +197,13 @@ export interface ItemAction {
   readonly actions: ItemBaseAction[];
 }
 
+interface CharBattleActions {
+  readonly char: { readonly activity: CharActivity };
+  readonly item: { readonly item: Item; readonly action: ItemBaseAction };
+}
+
+export type CharBattleAction = MappedRecordTypes<CharBattleActions>;
+
 export class Character {
   readonly stateSubject$ = new BehaviorSubject({
     maxHealth: 0,
@@ -214,9 +222,9 @@ export class Character {
   readonly inventory: Inventory;
 
   readonly battleActions$ = new BehaviorSubject<{
-    itemActions: { item: Item; action: ItemBaseAction }[];
+    battleActions: CharBattleAction[];
   }>({
-    itemActions: [],
+    battleActions: [],
   });
 
   constructor(readonly params: { readonly base: CharacterBase }) {
@@ -245,6 +253,22 @@ export class Character {
     );
 
     const randomItemActions = getNRandomItems(itemActions, 5);
-    this.battleActions$.next({ itemActions: randomItemActions });
+
+    const charActivities = this.params.base.baseActivities;
+
+    const randomCharActivities = getNRandomItems(charActivities, getRandomInt(2, 4));
+
+    const finalList: CharBattleAction[] = [
+      ...randomItemActions.map((itemAction): CharBattleAction => ({
+        type: 'item',
+        params: itemAction,
+      })),
+      ...randomCharActivities.map((charActivity): CharBattleAction => ({
+        type: 'char',
+        params: { activity: charActivity },
+      })),
+    ];
+
+    this.battleActions$.next({ battleActions: getNRandomUniqueItems(finalList, 6) });
   }
 }

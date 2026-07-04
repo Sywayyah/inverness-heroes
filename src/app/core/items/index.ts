@@ -20,7 +20,7 @@ export enum WeaponType {
 }
 
 export interface ItemActionStats {
-  readonly baseTime: { readonly min: number; readonly max: number };
+
 }
 
 export interface ItemBaseAction {
@@ -55,13 +55,13 @@ itemsRegistry.register({
   actions: [
     {
       name: 'Heavy Slash',
-      getStats: ({ owner }) => ({ baseTime: { min: 1000, max: 1400 } }),
+      getStats: ({ owner }) => ({  }),
       onActionPerformed: () => {},
       sources: [LeftHandActivitySource, RightHandActivitySource, BothHandsActivitySource],
     },
     {
       name: 'Light Slash',
-      getStats: ({ owner }) => ({ baseTime: { min: 350, max: 500 } }),
+      getStats: ({ owner }) => ({  }),
       onActionPerformed: () => {},
       sources: [LeftHandActivitySource, RightHandActivitySource, BothHandsActivitySource],
     },
