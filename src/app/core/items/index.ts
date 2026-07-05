@@ -1,20 +1,24 @@
 import { BehaviorSubject } from 'rxjs';
 import { ActivitySource, BothHandsActivitySource, OneHandActivitySource } from '../activities';
 import { Character } from '../characters';
+import { Modifiers } from '../modifiers';
+import { ModGroup } from '../modifiers/mod-group';
 import { Player } from '../player';
+import { ReactiveList } from '../reactive/reactive-list';
 import { EntityRegistry } from '../registries';
 import { RangedNumber, rollRangedValue } from '../types/ranged';
-import { ModGroup } from '../modifiers/mod-group';
-import { Modifiers } from '../modifiers';
-import { ReactiveList } from '../reactive/reactive-list';
 import { ItemModifiers } from './item-modifiers';
 
 export enum WeaponType {
   Weapon = 'weapon',
+
   Head = 'head-armor',
   Body = 'body-armor',
-  Shield = 'shield',
   Boots = 'boots',
+  Gloves = 'gloves',
+
+  Shield = 'shield',
+
   Charm = 'charm',
 }
 
@@ -76,6 +80,19 @@ itemsRegistry.register({
   actions: [
     {
       name: 'Shield Strike',
+      sources: [OneHandActivitySource, BothHandsActivitySource],
+    },
+  ],
+});
+
+itemsRegistry.register({
+  id: 'crossbow',
+  durability: [23, 26],
+  name: 'Crossbow',
+  type: WeaponType.Weapon,
+  actions: [
+    {
+      name: 'Shoot',
       sources: [OneHandActivitySource, BothHandsActivitySource],
     },
   ],
