@@ -27,8 +27,8 @@ itemModifiersRegistry.register({
 
   stats: { mana: rangedNumber(2, 6) },
 
-  getDescription(): string {
-    return `Mana: ${formattedRangedNumber(this.stats.mana)}`;
+  getDescription(params): string {
+    return getItemStatsLines(params, [{ stat: 'mana', ranged: this.stats.mana }]);
   },
   generateStats(item): GeneratedItemStats {
     return { mods: { mana: rollRangedNumber(this.stats.mana) } };

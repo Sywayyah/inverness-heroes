@@ -3,7 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { InventorySlot } from '../../core/characters/inventory';
 import { Item, itemsRegistry } from '../../core/items';
 import { ShopArea, ShopSlotItem } from '../../core/shop/shop-area';
-import { getNRandomUniqueItems, getRandomInt } from '../../core/utils/common';
+import { getNRandomItems, getNRandomUniqueItems, getRandomInt } from '../../core/utils/common';
 import { GameStateService } from '../../services/game-state.service';
 import { View, ViewsService } from '../../services/views.service';
 import { itemModifiersRegistry } from '../../core/items/item-modifiers';
@@ -45,6 +45,13 @@ export class Shop {
     this.shopArea.addItem({
       goldCost: 6,
       item: new Item({ ownerChar, base: itemsRegistry.getEntityById('shield') }),
+    });
+
+    getNRandomItems(itemsRegistry.entities, getRandomInt(1, 5)).forEach((itemBase) => {
+      this.shopArea.addItem({
+        goldCost: getRandomInt(5, 12),
+        item: new Item({ ownerChar, base: itemBase }),
+      });
     });
 
     this.shopArea.getSlotsWithItems().forEach((slot) => {

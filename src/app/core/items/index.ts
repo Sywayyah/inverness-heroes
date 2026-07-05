@@ -199,4 +199,16 @@ export class Item {
       maxDurability: durability,
     });
   }
+
+  getDescription(): string {
+    return [
+      `${this.base.name}`,
+      `Type: ${this.base.type}`,
+
+      this.modifiersList
+        .getValue()
+        .map((modItem) => modItem.itemModifier.getDescription({ item: this, mods: modItem.mods }))
+        .join('\n'),
+    ].join('\n');
+  }
 }

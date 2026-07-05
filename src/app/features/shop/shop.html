@@ -5,16 +5,14 @@
   {{ char.params.base.name }}
 
   <div class="inventory">
-
     @for (row of char.inventory.itemsGrid.state$ | async; track $index) {
-
       <div class="row">
         @for (item of row; track $index) {
           <div class="cell" (click)="handlePlayerSlotClicked(item)">
-            @let slot = item.slot$ | async;
+            @let slotItem = item.slot$ | async;
 
-            @if (slot) {
-              {{ slot.params.base.name }}
+            @if (slotItem) {
+              {{ slotItem.base.name }}
             }
           </div>
         }
@@ -54,7 +52,8 @@
   @let selectedShopItem = activeShopItem();
   @if (selectedShopItem) {
     <div class="item">
-      {{ selectedShopItem.item.params.base.name }}
+      <div class="item-description">{{ selectedShopItem.item.getDescription() }}</div>
+
       Cost: {{ selectedShopItem.goldCost }}
     </div>
 

@@ -80,8 +80,10 @@ export function getItemStatLine({
   readonly params: ItemModifiersDescriptionParams;
   readonly ranged: RangedNumber;
 }): string {
-  const postfix = !modifiersMapping[stat]!.percent ? '%' : '';
-  return `${modifiersMapping[stat]!.label}: ${params.mods ? params.mods[stat] : ''}${postfix} [${formattedRangedNumber(ranged)}${postfix}]`;
+  const percent = modifiersMapping[stat]!.percent;
+  const postfix = typeof percent === 'undefined' || percent ? '%' : '';
+
+  return `${modifiersMapping[stat]!.label}: ${params.mods ? params.mods[stat] + postfix : ''} [${formattedRangedNumber(ranged)}${postfix}]`;
 }
 
 export function getItemStatsLines(
