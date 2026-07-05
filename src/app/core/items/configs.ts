@@ -1,9 +1,8 @@
-import { readonly } from '@angular/forms/signals';
 import { Modifiers } from '../modifiers';
 import { RangedNumber, formattedRangedNumber } from '../types/ranged';
 import { ItemModifiersDescriptionParams } from './item-modifiers';
 
-const mapping: {
+const modifiersMapping: {
   readonly [K in keyof Modifiers]: { readonly label: string; readonly percent?: boolean };
 } = {
   mana: {
@@ -81,8 +80,8 @@ export function getItemStatLine({
   readonly params: ItemModifiersDescriptionParams;
   readonly ranged: RangedNumber;
 }): string {
-  const postfix = !mapping[stat]!.percent ? '%' : '';
-  return `${mapping[stat]!.label}: ${params.mods ? params.mods[stat] : ''}${postfix} [${formattedRangedNumber(ranged)}${postfix}]`;
+  const postfix = !modifiersMapping[stat]!.percent ? '%' : '';
+  return `${modifiersMapping[stat]!.label}: ${params.mods ? params.mods[stat] : ''}${postfix} [${formattedRangedNumber(ranged)}${postfix}]`;
 }
 
 export function getItemStatsLines(

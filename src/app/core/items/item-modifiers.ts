@@ -2,7 +2,7 @@ import { Item } from '.';
 import { Modifiers } from '../modifiers';
 import { EntityRegistry } from '../registries';
 import { formattedRangedNumber, rangedNumber, rollRangedNumber } from '../types/ranged';
-import { getItemStatsLines } from './utils';
+import { getItemStatsLines } from './configs';
 
 export interface GeneratedItemStats {
   readonly mods: Modifiers;
