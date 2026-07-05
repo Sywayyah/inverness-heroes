@@ -22,8 +22,6 @@ export interface ItemActionStats {}
 
 export interface ItemBaseAction {
   readonly name: string;
-  // todo: subscribe to owner stats and update them dynamically here in method
-  getStats?(params: { readonly owner: Character }): ItemActionStats;
   onActionPerformed?(params: { readonly owner: Character; readonly enemy: Player }): void;
   onActivated?(params: { readonly ownerChar: Character; readonly enemy: Player }): void;
   onBattleInit?(params: { readonly ownerChar: Character; readonly enemy: Player }): void;
@@ -52,13 +50,11 @@ itemsRegistry.register({
   actions: [
     {
       name: 'Heavy Slash',
-      getStats: ({ owner }) => ({}),
       onActionPerformed: () => {},
       sources: [OneHandActivitySource, BothHandsActivitySource],
     },
     {
       name: 'Light Slash',
-      getStats: ({ owner }) => ({}),
       onActionPerformed: () => {},
       sources: [OneHandActivitySource, BothHandsActivitySource],
     },
