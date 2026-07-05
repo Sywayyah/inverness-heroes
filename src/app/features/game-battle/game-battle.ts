@@ -10,6 +10,7 @@ import { ReactiveList } from '../../core/reactive/reactive-list';
 
 class BattleAction {
   readonly performed = signal(false);
+  // todo: action level descriptions?
 
   constructor(
     readonly player: Player,

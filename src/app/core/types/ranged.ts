@@ -3,9 +3,10 @@ import { getRandomInt } from '../utils/common';
 export type RangedNumber = number | [number, number];
 
 export function rangedNumber(min: number, max?: number): RangedNumber {
-  if (typeof max === 'undefined') {
+  if (typeof max === 'undefined' || min === max) {
     return min;
   }
+
   return [min, max];
 }
 

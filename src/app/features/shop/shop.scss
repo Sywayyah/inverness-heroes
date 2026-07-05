@@ -2,6 +2,9 @@
   position: fixed;
   top: 0;
   right: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
 }
 
 .inventory {
@@ -25,6 +28,17 @@
 }
 
 .item-description {
+  display: inline-block;
   white-space: pre;
   border: 1px solid gray;
+  min-width: 300px;
+  text-align: center;
+}
+
+.actions {
+  position: fixed;
+  left: 50%;
+  translate: -50%;
+  bottom: 30px;
+
 }

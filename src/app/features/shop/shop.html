@@ -24,29 +24,37 @@
   @let selectedPlayerItem = selectedPlayerSlot?.slot$ | async;
 
   @if (selectedPlayerItem) {
-    {{ selectedPlayerItem.params.base.name }}
-    Sell for 1-5 gold
+    <div class="item-description">
+      {{ selectedPlayerItem.getDescription() }}
+    </div>
 
-    <button (click)="sellItem()">Sell</button>
+    <div>
+      Sell for 1-5 gold
+
+      <button (click)="sellItem()">Sell</button>
+    </div>
   }
 </div>
 
 <div class="shop-container">
-  Trader:
-  <div class="inventory">
-    @for (row of shopArea.itemsGrid.state$ | async; track $index) {
-      <div class="row">
-        @for (item of row; track $index) {
-          <div class="cell" (click)="activeShopItem.set(cell)">
-            @let cell = item.cell$ | async;
+  <div>
+    <div>Trader:</div>
 
-            @if (cell) {
-              {{ cell.item.params.base.name }}
-            }
-          </div>
-        }
-      </div>
-    }
+    <div class="inventory">
+      @for (row of shopArea.itemsGrid.state$ | async; track $index) {
+        <div class="row">
+          @for (item of row; track $index) {
+            <div class="cell" (click)="activeShopItem.set(cell)">
+              @let cell = item.cell$ | async;
+
+              @if (cell) {
+                {{ cell.item.params.base.name }}
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
   </div>
 
   @let selectedShopItem = activeShopItem();
@@ -54,11 +62,16 @@
     <div class="item">
       <div class="item-description">{{ selectedShopItem.item.getDescription() }}</div>
 
-      Cost: {{ selectedShopItem.goldCost }}
+      <div>
+        Cost: {{ selectedShopItem.goldCost }}
+        <button [disabled]="player.gold() < selectedShopItem.goldCost" (click)="buyItem()">
+          Buy
+        </button>
+      </div>
     </div>
-
-    <button [disabled]="player.gold() < selectedShopItem.goldCost" (click)="buyItem()">Buy</button>
   }
 </div>
 
-<button (click)="startBattle()">Start battle</button>
+<div class="actions">
+  <button (click)="startBattle()">Start battle</button>
+</div>
