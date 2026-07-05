@@ -128,7 +128,7 @@ itemsRegistry.register({
 itemsRegistry.register({
   id: 'shield',
   durability: [20, 30],
-  name: 'Shield',
+  name: 'Stout Shield',
   type: ItemBaseType.Shield,
   itemStats: {
     defence: rangedNumber(10, 13),
@@ -138,7 +138,7 @@ itemsRegistry.register({
 
   actions: [
     {
-      name: 'Shield Strike',
+      name: 'Strike',
       sources: [
         {
           source: OneHandActivitySource,

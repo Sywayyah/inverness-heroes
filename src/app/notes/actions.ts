@@ -22,4 +22,6 @@
 
   - how many action points are left by the end of the round - to enable consumable items consumption and heavy/big actions
      small actions can generate action points, power points
+
+  - items may deal elemental damage but consume mana on hit
 */
