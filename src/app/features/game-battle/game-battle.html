@@ -49,11 +49,23 @@
               @case ('char') {
                 <div class="action">
                   {{ char.params.base.name }} - {{ action.params.activity.name }}
+
+                  @let actionSource = action.params.source;
+                  @if (actionSource) {
+                    -
+                    {{ actionSource.name }}
+                  }
                 </div>
               }
               @case ('item') {
                 <div class="action">
                   {{ action.params.item.base.name }} - {{ action.params.action.name }}
+
+                  @let actionSource = action.params.source;
+                  @if (actionSource) {
+                    -
+                    {{ actionSource.name }}
+                  }
                 </div>
               }
             }

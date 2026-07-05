@@ -11,7 +11,12 @@ import { Item, ItemBaseAction } from '../items';
 import { Modifiers } from '../modifiers';
 import { EntityRegistry } from '../registries';
 import { MappedRecordTypes } from '../types/mappings';
-import { getNRandomItems, getNRandomUniqueItems, getRandomInt } from '../utils/common';
+import {
+  getNRandomItems,
+  getNRandomUniqueItems,
+  getRandomInt,
+  getRandomItem,
+} from '../utils/common';
 import { Inventory } from './inventory';
 
 export enum CharType {
@@ -228,8 +233,12 @@ export interface ItemAction {
 }
 
 interface CharBattleActions {
-  readonly char: { readonly activity: CharActivity };
-  readonly item: { readonly item: Item; readonly action: ItemBaseAction };
+  readonly char: { readonly activity: CharActivity; readonly source?: ActivitySource };
+  readonly item: {
+    readonly item: Item;
+    readonly action: ItemBaseAction;
+    readonly source?: ActivitySource;
+  };
 }
 
 export type CharBattleAction = MappedRecordTypes<CharBattleActions>;
@@ -301,11 +310,11 @@ export class Character {
     const finalList: CharBattleAction[] = [
       ...randomItemActions.map((itemAction): CharBattleAction => ({
         type: 'item',
-        params: itemAction,
+        params: { ...itemAction, source: getRandomItem(itemAction.action.sources ?? []) },
       })),
       ...randomCharActivities.map((charActivity): CharBattleAction => ({
         type: 'char',
-        params: { activity: charActivity },
+        params: { activity: charActivity, source: getRandomItem(charActivity.sources ?? []) },
       })),
     ];
 
