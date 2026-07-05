@@ -40,11 +40,11 @@ const modifiersMapping: {
     label: 'Gold Gained',
   },
 
-  lifeLeech: {
-    label: 'Life Leech',
+  lifeSteal: {
+    label: 'Life Steal',
   },
-  manaLeech: {
-    label: 'Mana Leech',
+  manaSteal: {
+    label: 'Mana Steal',
   },
 
   allResist: {

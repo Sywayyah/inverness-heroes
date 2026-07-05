@@ -72,16 +72,16 @@ itemModifiersRegistry.register({
 
   getDescription(params): string {
     return getItemStatsLines(params, [
-      { stat: 'lifeLeech', ranged: this.stats.lifeLeach },
-      { stat: 'manaLeech', ranged: this.stats.manaLeach },
+      { stat: 'lifeSteal', ranged: this.stats.lifeLeach },
+      { stat: 'manaSteal', ranged: this.stats.manaLeach },
       { stat: 'allResist', ranged: this.stats.allResists },
     ]);
   },
   generateStats(params): GeneratedItemStats {
     return {
       mods: {
-        lifeLeech: rollRangedNumber(this.stats.lifeLeach),
-        manaLeech: rollRangedNumber(this.stats.manaLeach),
+        lifeSteal: rollRangedNumber(this.stats.lifeLeach),
+        manaSteal: rollRangedNumber(this.stats.manaLeach),
         allResist: rollRangedNumber(this.stats.allResists),
       },
     };
