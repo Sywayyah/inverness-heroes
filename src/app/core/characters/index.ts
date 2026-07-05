@@ -1,3 +1,4 @@
+import { signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import {
   ActivitySource,
@@ -12,7 +13,6 @@ import { EntityRegistry } from '../registries';
 import { MappedRecordTypes } from '../types/mappings';
 import { getNRandomItems, getNRandomUniqueItems, getRandomInt } from '../utils/common';
 import { Inventory } from './inventory';
-import { signal } from '@angular/core';
 
 export enum CharType {
   Playable,
@@ -127,6 +127,37 @@ charsRegistry.register({
     intelligence: 2,
     strength: 3,
     vitality: 3,
+  },
+
+  baseValues: {
+    health: 55,
+    mana: 13,
+  },
+
+  inventoryBase: {
+    height: 2,
+    width: 6,
+  },
+
+  baseActivities: [
+    { name: 'Punch', sources: [OneHandActivitySource] },
+    { name: 'Kick', sources: [LegActivitySource] },
+  ],
+
+  activitySources: HumanActivitySources,
+});
+
+charsRegistry.register({
+  id: 'char-ranger',
+  name: 'Ranger',
+  description: `Ranger uses wide variety of ranged weapons to shoot enemies down`,
+  type: CharType.Playable,
+
+  baseStats: {
+    agility: 4,
+    intelligence: 2,
+    strength: 2,
+    vitality: 2,
   },
 
   baseValues: {
