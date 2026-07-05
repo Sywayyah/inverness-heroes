@@ -99,3 +99,17 @@ export function getRandomItem<T>(arr: T[]): T {
 
   return arr[getRandomInt(0, arr.length - 1)];
 }
+
+export function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = getRandomInt(0, i);
+
+    const temp = shuffled[i];
+    shuffled[i] = shuffled[j];
+    shuffled[j] = temp;
+  }
+
+  return shuffled;
+}

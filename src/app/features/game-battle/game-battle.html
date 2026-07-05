@@ -65,5 +65,46 @@
 </div>
 
 <div class="battle-panel">
-  <button (click)="beginFight()">Begin fight</button>
+  <div class="history">
+    @for (entry of history.value$ | async; track $index) {
+      <div class="entry">
+        {{ entry }}
+      </div>
+    }
+  </div>
+
+  <div class="round-info">
+    @if (round() === 0) {
+      Begin the fight
+    } @else {
+      Round {{ round() }}
+    }
+  </div>
+
+  <div class="battle-actions">
+    @for (action of battleActions(); track $index) {
+      <div class="battle-action" [style.background-color]="action.player.color()">
+        {{ action.player.name() }} - {{ action.char.base.name }}
+        <hr />
+        @switch (action.activity.type) {
+          @case ('char') {
+            {{ action.activity.params.activity.name }}
+          }
+          @case ('item') {
+            {{ action.activity.params.item.base.name }}
+            {{ action.activity.params.action.name }}
+          }
+        }
+
+        @if (action.performed()) {
+          <hr />
+          Performed
+        }
+      </div>
+    }
+  </div>
+
+  <button (click)="beginFight()" [disabled]="isFightInProgress()">
+    {{ !isFightInProgress() ? 'Begin fight' : 'Wait' }}
+  </button>
 </div>

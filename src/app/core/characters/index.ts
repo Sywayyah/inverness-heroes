@@ -228,6 +228,10 @@ export class Character {
 
   readonly rerollsLeft = signal(1);
 
+  get base(): CharacterBase {
+    return this.params.base;
+  }
+
   constructor(readonly params: { readonly base: CharacterBase }) {
     const health = params.base.baseValues.health;
     const mana = params.base.baseValues.mana ?? 0;

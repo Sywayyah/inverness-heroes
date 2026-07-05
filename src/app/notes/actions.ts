@@ -17,4 +17,6 @@
   additional states could be achieved with correctly inputting complex combinations
 
   add ability to reroll (specific or all, different characters may have different roll caps)
+
+  - actions picking before new round - stamina cost (heavy slash may require more stamina, hence, can be used less often)
 */

@@ -3,8 +3,8 @@ import { Player } from '../core/player';
 
 @Service()
 export class GameStateService {
-  readonly mainPlayer = new Player();
-  readonly neutralPlayer = new Player();
+  readonly mainPlayer = new Player({ defaultName: 'Player', color: '#ff000069' });
+  readonly neutralPlayer = new Player({ defaultName: 'Neutral', color: '#80808080' });
 
   readonly players = [this.mainPlayer, this.neutralPlayer];
 

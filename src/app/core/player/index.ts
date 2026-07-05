@@ -6,4 +6,12 @@ export class Player {
   readonly gold = signal(0);
 
   readonly chars = new BehaviorSubject<Character[]>([]);
+
+  readonly name = signal('');
+  readonly color = signal('');
+
+  constructor(readonly params: { readonly defaultName: string; readonly color: string }) {
+    this.name.set(params.defaultName);
+    this.color.set(params.color);
+  }
 }
