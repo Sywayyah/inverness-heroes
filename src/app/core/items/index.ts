@@ -1,12 +1,11 @@
 import { BehaviorSubject } from 'rxjs';
-import { ActivitySource, BothHandsActivitySource, OneHandActivitySource } from '../activities';
+import { BaseAction, BothHandsActivitySource, OneHandActivitySource } from '../activities';
 import { Character } from '../characters';
 import { Modifiers } from '../modifiers';
 import { ModGroup } from '../modifiers/mod-group';
-import { Player } from '../player';
 import { ReactiveList } from '../reactive/reactive-list';
 import { EntityRegistry } from '../registries';
-import { RangedNumber, rollRangedValue } from '../types/ranged';
+import { RangedNumber, rangedNumber, rollRangedNumber } from '../types/ranged';
 import { ItemModifiers } from './item-modifiers';
 
 export enum WeaponType {
@@ -22,16 +21,14 @@ export enum WeaponType {
   Charm = 'charm',
 }
 
-export interface ItemActionStats {}
-
-export interface ItemBaseAction {
-  readonly name: string;
-  onActionPerformed?(params: { readonly owner: Character; readonly enemy: Player }): void;
-  onActivated?(params: { readonly ownerChar: Character; readonly enemy: Player }): void;
-  onBattleInit?(params: { readonly ownerChar: Character; readonly enemy: Player }): void;
-  readonly activatable?: boolean;
-  readonly sources?: ActivitySource[];
+export interface ItemBaseStatsModel {
+  minDamage: RangedNumber;
+  maxDamage: RangedNumber;
+  defence: RangedNumber;
+  accuracy: RangedNumber;
 }
+
+export type ItemBaseStats = Partial<Readonly<ItemBaseStatsModel>>;
 
 export interface ItemBase {
   readonly id: string;
@@ -40,27 +37,63 @@ export interface ItemBase {
   readonly type: WeaponType;
   // if not specified - item never breaks
   readonly durability?: RangedNumber;
+  readonly itemStats?: ItemBaseStats;
 
-  readonly actions?: ItemBaseAction[];
+  readonly actions?: BaseAction[];
 }
 
 export const itemsRegistry = new EntityRegistry<ItemBase>({ name: 'Items' });
 
 itemsRegistry.register({
-  id: 'iron-sword',
-  name: 'Iron Sword',
+  id: 'two-handed-sword',
+  name: 'Two-Handed Sword',
   type: WeaponType.Weapon,
   durability: [25, 30],
+  itemStats: {
+    minDamage: rangedNumber(9, 11),
+    maxDamage: rangedNumber(13, 15),
+    accuracy: rangedNumber(25),
+  },
   actions: [
     {
       name: 'Heavy Slash',
       onActionPerformed: () => {},
-      sources: [OneHandActivitySource, BothHandsActivitySource],
+      sources: [
+        {
+          source: OneHandActivitySource,
+          stats: {
+            minDamage: rangedNumber(10, 12),
+            maxDamage: rangedNumber(13, 15),
+            accuracy: rangedNumber(15, 30),
+          },
+        },
+        {
+          source: BothHandsActivitySource,
+          stats: {
+            minDamage: rangedNumber(18),
+            maxDamage: rangedNumber(23),
+            accuracy: rangedNumber(30, 35),
+          },
+        },
+      ],
     },
     {
       name: 'Light Slash',
       onActionPerformed: () => {},
-      sources: [OneHandActivitySource, BothHandsActivitySource],
+      sources: [
+        {
+          source: OneHandActivitySource,
+          stats: {
+            accuracy: rangedNumber(27, 33),
+          },
+        },
+        {
+          source: BothHandsActivitySource,
+          stats: {
+            accuracy: rangedNumber(36, 45),
+          },
+        },
+      ],
     },
   ],
 });
@@ -70,6 +103,9 @@ itemsRegistry.register({
   durability: [20, 30],
   name: 'Iron Helm',
   type: WeaponType.Head,
+  itemStats: {
+    defence: rangedNumber(6, 10),
+  },
 });
 
 itemsRegistry.register({
@@ -77,10 +113,26 @@ itemsRegistry.register({
   durability: [20, 30],
   name: 'Shield',
   type: WeaponType.Shield,
+  itemStats: {
+    defence: rangedNumber(10, 13),
+  },
   actions: [
     {
       name: 'Shield Strike',
-      sources: [OneHandActivitySource, BothHandsActivitySource],
+      sources: [
+        {
+          source: OneHandActivitySource,
+          stats: {
+            accuracy: rangedNumber(20, 25),
+          },
+        },
+        {
+          source: BothHandsActivitySource,
+          stats: {
+            accuracy: rangedNumber(30, 35),
+          },
+        },
+      ],
     },
   ],
 });
@@ -90,10 +142,27 @@ itemsRegistry.register({
   durability: [23, 26],
   name: 'Crossbow',
   type: WeaponType.Weapon,
+  itemStats: {
+    minDamage: rangedNumber(10),
+    maxDamage: rangedNumber(16),
+  },
   actions: [
     {
       name: 'Shoot',
-      sources: [OneHandActivitySource, BothHandsActivitySource],
+      sources: [
+        {
+          source: OneHandActivitySource,
+          stats: {
+            accuracy: rangedNumber(15, 20),
+          },
+        },
+        {
+          source: BothHandsActivitySource,
+          stats: {
+            accuracy: rangedNumber(30, 35),
+          },
+        },
+      ],
     },
   ],
 });
@@ -123,7 +192,7 @@ export class Item {
   }
 
   constructor(readonly params: { readonly base: ItemBase; readonly ownerChar: Character }) {
-    const durability = params.base.durability ? rollRangedValue(params.base.durability) : Infinity;
+    const durability = params.base.durability ? rollRangedNumber(params.base.durability) : Infinity;
     this.stateSubject$ = new BehaviorSubject<ItemState>({
       ownerCharacter: params.ownerChar,
       durability: durability,

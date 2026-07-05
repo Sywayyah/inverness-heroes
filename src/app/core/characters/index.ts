@@ -1,16 +1,19 @@
 import { signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import {
+  Activity,
   ActivitySource,
+  BaseAction,
   BothHandsActivitySource,
   LegActivitySource,
   MouthActivitySource,
   OneHandActivitySource,
 } from '../activities';
-import { Item, ItemBaseAction } from '../items';
+import { Item } from '../items';
 import { Modifiers } from '../modifiers';
 import { EntityRegistry } from '../registries';
 import { MappedRecordTypes } from '../types/mappings';
+import { rangedNumber } from '../types/ranged';
 import {
   getNRandomItems,
   getNRandomUniqueItems,
@@ -54,12 +57,7 @@ export interface CharacterBase {
 
   readonly activitySources: ActivitySource[];
 
-  readonly baseActivities: CharActivity[];
-}
-
-export interface CharActivity {
-  readonly name: string;
-  readonly sources?: ActivitySource[];
+  readonly baseActivities: BaseAction[];
 }
 
 export const charsRegistry = new EntityRegistry<CharacterBase>({ name: 'Characters' });
@@ -89,8 +87,24 @@ charsRegistry.register({
   },
 
   baseActivities: [
-    { name: 'Punch', sources: [OneHandActivitySource] },
-    { name: 'Kick', sources: [LegActivitySource] },
+    {
+      name: 'Punch',
+      sources: [
+        {
+          source: OneHandActivitySource,
+          stats: { minDamage: 3, maxDamage: 5, accuracy: rangedNumber(25, 40) },
+        },
+      ],
+    },
+    {
+      name: 'Kick',
+      sources: [
+        {
+          source: LegActivitySource,
+          stats: { minDamage: 5, maxDamage: 8, accuracy: rangedNumber(30, 45) },
+        },
+      ],
+    },
   ],
 
   activitySources: HumanActivitySources,
@@ -114,8 +128,16 @@ charsRegistry.register({
   },
 
   baseActivities: [
-    { name: 'Punch', sources: [OneHandActivitySource] },
-    { name: 'Prayer', sources: [MouthActivitySource] },
+    {
+      name: 'Punch',
+      sources: [
+        {
+          source: OneHandActivitySource,
+          stats: { minDamage: 4, maxDamage: 9, accuracy: rangedNumber(30, 40) },
+        },
+      ],
+    },
+    { name: 'Prayer', sources: [{ source: MouthActivitySource }] },
   ],
 
   activitySources: HumanActivitySources,
@@ -145,8 +167,24 @@ charsRegistry.register({
   },
 
   baseActivities: [
-    { name: 'Punch', sources: [OneHandActivitySource] },
-    { name: 'Kick', sources: [LegActivitySource] },
+    {
+      name: 'Punch',
+      sources: [
+        {
+          source: OneHandActivitySource,
+          stats: { minDamage: 4, maxDamage: 7, accuracy: rangedNumber(35, 45) },
+        },
+      ],
+    },
+    {
+      name: 'Kick',
+      sources: [
+        {
+          source: LegActivitySource,
+          stats: { minDamage: 6, maxDamage: 8, accuracy: rangedNumber(40, 45) },
+        },
+      ],
+    },
   ],
 
   activitySources: HumanActivitySources,
@@ -176,8 +214,24 @@ charsRegistry.register({
   },
 
   baseActivities: [
-    { name: 'Punch', sources: [OneHandActivitySource] },
-    { name: 'Kick', sources: [LegActivitySource] },
+    {
+      name: 'Punch',
+      sources: [
+        {
+          source: OneHandActivitySource,
+          stats: { minDamage: 3, maxDamage: 4, accuracy: rangedNumber(20, 25) },
+        },
+      ],
+    },
+    {
+      name: 'Kick',
+      sources: [
+        {
+          source: LegActivitySource,
+          stats: { minDamage: 3, maxDamage: 6, accuracy: rangedNumber(25, 30) },
+        },
+      ],
+    },
   ],
 
   activitySources: HumanActivitySources,
@@ -201,7 +255,16 @@ charsRegistry.register({
     { name: 'Bite' },
     {
       name: 'Punch',
-      sources: [OneHandActivitySource, BothHandsActivitySource],
+      sources: [
+        {
+          source: OneHandActivitySource,
+          stats: { minDamage: 3, maxDamage: 5, accuracy: rangedNumber(10, 20) },
+        },
+        {
+          source: BothHandsActivitySource,
+          stats: { minDamage: 4, maxDamage: 7, accuracy: rangedNumber(15, 25) },
+        },
+      ],
     },
   ],
 
@@ -222,22 +285,27 @@ charsRegistry.register({
   },
   description: 'A common undead enemy without any outstanding stats',
 
-  baseActivities: [{ name: 'Punch', sources: [OneHandActivitySource] }],
+  baseActivities: [
+    {
+      name: 'Punch',
+      sources: [
+        {
+          source: OneHandActivitySource,
+          stats: { minDamage: 3, maxDamage: 6, accuracy: rangedNumber(30, 35) },
+        },
+      ],
+    },
+  ],
 
   activitySources: HumanActivitySources,
 });
 
-export interface ItemAction {
-  readonly item: Item;
-  readonly actions: ItemBaseAction[];
-}
-
 interface CharBattleActions {
-  readonly char: { readonly activity: CharActivity; readonly source?: ActivitySource };
+  readonly char: { readonly activity: BaseAction; readonly source?: Activity };
   readonly item: {
     readonly item: Item;
-    readonly action: ItemBaseAction;
-    readonly source?: ActivitySource;
+    readonly action: BaseAction;
+    readonly source?: Activity;
   };
 }
 

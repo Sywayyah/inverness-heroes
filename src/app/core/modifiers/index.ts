@@ -19,6 +19,11 @@ export interface ModifiersModel {
 
   health: number;
   mana: number;
+
+  accuracy: number;
+
+  criticalStrikeChance: number;
+  criticalDamageMultiplier: number;
 }
 
 export type Modifiers = Partial<Readonly<ModifiersModel>>;

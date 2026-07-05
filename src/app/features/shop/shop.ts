@@ -29,7 +29,7 @@ export class Shop {
 
     this.shopArea.addItem({
       goldCost: 10,
-      item: new Item({ base: itemsRegistry.getEntityById('iron-sword'), ownerChar: ownerChar }),
+      item: new Item({ base: itemsRegistry.getEntityById('two-handed-sword'), ownerChar: ownerChar }),
     });
     this.shopArea.addItem({
       goldCost: 8,
