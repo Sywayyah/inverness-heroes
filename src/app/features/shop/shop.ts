@@ -29,7 +29,10 @@ export class Shop {
 
     this.shopArea.addItem({
       goldCost: 10,
-      item: new Item({ base: itemsRegistry.getEntityById('two-handed-sword'), ownerChar: ownerChar }),
+      item: new Item({
+        base: itemsRegistry.getEntityById('two-handed-sword'),
+        ownerChar: ownerChar,
+      }),
     });
     this.shopArea.addItem({
       goldCost: 8,
@@ -61,7 +64,11 @@ export class Shop {
       console.log('----');
       console.log(slot.item.base.name, slot.item.mods.getAllCombinedValues());
       slot.item.modifiersList.getValue().forEach(({ itemModifier, mods }) => {
-        console.log(itemModifier.title, mods, itemModifier.getDescription({ item: slot.item }));
+        console.log(
+          itemModifier.title,
+          mods,
+          itemModifier.getDescription({ item: slot.item, mods: mods }),
+        );
       });
     });
   }

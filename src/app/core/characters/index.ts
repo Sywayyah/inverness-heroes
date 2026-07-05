@@ -4,7 +4,7 @@ import {
   Activity,
   ActivitySource,
   BaseAction,
-  BothHandsActivitySource,
+  TwoHandsActivitySource,
   LegActivitySource,
   MouthActivitySource,
   OneHandActivitySource,
@@ -64,7 +64,7 @@ export const charsRegistry = new EntityRegistry<CharacterBase>({ name: 'Characte
 
 const HumanActivitySources: ActivitySource[] = [
   OneHandActivitySource,
-  BothHandsActivitySource,
+  TwoHandsActivitySource,
   MouthActivitySource,
   LegActivitySource,
 ];
@@ -261,7 +261,7 @@ charsRegistry.register({
           stats: { minDamage: 3, maxDamage: 5, accuracy: rangedNumber(10, 20) },
         },
         {
-          source: BothHandsActivitySource,
+          source: TwoHandsActivitySource,
           stats: { minDamage: 4, maxDamage: 7, accuracy: rangedNumber(15, 25) },
         },
       ],

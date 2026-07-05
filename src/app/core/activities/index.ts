@@ -7,13 +7,13 @@ export interface ActivitySource {
 }
 
 export const OneHandActivitySource: ActivitySource = {
-  name: 'One Hand',
-  shortName: 'OH',
+  name: 'Hand',
+  shortName: 'H',
 };
 
-export const BothHandsActivitySource: ActivitySource = {
-  name: 'Both Hands',
-  shortName: 'BH',
+export const TwoHandsActivitySource: ActivitySource = {
+  name: 'Two Hands',
+  shortName: 'TH',
 };
 
 export const LegActivitySource: ActivitySource = {

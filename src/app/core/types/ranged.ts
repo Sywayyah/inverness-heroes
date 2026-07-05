@@ -20,7 +20,7 @@ export function rollRangedNumber(val: RangedNumber): number {
 export function formattedRangedNumber(rangedValue: RangedNumber): string {
   if (Array.isArray(rangedValue)) {
     if (rangedValue[0] !== rangedValue[1]) {
-      return `${rangedValue[0]}-${rangedValue[1]}`;
+      return `${rangedValue[0]}…${rangedValue[1]}`;
     } else {
       return String(rangedValue[0]);
     }

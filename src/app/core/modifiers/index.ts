@@ -9,8 +9,8 @@ export interface ModifiersModel {
 
   allResist: number;
 
-  lifeLeach: number;
-  manaLeach: number;
+  lifeLeech: number;
+  manaLeech: number;
 
   defence: number;
   minDamage: number;

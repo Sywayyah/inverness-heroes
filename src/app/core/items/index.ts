@@ -1,5 +1,5 @@
 import { BehaviorSubject } from 'rxjs';
-import { BaseAction, BothHandsActivitySource, OneHandActivitySource } from '../activities';
+import { BaseAction, TwoHandsActivitySource, OneHandActivitySource } from '../activities';
 import { Character } from '../characters';
 import { Modifiers } from '../modifiers';
 import { ModGroup } from '../modifiers/mod-group';
@@ -68,7 +68,7 @@ itemsRegistry.register({
           },
         },
         {
-          source: BothHandsActivitySource,
+          source: TwoHandsActivitySource,
           stats: {
             minDamage: rangedNumber(18),
             maxDamage: rangedNumber(23),
@@ -88,7 +88,7 @@ itemsRegistry.register({
           },
         },
         {
-          source: BothHandsActivitySource,
+          source: TwoHandsActivitySource,
           stats: {
             accuracy: rangedNumber(36, 45),
           },
@@ -127,7 +127,7 @@ itemsRegistry.register({
           },
         },
         {
-          source: BothHandsActivitySource,
+          source: TwoHandsActivitySource,
           stats: {
             accuracy: rangedNumber(30, 35),
           },
@@ -157,7 +157,7 @@ itemsRegistry.register({
           },
         },
         {
-          source: BothHandsActivitySource,
+          source: TwoHandsActivitySource,
           stats: {
             accuracy: rangedNumber(30, 35),
           },

@@ -1,20 +1,20 @@
 import { Item } from '.';
 import { Modifiers } from '../modifiers';
 import { EntityRegistry } from '../registries';
-import { formattedRangedNumber, RangedNumber, rangedNumber, rollRangedNumber } from '../types/ranged';
+import { formattedRangedNumber, rangedNumber, rollRangedNumber } from '../types/ranged';
+import { getItemStatsLines } from './utils';
 
-interface GeneratedItemStats {
+export interface GeneratedItemStats {
   readonly mods: Modifiers;
 }
 
-type GenerateItemModsParams = { readonly item: Item };
+export type GenerateItemModsParams = { readonly item: Item };
 
-type ItemModifiersDescriptionParams = { readonly item?: Item };
+export type ItemModifiersDescriptionParams = { readonly item?: Item; readonly mods?: Modifiers };
 
 export interface ItemModifiers {
   readonly id: string;
   readonly title: string;
-  readonly itemLevel: RangedNumber;
   generateStats(params: GenerateItemModsParams): GeneratedItemStats;
   getDescription(params: ItemModifiersDescriptionParams): string;
 }
@@ -24,7 +24,6 @@ export const itemModifiersRegistry = new EntityRegistry<ItemModifiers>({ name: '
 itemModifiersRegistry.register({
   id: 'armor-apprentice',
   title: 'Apprentice',
-  itemLevel: [1, 10],
 
   stats: { mana: rangedNumber(2, 6) },
 
@@ -39,14 +38,22 @@ itemModifiersRegistry.register({
 itemModifiersRegistry.register({
   id: 'weapon-sharpness',
   title: 'Sharpness',
-  itemLevel: [1, 10],
 
   stats: {
     enhancedDamage: rangedNumber(10, 40),
+    labels: {
+      10: 'Sharpness',
+      30: 'Serrated Sharpness',
+      50: 'Unholy Sharpness',
+      80: 'Infernal Sharpness',
+      100: 'Absolute Sharpness',
+    },
   },
 
-  getDescription(item): string {
-    return `Enhanced Damage: ${formattedRangedNumber(this.stats.enhancedDamage)}%`;
+  getDescription(params): string {
+    return getItemStatsLines(params, [
+      { stat: 'enhancedDamage', ranged: this.stats.enhancedDamage },
+    ]);
   },
   generateStats(item): GeneratedItemStats {
     return { mods: { enhancedDamage: rollRangedNumber(this.stats.enhancedDamage) } };
@@ -56,28 +63,35 @@ itemModifiersRegistry.register({
 itemModifiersRegistry.register({
   id: 'weapon-bat-form',
   title: 'Batform',
-  itemLevel: [1, 15],
 
   stats: {
     lifeLeach: rangedNumber(1, 3),
     manaLeach: rangedNumber(1, 3),
-    allResists: rangedNumber(-10, -10),
+    allResists: rangedNumber(-10, -15),
   },
 
   getDescription(params): string {
-    return [
-      `Life Leach: ${formattedRangedNumber(this.stats.lifeLeach)}%`,
-      `Mana Leach: ${formattedRangedNumber(this.stats.manaLeach)}%`,
-      `All Resists: ${formattedRangedNumber(this.stats.allResists)}%`,
-    ].join('\n');
+    return getItemStatsLines(params, [
+      { stat: 'lifeLeech', ranged: this.stats.lifeLeach },
+      { stat: 'manaLeech', ranged: this.stats.manaLeach },
+      { stat: 'allResist', ranged: this.stats.allResists },
+    ]);
   },
   generateStats(params): GeneratedItemStats {
     return {
       mods: {
-        lifeLeach: rollRangedNumber(this.stats.lifeLeach),
-        manaLeach: rollRangedNumber(this.stats.manaLeach),
+        lifeLeech: rollRangedNumber(this.stats.lifeLeach),
+        manaLeech: rollRangedNumber(this.stats.manaLeach),
         allResist: rollRangedNumber(this.stats.allResists),
       },
     };
   },
 });
+
+/*
+  Modifiers can add activities, spells, passive effects, on attack effects, etc.
+*/
+/*
+  todo: global modifiers
+  params: function skip(), like preventDefault()
+*/
