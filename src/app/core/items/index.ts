@@ -12,6 +12,7 @@ import {
   rollRangedNumber,
 } from '../types/ranged';
 import { ItemModifiers } from './item-modifiers';
+import { signal } from '@angular/core';
 
 export enum ItemBaseType {
   Weapon = 'weapon',
@@ -24,6 +25,8 @@ export enum ItemBaseType {
   Shield = 'shield',
 
   Charm = 'charm',
+  Ring = 'ring',
+  Amulet = 'amulet',
 }
 
 export interface ItemBaseStatsModel {
@@ -44,6 +47,10 @@ export interface ItemBase {
   readonly durability?: RangedNumber;
   readonly itemStats?: ItemBaseStats;
 
+  readonly buyPrice?: RangedNumber;
+  // if not specified - about 3 times less than buy price
+  readonly sellPrice?: RangedNumber;
+
   readonly actions?: BaseAction[];
 }
 
@@ -53,7 +60,10 @@ itemsRegistry.register({
   id: 'two-handed-sword',
   name: 'Two-Handed Sword',
   type: ItemBaseType.Weapon,
-  durability: [25, 30],
+  durability: rangedNumber(25, 30),
+
+  basePrice: rangedNumber(25),
+
   itemStats: {
     minDamage: rangedNumber(9, 11),
     maxDamage: rangedNumber(13, 15),
@@ -111,6 +121,8 @@ itemsRegistry.register({
   itemStats: {
     defence: rangedNumber(6, 10),
   },
+
+  buyPrice: rangedNumber(10, 15),
 });
 
 itemsRegistry.register({
@@ -121,6 +133,9 @@ itemsRegistry.register({
   itemStats: {
     defence: rangedNumber(10, 13),
   },
+
+  buyPrice: rangedNumber(15, 22),
+
   actions: [
     {
       name: 'Shield Strike',
@@ -151,6 +166,9 @@ itemsRegistry.register({
     minDamage: rangedNumber(10),
     maxDamage: rangedNumber(16),
   },
+
+  buyPrice: rangedNumber(13, 20),
+
   actions: [
     {
       name: 'Shoot',
@@ -172,7 +190,13 @@ itemsRegistry.register({
   ],
 });
 
-itemsRegistry.register({ id: 'candle', name: 'Candle', type: ItemBaseType.Charm });
+itemsRegistry.register({
+  id: 'candle',
+  name: 'Candle',
+  type: ItemBaseType.Charm,
+
+  buyPrice: rangedNumber(6, 8),
+});
 
 // heavy sword: actions damage increased by strength, if strengh is high enough - can give block/uninterruptable status while swinging
 
@@ -210,6 +234,8 @@ export class Item {
     defence: 0,
   });
 
+  readonly buyPrice = signal(0);
+
   constructor(readonly params: { readonly base: ItemBase; readonly ownerChar: Character }) {
     const base = params.base;
 
@@ -228,6 +254,8 @@ export class Item {
       maxDamage: itemStats?.maxDamage ? rollRangedNumber(itemStats.maxDamage) : 0,
       defence: itemStats?.defence ? rollRangedNumber(itemStats.defence) : 0,
     });
+
+    this.buyPrice.set(rollRangedNumber(base.buyPrice ?? 10));
   }
 
   getDescription(): string {
@@ -251,13 +279,17 @@ export class Item {
     }
 
     const typeMapping: Record<ItemBaseType, string> = {
-      [ItemBaseType.Body]: 'Body Armor',
-      [ItemBaseType.Boots]: 'Boots',
-      [ItemBaseType.Charm]: 'Charm',
-      [ItemBaseType.Gloves]: 'Gloves',
       [ItemBaseType.Helm]: 'Helm',
+      [ItemBaseType.Body]: 'Body Armor',
+      [ItemBaseType.Gloves]: 'Gloves',
+      [ItemBaseType.Boots]: 'Boots',
+
       [ItemBaseType.Shield]: 'Shield',
       [ItemBaseType.Weapon]: 'Weapon',
+
+      [ItemBaseType.Charm]: 'Charm',
+      [ItemBaseType.Amulet]: 'Amulet',
+      [ItemBaseType.Ring]: 'Ring',
     };
 
     return [

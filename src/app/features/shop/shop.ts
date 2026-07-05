@@ -49,8 +49,9 @@ export class Shop {
 
     getNRandomItems(itemsRegistry.entities, getRandomInt(1, 5)).forEach((itemBase) => {
       this.shopArea.addItem({
-        goldCost: getRandomInt(5, 12),
         item: new Item({ ownerChar, base: itemBase }),
+        //
+        goldCost: 0,
       });
     });
 

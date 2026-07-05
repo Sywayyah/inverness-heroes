@@ -4,6 +4,7 @@ import { Item } from '../items';
 
 export interface ShopSlotItem {
   readonly item: Item;
+  // think about it, could be defined on item level entirely
   readonly goldCost: number;
 }
 

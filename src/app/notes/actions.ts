@@ -19,4 +19,7 @@
   add ability to reroll (specific or all, different characters may have different roll caps)
 
   - actions picking before new round - stamina cost (heavy slash may require more stamina, hence, can be used less often)
+
+  - how many action points are left by the end of the round - to enable consumable items consumption and heavy/big actions
+     small actions can generate action points, power points
 */

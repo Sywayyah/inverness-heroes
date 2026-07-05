@@ -63,8 +63,8 @@
       <div class="item-description">{{ selectedShopItem.item.getDescription() }}</div>
 
       <div>
-        Cost: {{ selectedShopItem.goldCost }}
-        <button [disabled]="player.gold() < selectedShopItem.goldCost" (click)="buyItem()">
+        Cost: {{ selectedShopItem.item.buyPrice() }}
+        <button [disabled]="player.gold() < selectedShopItem.item.buyPrice()" (click)="buyItem()">
           Buy
         </button>
       </div>
