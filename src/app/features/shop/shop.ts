@@ -7,10 +7,11 @@ import { getNRandomItems, getNRandomUniqueItems, getRandomInt } from '../../core
 import { GameStateService } from '../../services/game-state.service';
 import { View, ViewsService } from '../../services/views.service';
 import { itemModifiersRegistry } from '../../core/items/item-modifiers';
+import { ItemIcon } from '../../shared/components/item-icon/item-icon';
 
 @Component({
   selector: 'app-shop',
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, ItemIcon],
   templateUrl: './shop.html',
   styleUrl: './shop.scss',
 })
@@ -118,7 +119,7 @@ export class Shop {
     if (!item) return;
 
     this.player.chars.getValue()[0].inventory.removeItem(item);
-    this.player.gold.update((gold) => gold + getRandomInt(1, 5));
+    this.player.gold.update((gold) => gold + item.sellPrice());
     this.activePlayerSlot.set(null);
   }
 

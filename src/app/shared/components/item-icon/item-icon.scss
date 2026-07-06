@@ -1,0 +1,41 @@
+:host {
+  display: block;
+  position: relative;
+
+  &:hover {
+    .description {
+      display: block;
+    }
+  }
+}
+
+.description {
+  display: none;
+  position: absolute;
+  top: 100%;
+  width: 300px;
+
+  white-space: pre;
+  background: #000000be;
+  z-index: 1000;
+  text-align: center;
+
+  font-size: 15px;
+
+  pointer-events: none;
+
+  &.right {
+    right: 0;
+  }
+}
+
+img {
+  image-rendering: pixelated;
+}
+
+.item-preview {
+  $icon-size: 70px;
+  width: $icon-size;
+  height: $icon-size;
+  padding: 8px;
+}

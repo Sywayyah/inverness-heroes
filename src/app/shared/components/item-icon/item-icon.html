@@ -1,0 +1,17 @@
+<img [src]="item().base.imgSrc" />
+
+<div class="description" [class.right]="attachment() === 'right'">
+  <img class="item-preview" [src]="item().base.imgSrc" />
+
+  @if (showCost()) {
+    <div>Cost: {{ item().buyPrice() }}</div>
+  }
+
+  @if (showSellPrice()) {
+    <div>Sell: {{ item().sellPrice() }}</div>
+  }
+
+  <div>
+    {{ item().getDescription() }}
+  </div>
+</div>

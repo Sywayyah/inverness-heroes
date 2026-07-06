@@ -1,3 +1,4 @@
+import { signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BaseAction, OneHandActivitySource, TwoHandsActivitySource } from '../activities';
 import { Character } from '../characters';
@@ -11,8 +12,8 @@ import {
   rangedNumber,
   rollRangedNumber,
 } from '../types/ranged';
+import { getRandomInt } from '../utils/common';
 import { ItemModifiers } from './item-modifiers';
-import { signal } from '@angular/core';
 
 export enum ItemBaseType {
   Weapon = 'weapon',
@@ -41,6 +42,7 @@ export type ItemBaseStats = Partial<Readonly<ItemBaseStatsModel>>;
 export interface ItemBase {
   readonly id: string;
   readonly name: string;
+  readonly imgSrc: string;
 
   readonly type: ItemBaseType;
   // if not specified - item never breaks
@@ -60,6 +62,7 @@ itemsRegistry.register({
   id: 'two-handed-sword',
   name: 'Two-Handed Sword',
   type: ItemBaseType.Weapon,
+  imgSrc: 'images/items/weapons/two-handed-sword.png',
   durability: rangedNumber(25, 30),
 
   basePrice: rangedNumber(25),
@@ -117,6 +120,7 @@ itemsRegistry.register({
   id: 'iron-helm',
   durability: [20, 30],
   name: 'Iron Helm',
+  imgSrc: 'images/items/helms/iron-helm.png',
   type: ItemBaseType.Helm,
   itemStats: {
     defence: rangedNumber(6, 10),
@@ -129,6 +133,8 @@ itemsRegistry.register({
   id: 'shield',
   durability: [20, 30],
   name: 'Stout Shield',
+  imgSrc: 'images/items/shields/stout-shield.png',
+
   type: ItemBaseType.Shield,
   itemStats: {
     defence: rangedNumber(10, 13),
@@ -166,6 +172,7 @@ itemsRegistry.register({
     minDamage: rangedNumber(10),
     maxDamage: rangedNumber(16),
   },
+  imgSrc: 'images/items/weapons/two-handed-sword.png',
 
   buyPrice: rangedNumber(13, 20),
 
@@ -194,6 +201,8 @@ itemsRegistry.register({
   id: 'candle',
   name: 'Candle',
   type: ItemBaseType.Charm,
+
+  imgSrc: 'images/items/charms/golden-ring.png',
 
   buyPrice: rangedNumber(6, 8),
 });
@@ -235,6 +244,7 @@ export class Item {
   });
 
   readonly buyPrice = signal(0);
+  readonly sellPrice = signal(getRandomInt(1, 5));
 
   constructor(readonly params: { readonly base: ItemBase; readonly ownerChar: Character }) {
     const base = params.base;
@@ -255,7 +265,12 @@ export class Item {
       defence: itemStats?.defence ? rollRangedNumber(itemStats.defence) : 0,
     });
 
-    this.buyPrice.set(rollRangedNumber(base.buyPrice ?? 10));
+    this.setBuyPrice(rollRangedNumber(base.buyPrice ?? 10));
+  }
+
+  setBuyPrice(price: number): void {
+    this.buyPrice.set(Math.round(price));
+    this.sellPrice.set(Math.round(price / 3));
   }
 
   getDescription(): string {

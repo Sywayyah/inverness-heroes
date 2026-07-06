@@ -6,6 +6,13 @@
 
         @let state = (char.stateSubject$ | async)!;
 
+        <img
+          class="char-img"
+          [class.inverted]="player.params.controlable"
+          [src]="char.base.imgSrc"
+          alt=""
+        />
+
         <div class="health">
           Health:
           {{ state.health }}/{{ state.maxHealth }}
@@ -18,7 +25,7 @@
                 @let invItem = invCell.slot$ | async;
                 <div class="inv-cell">
                   @if (invItem) {
-                    {{ invItem.params.base.name }}
+                    <app-item-icon [item]="invItem"  />
                   } @else {}
                 </div>
               }
@@ -96,7 +103,14 @@
   <div class="battle-actions">
     @for (action of battleActions(); track $index) {
       <div class="battle-action" [style.background-color]="action.player.color()">
-        {{ action.player.name() }} - {{ action.char.base.name }}
+        <img
+          [src]="action.char.base.imgSrc"
+          class="char-img medium"
+          [class.inverted]="action.player.params.controlable"
+        />
+        <div>
+          {{ action.char.base.name }}
+        </div>
         <hr />
         @switch (action.activity.type) {
           @case ('char') {

@@ -2,11 +2,18 @@
   Select character:
 
   @for (char of characters; track $index) {
-    <div class="char" (click)="selectedCharacter.set(char)">
+    <div class="char" [class.selected]="char === selectedCharacter()" (click)="selectedCharacter.set(char)">
+      <img [src]="char.imgSrc" alt="" />
       {{ char.name }}
     </div>
   }
 </div>
+
+@if (selectedCharacter()) {
+  <div class="description">
+    {{ selectedCharacter().description }}
+  </div>
+}
 
 <button (click)="startGame()">Start Game</button>
 

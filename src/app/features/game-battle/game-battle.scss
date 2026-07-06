@@ -53,3 +53,18 @@
     gap: 12px;
   }
 }
+
+.char-img {
+  width: 100px;
+  height: 100px;
+  image-rendering: pixelated;
+
+  &.inverted {
+    scale: -1 1;
+  }
+
+  &.medium {
+    width: 60px;
+    height: 60px;
+  }
+}

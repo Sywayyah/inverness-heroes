@@ -10,7 +10,7 @@ export class Player {
   readonly name = signal('');
   readonly color = signal('');
 
-  constructor(readonly params: { readonly defaultName: string; readonly color: string }) {
+  constructor(readonly params: { readonly defaultName: string; readonly color: string; readonly controlable?: boolean }) {
     this.name.set(params.defaultName);
     this.color.set(params.color);
   }

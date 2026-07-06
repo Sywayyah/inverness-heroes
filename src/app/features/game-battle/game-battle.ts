@@ -7,6 +7,7 @@ import { shuffleArray } from '../../core/utils/arrays';
 import { GameStateService } from '../../services/game-state.service';
 import { take, timer } from 'rxjs';
 import { ReactiveList } from '../../core/reactive/reactive-list';
+import { ItemIcon } from "../../shared/components/item-icon/item-icon";
 
 class BattleAction {
   readonly performed = signal(false);
@@ -21,7 +22,7 @@ class BattleAction {
 
 @Component({
   selector: 'app-game-battle',
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, ItemIcon],
   templateUrl: './game-battle.html',
   styleUrl: './game-battle.scss',
 })

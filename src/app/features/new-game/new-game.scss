@@ -1,0 +1,21 @@
+
+.char {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px;
+
+  img {
+    image-rendering: pixelated;
+    $img-size: 100px;
+    width: $img-size;
+    height: $img-size;
+
+    scale: -1 1;
+  }
+
+  &.selected {
+    background: rgba(0, 0, 0, 0.178);
+    cursor: pointer;
+  }
+}
