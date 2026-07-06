@@ -2,12 +2,13 @@ import { AsyncPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { InventorySlot } from '../../core/characters/inventory';
 import { Item, itemsRegistry } from '../../core/items';
+import { itemModifiersRegistry } from '../../core/items/item-modifiers';
 import { ShopArea, ShopSlotItem } from '../../core/shop/shop-area';
 import { getNRandomItems, getNRandomUniqueItems, getRandomInt } from '../../core/utils/common';
 import { GameStateService } from '../../services/game-state.service';
 import { View, ViewsService } from '../../services/views.service';
-import { itemModifiersRegistry } from '../../core/items/item-modifiers';
 import { ItemIcon } from '../../shared/components/item-icon/item-icon';
+import { rangedNumber, rollRangedNumber } from '../../core/types/ranged';
 
 @Component({
   selector: 'app-shop',
@@ -27,32 +28,40 @@ export class Shop {
 
   constructor() {
     const ownerChar = this.player.chars.getValue()[0];
+    const itemLevel = rangedNumber(1, 10);
 
     this.shopArea.addItem({
-      goldCost: 10,
       item: new Item({
         base: itemsRegistry.getEntityById('two-handed-sword'),
         ownerChar: ownerChar,
+        itemLevel: rollRangedNumber(itemLevel),
       }),
     });
     this.shopArea.addItem({
-      goldCost: 8,
-      item: new Item({ ownerChar, base: itemsRegistry.getEntityById('iron-helm') }),
+      item: new Item({
+        ownerChar,
+        base: itemsRegistry.getEntityById('iron-helm'),
+        itemLevel: rollRangedNumber(itemLevel),
+      }),
     });
     this.shopArea.addItem({
-      goldCost: 6,
-      item: new Item({ ownerChar, base: itemsRegistry.getEntityById('candle') }),
+      item: new Item({
+        ownerChar,
+        base: itemsRegistry.getEntityById('candle'),
+        itemLevel: rollRangedNumber(itemLevel),
+      }),
     });
     this.shopArea.addItem({
-      goldCost: 6,
-      item: new Item({ ownerChar, base: itemsRegistry.getEntityById('shield') }),
+      item: new Item({
+        ownerChar,
+        base: itemsRegistry.getEntityById('shield'),
+        itemLevel: rollRangedNumber(itemLevel),
+      }),
     });
 
     getNRandomItems(itemsRegistry.entities, getRandomInt(1, 5)).forEach((itemBase) => {
       this.shopArea.addItem({
-        item: new Item({ ownerChar, base: itemBase }),
-        //
-        goldCost: 0,
+        item: new Item({ ownerChar, base: itemBase, itemLevel: rollRangedNumber(itemLevel) }),
       });
     });
 
@@ -107,7 +116,7 @@ export class Shop {
 
     if (!activeShopItem) return;
 
-    this.player.gold.update((gold) => gold - activeShopItem.goldCost);
+    this.player.gold.update((gold) => gold - activeShopItem.item.buyPrice());
     this.shopArea.removeItem(activeShopItem);
     this.player.chars.getValue()[0].inventory.addItem(activeShopItem.item);
     this.activeShopItem.set(null);
@@ -121,6 +130,7 @@ export class Shop {
     this.player.chars.getValue()[0].inventory.removeItem(item);
     this.player.gold.update((gold) => gold + item.sellPrice());
     this.activePlayerSlot.set(null);
+    this.shopArea.addItem({ item: item });
   }
 
   startBattle(): void {

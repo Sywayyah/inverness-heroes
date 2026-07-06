@@ -1,9 +1,9 @@
-
 .char {
   display: flex;
   align-items: center;
   gap: 4px;
   padding: 2px;
+  cursor: pointer;
 
   img {
     image-rendering: pixelated;
@@ -16,6 +16,9 @@
 
   &.selected {
     background: rgba(0, 0, 0, 0.178);
-    cursor: pointer;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.178);
   }
 }

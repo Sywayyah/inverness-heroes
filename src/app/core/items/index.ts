@@ -12,8 +12,9 @@ import {
   rangedNumber,
   rollRangedNumber,
 } from '../types/ranged';
-import { getRandomInt } from '../utils/common';
+import { getRandomInt, rollChance } from '../utils/common';
 import { ItemModifiers } from './item-modifiers';
+import { Grid2D } from '../grid/grid';
 
 export enum ItemBaseType {
   Weapon = 'weapon',
@@ -54,6 +55,8 @@ export interface ItemBase {
   readonly sellPrice?: RangedNumber;
 
   readonly actions?: BaseAction[];
+
+  readonly sockets?: RangedNumber;
 }
 
 export const itemsRegistry = new EntityRegistry<ItemBase>({ name: 'Items' });
@@ -65,6 +68,7 @@ itemsRegistry.register({
   imgSrc: 'images/items/weapons/two-handed-sword.png',
   durability: rangedNumber(25, 30),
 
+  sockets: rangedNumber(0, 3),
   basePrice: rangedNumber(25),
 
   itemStats: {
@@ -120,6 +124,8 @@ itemsRegistry.register({
   id: 'iron-helm',
   durability: [20, 30],
   name: 'Iron Helm',
+
+  sockets: rangedNumber(0, 2),
   imgSrc: 'images/items/helms/iron-helm.png',
   type: ItemBaseType.Helm,
   itemStats: {
@@ -134,6 +140,8 @@ itemsRegistry.register({
   durability: [20, 30],
   name: 'Stout Shield',
   imgSrc: 'images/items/shields/stout-shield.png',
+
+  sockets: rangedNumber(0, 2),
 
   type: ItemBaseType.Shield,
   itemStats: {
@@ -168,6 +176,8 @@ itemsRegistry.register({
   durability: [23, 26],
   name: 'Crossbow',
   type: ItemBaseType.Weapon,
+  sockets: rangedNumber(0, 3),
+
   itemStats: {
     minDamage: rangedNumber(10),
     maxDamage: rangedNumber(16),
@@ -223,6 +233,10 @@ export interface RolledItemStatsModel {
 
 export type RolledItemStats = Readonly<RolledItemStatsModel>;
 
+export class ItemSocket {
+  readonly item$ = new BehaviorSubject<Item | null>(null);
+}
+
 export class Item {
   readonly stateSubject$: BehaviorSubject<ItemState>;
 
@@ -232,6 +246,9 @@ export class Item {
     readonly itemModifier: ItemModifiers;
     readonly mods: Modifiers;
   }>();
+
+  readonly sockets = signal(0);
+  readonly socketsGrid?: Grid2D<ItemSocket>;
 
   get base(): ItemBase {
     return this.params.base;
@@ -246,7 +263,13 @@ export class Item {
   readonly buyPrice = signal(0);
   readonly sellPrice = signal(getRandomInt(1, 5));
 
-  constructor(readonly params: { readonly base: ItemBase; readonly ownerChar: Character }) {
+  constructor(
+    readonly params: {
+      readonly base: ItemBase;
+      readonly ownerChar: Character;
+      readonly itemLevel: number;
+    },
+  ) {
     const base = params.base;
 
     const durability = base.durability ? rollRangedNumber(base.durability) : Infinity;
@@ -266,6 +289,16 @@ export class Item {
     });
 
     this.setBuyPrice(rollRangedNumber(base.buyPrice ?? 10));
+
+    if (base.sockets && rollChance(0.25)) {
+      const socketsRoll = rollRangedNumber(base.sockets);
+      this.sockets.set(socketsRoll);
+      this.socketsGrid = new Grid2D({
+        width: socketsRoll,
+        height: 1,
+        cellGenerator: () => new ItemSocket(),
+      });
+    }
   }
 
   setBuyPrice(price: number): void {
@@ -291,6 +324,10 @@ export class Item {
 
     if (itemState.durability !== Infinity) {
       statLines.push(`Durability: ${itemState.durability}/${itemState.maxDurability}`);
+    }
+
+    if (this.sockets()) {
+      statLines.push(`Sockets: ${this.sockets()}`);
     }
 
     const typeMapping: Record<ItemBaseType, string> = {
