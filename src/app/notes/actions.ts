@@ -25,3 +25,9 @@
 
   - items may deal elemental damage but consume mana on hit
 */
+
+/*
+  - There can be item modifier that reduces the cost of an item
+
+  socketables that can increase durability of an item
+*/
