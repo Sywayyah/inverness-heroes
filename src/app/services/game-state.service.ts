@@ -12,4 +12,8 @@ export class GameStateService {
     [this.mainPlayer, this.neutralPlayer],
     [this.neutralPlayer, this.mainPlayer],
   ]);
+
+  getEnemyOfThePlayer(player: Player): Player {
+    return this.enemyPlayersMap.get(player)!;
+  }
 }

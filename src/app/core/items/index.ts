@@ -282,9 +282,14 @@ export class Item {
 
     const itemStats = base.itemStats;
 
+    const maxDamage = itemStats?.maxDamage ? rollRangedNumber(itemStats.maxDamage) : 0;
+    let minDamage = itemStats?.minDamage ? rollRangedNumber(itemStats.minDamage) : 0;
+
+    if (maxDamage && minDamage === 0) minDamage = maxDamage;
+
     this.stats$.next({
-      minDamage: itemStats?.minDamage ? rollRangedNumber(itemStats.minDamage) : 0,
-      maxDamage: itemStats?.maxDamage ? rollRangedNumber(itemStats.maxDamage) : 0,
+      minDamage: minDamage,
+      maxDamage: maxDamage,
       defence: itemStats?.defence ? rollRangedNumber(itemStats.defence) : 0,
     });
 

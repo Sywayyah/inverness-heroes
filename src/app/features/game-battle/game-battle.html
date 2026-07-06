@@ -25,7 +25,7 @@
                 @let invItem = invCell.slot$ | async;
                 <div class="inv-cell">
                   @if (invItem) {
-                    <app-item-icon [item]="invItem"  />
+                    <app-item-icon [item]="invItem" />
                   } @else {}
                 </div>
               }
@@ -92,6 +92,20 @@
     }
   </div>
 
+  @if (isFightOver()) {
+    <div>The fight is over!</div>
+
+    <div>Winner:</div>
+
+    <div class="winner-chars">
+      @for (char of winner()?.chars | async; track $index) {
+        <div class="winner" [style.background]="winner()?.color()">
+          <img [src]="char.base.imgSrc" class="char-img medium" [class.inverted]="winner()?.params?.controlable" />
+        </div>
+      }
+    </div>
+  }
+
   <div class="round-info">
     @if (round() === 0) {
       Begin the fight
@@ -102,7 +116,11 @@
 
   <div class="battle-actions">
     @for (action of battleActions(); track $index) {
-      <div class="battle-action" [style.background-color]="action.player.color()">
+      <div
+        class="battle-action"
+        [class.performed]="action.performed()"
+        [style.background-color]="action.player.color()"
+      >
         <img
           [src]="action.char.base.imgSrc"
           class="char-img medium"
@@ -126,11 +144,24 @@
           <hr />
           Performed
         }
+
+        <hr />
+
+        <div class="history">
+          @for (entry of action.history.value$ | async; track $index) {
+            {{ entry }}
+          }
+        </div>
       </div>
     }
   </div>
 
-  <button (click)="beginFight()" [disabled]="isFightInProgress()">
-    {{ !isFightInProgress() ? 'Begin fight' : 'Wait' }}
-  </button>
+  @if (!isFightOver()) {
+
+    <button (click)="beginFight()" [disabled]="isFightInProgress()">
+      {{ !isFightInProgress() ? 'Begin fight' : 'Wait' }}
+    </button>
+  } @else {
+    <button (click)="leaveTheBattle()">Leave the battle</button>
+  }
 </div>

@@ -258,7 +258,7 @@ charsRegistry.register({
     vitality: 2,
   },
   baseValues: {
-    health: 20,
+    health: 50,
   },
   description: 'A common undead enemy without any outstanding stats',
 
