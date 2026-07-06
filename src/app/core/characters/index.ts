@@ -4,14 +4,16 @@ import {
   Activity,
   ActivitySource,
   BaseAction,
-  TwoHandsActivitySource,
   LegActivitySource,
   MouthActivitySource,
   OneHandActivitySource,
+  TwoHandsActivitySource,
 } from '../activities';
 import { Item } from '../items';
 import { Modifiers } from '../modifiers';
+import { ReactiveList } from '../reactive/reactive-list';
 import { EntityRegistry } from '../registries';
+import { Spell } from '../spells';
 import { MappedRecordTypes } from '../types/mappings';
 import { rangedNumber } from '../types/ranged';
 import {
@@ -335,6 +337,8 @@ export class Character {
   });
 
   readonly rerollsLeft = signal(1);
+
+  readonly spells = new ReactiveList<Spell>();
 
   get base(): CharacterBase {
     return this.params.base;
