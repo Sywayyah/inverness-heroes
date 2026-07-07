@@ -13,7 +13,7 @@ import { Item } from '../items';
 import { Modifiers } from '../modifiers';
 import { ReactiveList } from '../reactive/reactive-list';
 import { EntityRegistry } from '../registries';
-import { Spell } from '../spells';
+import { Spell, spellsRegistry } from '../spells';
 import { MappedRecordTypes } from '../types/mappings';
 import { rangedNumber } from '../types/ranged';
 import {
@@ -61,6 +61,8 @@ export interface CharacterBase {
   readonly activitySources: ActivitySource[];
 
   readonly baseActivities: BaseAction[];
+
+  readonly spells?: string[];
 }
 
 export const charsRegistry = new EntityRegistry<CharacterBase>({ name: 'Characters' });
@@ -112,6 +114,8 @@ charsRegistry.register({
   ],
 
   activitySources: HumanActivitySources,
+
+  spells: ['corrosive-fog'],
 });
 
 charsRegistry.register({
@@ -147,6 +151,7 @@ charsRegistry.register({
   ],
 
   activitySources: HumanActivitySources,
+  spells: ['heal', 'firebolt'],
 });
 
 charsRegistry.register({
@@ -196,6 +201,8 @@ charsRegistry.register({
   ],
 
   activitySources: HumanActivitySources,
+
+  spells: ['heal'],
 });
 
 charsRegistry.register({
@@ -244,6 +251,8 @@ charsRegistry.register({
   ],
 
   activitySources: HumanActivitySources,
+
+  spells: ['firebolt'],
 });
 
 charsRegistry.register({
@@ -314,7 +323,11 @@ charsRegistry.register({
 });
 
 interface CharBattleActions {
-  readonly char: { readonly activity: BaseAction; readonly source?: Activity };
+  readonly charSpell: { readonly spell: Spell };
+  readonly char: {
+    readonly activity: BaseAction;
+    readonly source?: Activity;
+  };
   readonly item: {
     readonly item: Item;
     readonly action: BaseAction;
@@ -372,6 +385,14 @@ export class Character {
       width: params.base.inventoryBase?.width ?? 5,
       height: params.base.inventoryBase?.height ?? 2,
     });
+
+    const spells = this.base.spells?.map(
+      (spellId) => new Spell({ base: spellsRegistry.getEntityById(spellId), initialLevel: 1 }),
+    );
+
+    if (spells) {
+      this.spells.setValue(spells);
+    }
   }
 
   initBattle(): void {
@@ -390,6 +411,8 @@ export class Character {
 
     const randomCharActivities = getNRandomItems(charActivities, getRandomInt(2, 4));
 
+    const randomSpells = getNRandomItems(this.spells.getValue(), getRandomInt(0, 3));
+
     const finalList: CharBattleAction[] = [
       ...randomItemActions.map((itemAction): CharBattleAction => ({
         type: 'item',
@@ -397,8 +420,12 @@ export class Character {
       })),
       ...randomCharActivities.map((charActivity): CharBattleAction => ({
         type: 'char',
-        params: { activity: charActivity, source: getRandomItem(charActivity.sources ?? []) },
+        params: {
+          activity: charActivity,
+          source: getRandomItem(charActivity.sources ?? []),
+        },
       })),
+      ...randomSpells.map((spell): CharBattleAction => ({ type: 'charSpell', params: { spell } })),
     ];
 
     const randomizedFinalList = getNRandomUniqueItems(finalList, 6);

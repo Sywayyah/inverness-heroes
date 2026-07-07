@@ -14,6 +14,7 @@ export class ItemIcon {
 
   readonly attachment = input<DescriptionAttachment>('left');
 
-  readonly showCost= input(false);
-  readonly showSellPrice= input(false);
+  readonly showCost = input(false);
+  readonly showSellPrice = input(false);
+  readonly showHoverDescription = input(true);
 }

@@ -10,6 +10,7 @@ export enum SpellActivationType {
 export interface SpellBase {
   readonly id: string;
   readonly name: string;
+  readonly imgSrc: string;
   readonly activationType: SpellActivationType;
   getDescription(params: { readonly spell: Spell }): string;
   // todo: should there be activities on spell level?
@@ -20,6 +21,7 @@ export const spellsRegistry = new EntityRegistry<SpellBase>({ name: 'Spells' });
 spellsRegistry.register({
   id: 'firebolt',
   name: 'Firebolt',
+  imgSrc: `images/spells/firebolt.png`,
   activationType: SpellActivationType.Targeted,
   getDescription(): string {
     return `Firebolt`;
@@ -29,6 +31,7 @@ spellsRegistry.register({
 spellsRegistry.register({
   id: 'corrosive-fog',
   name: 'Corrosive Fog',
+  imgSrc: `images/spells/corrosive-fog.png`,
   activationType: SpellActivationType.Targeted,
   getDescription(): string {
     return `Corrosive Fog`;
@@ -38,6 +41,7 @@ spellsRegistry.register({
 spellsRegistry.register({
   id: 'heal',
   name: 'Heal',
+  imgSrc: `images/spells/inner-light.png`,
   activationType: SpellActivationType.Passive,
   getDescription(): string {
     return `Heal`;

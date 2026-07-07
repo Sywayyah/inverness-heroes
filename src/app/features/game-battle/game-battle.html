@@ -75,6 +75,9 @@
                   }
                 </div>
               }
+              @case ('charSpell') {
+                {{ char.base.name }} - {{ action.params.spell.base.name }}
+              }
             }
           }
         </div>
@@ -100,7 +103,11 @@
     <div class="winner-chars">
       @for (char of winner()?.chars | async; track $index) {
         <div class="winner" [style.background]="winner()?.color()">
-          <img [src]="char.base.imgSrc" class="char-img medium" [class.inverted]="winner()?.params?.controlable" />
+          <img
+            [src]="char.base.imgSrc"
+            class="char-img medium"
+            [class.inverted]="winner()?.params?.controlable"
+          />
         </div>
       }
     </div>
@@ -132,11 +139,22 @@
         <hr />
         @switch (action.activity.type) {
           @case ('char') {
-            {{ action.activity.params.activity.name }}
+            <div>
+              {{ action.activity.params.activity.name }}
+            </div>
           }
           @case ('item') {
-            <app-item-icon [item]="action.activity.params.item"></app-item-icon>
-            {{ action.activity.params.action.name }}
+            <app-item-icon [item]="action.activity.params.item" [showHoverDescription]="false" />
+            <div>
+              {{ action.activity.params.action.name }}
+            </div>
+          }
+          @case ('charSpell') {
+            <img [src]="action.activity.params.spell.base.imgSrc" />
+
+            <div>
+              {{ action.activity.params.spell.base.name }}
+            </div>
           }
         }
 
@@ -157,7 +175,6 @@
   </div>
 
   @if (!isFightOver()) {
-
     <button (click)="beginFight()" [disabled]="isFightInProgress()">
       {{ !isFightInProgress() ? 'Begin fight' : 'Wait' }}
     </button>
