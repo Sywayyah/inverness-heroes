@@ -135,7 +135,7 @@
             {{ action.activity.params.activity.name }}
           }
           @case ('item') {
-            {{ action.activity.params.item.base.name }}
+            <app-item-icon [item]="action.activity.params.item"></app-item-icon>
             {{ action.activity.params.action.name }}
           }
         }
