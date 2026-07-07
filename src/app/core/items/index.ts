@@ -182,7 +182,7 @@ itemsRegistry.register({
     minDamage: rangedNumber(10),
     maxDamage: rangedNumber(16),
   },
-  imgSrc: 'images/items/weapons/two-handed-sword.png',
+  imgSrc: 'images/items/weapons/crossbow.png',
 
   buyPrice: rangedNumber(13, 20),
 
