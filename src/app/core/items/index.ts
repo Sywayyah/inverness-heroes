@@ -152,7 +152,7 @@ itemsRegistry.register({
 
   actions: [
     {
-      name: 'Strike',
+      name: 'Shield Strike',
       sources: [
         {
           source: OneHandActivitySource,

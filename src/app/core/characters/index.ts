@@ -59,6 +59,7 @@ export interface CharacterBase {
 
   readonly baseModifiers?: Modifiers;
 
+  // todo: not sure if needed
   readonly activitySources: ActivitySource[];
 
   readonly baseActivities: BaseAction[];

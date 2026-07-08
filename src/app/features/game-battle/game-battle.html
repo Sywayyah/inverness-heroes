@@ -33,16 +33,8 @@
           }
         </div>
 
-        <hr />
 
-        <div class="activity-sources-container">
-          Set Activities:
-          @for (source of char.params.base.activitySources; track $index) {
-            <div class="source">{{ source.name }} ({{ source.shortName }})</div>
-          }
-        </div>
 
-        <hr />
 
         @let battleActions = char.battleActions$ | async;
 
@@ -55,7 +47,13 @@
             @switch (action.type) {
               @case ('char') {
                 <div class="action">
-                  {{ char.params.base.name }} - {{ action.params.action.name }}
+                  <img
+                    [src]="action.params.action.imgSrc ?? 'images/common/action.png'"
+                    alt=""
+                    class="action-img"
+                  />
+
+                   {{ action.params.action.name }}
 
                   @let actionSource = action.params.activity;
                   @if (actionSource) {
@@ -66,7 +64,8 @@
               }
               @case ('item') {
                 <div class="action">
-                  {{ action.params.item.base.name }} - {{ action.params.action.name }}
+                  <app-item-icon [item]="action.params.item" />
+                  {{ action.params.action.name }}
 
                   @let actionSource = action.params.source;
                   @if (actionSource) {
@@ -76,7 +75,10 @@
                 </div>
               }
               @case ('charSpell') {
-                {{ char.base.name }} - {{ action.params.spell.base.name }}
+                <div class="action">
+                  <img [src]="action.params.spell.base.imgSrc" class="action-img" />
+                  {{ char.base.name }} - {{ action.params.spell.base.name }}
+                </div>
               }
             }
           }
@@ -139,7 +141,11 @@
         <hr />
         @switch (action.activity.type) {
           @case ('char') {
-            <img [src]="action.activity.params.action.imgSrc ?? 'images/common/action.png'" alt="" class="action-img" />
+            <img
+              [src]="action.activity.params.action.imgSrc ?? 'images/common/action.png'"
+              alt=""
+              class="action-img"
+            />
 
             <div>
               {{ action.activity.params.action.name }}
@@ -152,7 +158,7 @@
             </div>
           }
           @case ('charSpell') {
-            <img [src]="action.activity.params.spell.base.imgSrc"  class="action-img"/>
+            <img [src]="action.activity.params.spell.base.imgSrc" class="action-img" />
 
             <div>
               {{ action.activity.params.spell.base.name }}

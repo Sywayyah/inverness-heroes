@@ -86,3 +86,15 @@
   height: 48px;
   image-rendering: pixelated;
 }
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
