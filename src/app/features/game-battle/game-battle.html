@@ -139,6 +139,8 @@
         <hr />
         @switch (action.activity.type) {
           @case ('char') {
+            <img [src]="action.activity.params.activity.imgSrc ?? 'images/common/action.png'" alt="" class="action-img" />
+
             <div>
               {{ action.activity.params.activity.name }}
             </div>
@@ -150,7 +152,7 @@
             </div>
           }
           @case ('charSpell') {
-            <img [src]="action.activity.params.spell.base.imgSrc" />
+            <img [src]="action.activity.params.spell.base.imgSrc"  class="action-img"/>
 
             <div>
               {{ action.activity.params.spell.base.name }}

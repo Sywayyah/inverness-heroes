@@ -52,4 +52,5 @@ export interface Activity {
 export interface BaseAction {
   readonly name: string;
   readonly sources?: Activity[];
+  readonly imgSrc?: string;
 }

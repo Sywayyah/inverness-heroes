@@ -2,7 +2,6 @@ import { AsyncPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { timer } from 'rxjs';
 import { Character, CharBattleAction } from '../../core/characters';
-import { DamageType } from '../../core/common/damage';
 import { Player } from '../../core/player';
 import { ReactiveList } from '../../core/reactive/reactive-list';
 import { shuffleArray } from '../../core/utils/arrays';
@@ -98,9 +97,8 @@ export class GameBattle {
           const targetChar = this.gameStateService.enemyPlayersMap
             .get(action.player)!
             .chars.getValue()[0];
-          this.dealDamageTo({
+          this.dealPureDamageToUnit({
             char: targetChar,
-            type: DamageType.Physical,
             damage: damageDealt,
           });
 
@@ -127,13 +125,11 @@ export class GameBattle {
     this.scheduleBattleTick();
   }
 
-  dealDamageTo({
+  dealPureDamageToUnit({
     char,
     damage,
-    type,
   }: {
     readonly char: Character;
-    readonly type: DamageType;
     readonly damage: number;
   }): void {
     const charState = char.stateSubject$.getValue();

@@ -95,6 +95,7 @@ charsRegistry.register({
   baseActivities: [
     {
       name: 'Punch',
+      imgSrc: 'images/common/action.png',
       sources: [
         {
           source: OneHandActivitySource,
@@ -104,6 +105,8 @@ charsRegistry.register({
     },
     {
       name: 'Kick',
+      imgSrc: 'images/common/speed.png',
+
       sources: [
         {
           source: LegActivitySource,
@@ -140,6 +143,8 @@ charsRegistry.register({
   baseActivities: [
     {
       name: 'Punch',
+      imgSrc: 'images/common/action.png',
+
       sources: [
         {
           source: OneHandActivitySource,
@@ -147,7 +152,11 @@ charsRegistry.register({
         },
       ],
     },
-    { name: 'Prayer', sources: [{ source: MouthActivitySource }] },
+    {
+      name: 'Prayer',
+      imgSrc: 'images/common/mind-action.png',
+      sources: [{ source: MouthActivitySource }],
+    },
   ],
 
   activitySources: HumanActivitySources,
@@ -185,6 +194,7 @@ charsRegistry.register({
       sources: [
         {
           source: OneHandActivitySource,
+          imgSrc: 'images/common/action.png',
           stats: { minDamage: 4, maxDamage: 7, accuracy: rangedNumber(35, 45) },
         },
       ],
@@ -194,6 +204,8 @@ charsRegistry.register({
       sources: [
         {
           source: LegActivitySource,
+          imgSrc: 'images/common/speed.png',
+
           stats: { minDamage: 6, maxDamage: 8, accuracy: rangedNumber(40, 45) },
         },
       ],
@@ -232,6 +244,7 @@ charsRegistry.register({
   baseActivities: [
     {
       name: 'Punch',
+      imgSrc: 'images/common/action.png',
       sources: [
         {
           source: OneHandActivitySource,
@@ -241,6 +254,7 @@ charsRegistry.register({
     },
     {
       name: 'Kick',
+      imgSrc: 'images/common/speed.png',
       sources: [
         {
           source: LegActivitySource,
@@ -272,9 +286,11 @@ charsRegistry.register({
   description: 'A common undead enemy without any outstanding stats',
 
   baseActivities: [
-    { name: 'Bite' },
+    { name: 'Bite', imgSrc: 'images/common/claw-attack.png' },
     {
       name: 'Punch',
+      imgSrc: 'images/common/action.png',
+
       sources: [
         {
           source: OneHandActivitySource,
@@ -310,6 +326,8 @@ charsRegistry.register({
   baseActivities: [
     {
       name: 'Punch',
+      imgSrc: 'images/common/action.png',
+
       sources: [
         {
           source: OneHandActivitySource,
