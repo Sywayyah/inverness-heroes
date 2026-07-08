@@ -55,9 +55,9 @@
             @switch (action.type) {
               @case ('char') {
                 <div class="action">
-                  {{ char.params.base.name }} - {{ action.params.activity.name }}
+                  {{ char.params.base.name }} - {{ action.params.action.name }}
 
-                  @let actionSource = action.params.source;
+                  @let actionSource = action.params.activity;
                   @if (actionSource) {
                     -
                     {{ actionSource.source.name }}
@@ -139,10 +139,10 @@
         <hr />
         @switch (action.activity.type) {
           @case ('char') {
-            <img [src]="action.activity.params.activity.imgSrc ?? 'images/common/action.png'" alt="" class="action-img" />
+            <img [src]="action.activity.params.action.imgSrc ?? 'images/common/action.png'" alt="" class="action-img" />
 
             <div>
-              {{ action.activity.params.activity.name }}
+              {{ action.activity.params.action.name }}
             </div>
           }
           @case ('item') {

@@ -21,68 +21,65 @@ export interface ItemModifiers {
 
 export const itemModifiersRegistry = new EntityRegistry<ItemModifiers>({ name: 'items modifiers' });
 
+const apprenticeStats = { mana: rangedNumber(2, 6) };
 itemModifiersRegistry.register({
   id: 'armor-apprentice',
   title: 'Apprentice',
 
-  stats: { mana: rangedNumber(2, 6) },
-
   getDescription(params): string {
-    return getItemStatsLines(params, [{ stat: 'mana', ranged: this.stats.mana }]);
+    return getItemStatsLines(params, [{ stat: 'mana', ranged: apprenticeStats.mana }]);
   },
   generateStats(item): GeneratedItemStats {
-    return { mods: { mana: rollRangedNumber(this.stats.mana) } };
+    return { mods: { mana: rollRangedNumber(apprenticeStats.mana) } };
   },
 });
 
+const sharpnessStats = {
+  enhancedDamage: rangedNumber(10, 40),
+  labels: {
+    10: 'Sharpness',
+    30: 'Serrated Sharpness',
+    50: 'Unholy Sharpness',
+    80: 'Infernal Sharpness',
+    100: 'Absolute Sharpness',
+  },
+};
 itemModifiersRegistry.register({
   id: 'weapon-sharpness',
   title: 'Sharpness',
 
-  stats: {
-    enhancedDamage: rangedNumber(10, 40),
-    labels: {
-      10: 'Sharpness',
-      30: 'Serrated Sharpness',
-      50: 'Unholy Sharpness',
-      80: 'Infernal Sharpness',
-      100: 'Absolute Sharpness',
-    },
-  },
-
   getDescription(params): string {
     return getItemStatsLines(params, [
-      { stat: 'enhancedDamage', ranged: this.stats.enhancedDamage },
+      { stat: 'enhancedDamage', ranged: sharpnessStats.enhancedDamage },
     ]);
   },
   generateStats(item): GeneratedItemStats {
-    return { mods: { enhancedDamage: rollRangedNumber(this.stats.enhancedDamage) } };
+    return { mods: { enhancedDamage: rollRangedNumber(sharpnessStats.enhancedDamage) } };
   },
 });
 
+const batformStats = {
+  lifeLeach: rangedNumber(1, 3),
+  manaLeach: rangedNumber(1, 3),
+  allResists: rangedNumber(-10, -15),
+};
 itemModifiersRegistry.register({
   id: 'weapon-bat-form',
   title: 'Batform',
 
-  stats: {
-    lifeLeach: rangedNumber(1, 3),
-    manaLeach: rangedNumber(1, 3),
-    allResists: rangedNumber(-10, -15),
-  },
-
   getDescription(params): string {
     return getItemStatsLines(params, [
-      { stat: 'lifeSteal', ranged: this.stats.lifeLeach },
-      { stat: 'manaSteal', ranged: this.stats.manaLeach },
-      { stat: 'allResist', ranged: this.stats.allResists },
+      { stat: 'lifeSteal', ranged: batformStats.lifeLeach },
+      { stat: 'manaSteal', ranged: batformStats.manaLeach },
+      { stat: 'allResist', ranged: batformStats.allResists },
     ]);
   },
   generateStats(params): GeneratedItemStats {
     return {
       mods: {
-        lifeSteal: rollRangedNumber(this.stats.lifeLeach),
-        manaSteal: rollRangedNumber(this.stats.manaLeach),
-        allResist: rollRangedNumber(this.stats.allResists),
+        lifeSteal: rollRangedNumber(batformStats.lifeLeach),
+        manaSteal: rollRangedNumber(batformStats.manaLeach),
+        allResist: rollRangedNumber(batformStats.allResists),
       },
     };
   },

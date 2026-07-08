@@ -1,3 +1,7 @@
+import { signal } from '@angular/core';
+import { Character, CharBattleAction } from '../characters';
+import { Player } from '../player';
+import { ReactiveList } from '../reactive/reactive-list';
 import { RangedNumber } from '../types/ranged';
 
 // various creatures may define other custom activity types
@@ -53,4 +57,15 @@ export interface BaseAction {
   readonly name: string;
   readonly sources?: Activity[];
   readonly imgSrc?: string;
+}
+
+export class BattleAction {
+  readonly performed = signal(false);
+  readonly history = new ReactiveList<string>();
+
+  constructor(
+    readonly player: Player,
+    readonly char: Character,
+    readonly activity: CharBattleAction,
+  ) {}
 }

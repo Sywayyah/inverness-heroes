@@ -69,7 +69,7 @@ itemsRegistry.register({
   durability: rangedNumber(25, 30),
 
   sockets: rangedNumber(0, 3),
-  basePrice: rangedNumber(25),
+  buyPrice: rangedNumber(25),
 
   itemStats: {
     minDamage: rangedNumber(9, 11),
@@ -79,7 +79,6 @@ itemsRegistry.register({
   actions: [
     {
       name: 'Heavy Slash',
-      onActionPerformed: () => {},
       sources: [
         {
           source: OneHandActivitySource,
@@ -101,7 +100,6 @@ itemsRegistry.register({
     },
     {
       name: 'Light Slash',
-      onActionPerformed: () => {},
       sources: [
         {
           source: OneHandActivitySource,
@@ -146,6 +144,8 @@ itemsRegistry.register({
   type: ItemBaseType.Shield,
   itemStats: {
     defence: rangedNumber(10, 13),
+    minDamage: rangedNumber(3, 4),
+    maxDamage: rangedNumber(4, 6),
   },
 
   buyPrice: rangedNumber(15, 22),
@@ -158,12 +158,16 @@ itemsRegistry.register({
           source: OneHandActivitySource,
           stats: {
             accuracy: rangedNumber(20, 25),
+            minDamage: rangedNumber(3),
+            maxDamage: rangedNumber(5, 6),
           },
         },
         {
           source: TwoHandsActivitySource,
           stats: {
             accuracy: rangedNumber(30, 35),
+            minDamage: rangedNumber(4),
+            maxDamage: rangedNumber(6, 8),
           },
         },
       ],

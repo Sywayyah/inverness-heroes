@@ -1,25 +1,16 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { timer } from 'rxjs';
-import { Character, CharBattleAction } from '../../core/characters';
+import { BattleAction } from '../../core/activities';
+import { Character } from '../../core/characters';
 import { Player } from '../../core/player';
 import { ReactiveList } from '../../core/reactive/reactive-list';
+import { rollRangedNumber } from '../../core/types/ranged';
 import { shuffleArray } from '../../core/utils/arrays';
 import { getRandomInt } from '../../core/utils/common';
 import { GameStateService } from '../../services/game-state.service';
 import { View, ViewsService } from '../../services/views.service';
 import { ItemIcon } from '../../shared/components/item-icon/item-icon';
-
-class BattleAction {
-  readonly performed = signal(false);
-  readonly history = new ReactiveList<string>();
-
-  constructor(
-    readonly player: Player,
-    readonly char: Character,
-    readonly activity: CharBattleAction,
-  ) {}
-}
 
 @Component({
   selector: 'app-game-battle',
@@ -81,9 +72,46 @@ export class GameBattle {
     timer(500).subscribe(() => {
       action.performed.set(true);
 
+      const targetChar = this.gameStateService.enemyPlayersMap
+        .get(action.player)!
+        .chars.getValue()[0];
+
       const activity = action.activity;
       switch (activity.type) {
+        case 'charSpell':
+          const spell = activity.params.spell;
+          spell.base.onActivated?.({
+            actions: {
+              dealPureDamage: (params) =>
+                this.dealPureDamageToUnit({ char: params.target, damage: params.damage }),
+              healCharacter: (params) => this.healUnit(params),
+            },
+            spell,
+            target: targetChar,
+            owner: action.char,
+            action: action,
+          });
+          break;
         case 'char':
+          const source = activity.params.activity;
+
+          let activityMinDamage = source?.stats?.minDamage
+            ? rollRangedNumber(source?.stats?.minDamage)
+            : 0;
+          const activityMaxDamage = source?.stats?.maxDamage
+            ? rollRangedNumber(source?.stats?.maxDamage)
+            : 0;
+
+          if (!activityMinDamage) activityMinDamage = activityMaxDamage;
+
+          const charActivityDamage = getRandomInt(activityMinDamage, activityMaxDamage);
+          action.history.push(`Dealing ${charActivityDamage} damage`);
+
+          this.dealPureDamageToUnit({
+            char: targetChar,
+            damage: charActivityDamage,
+          });
+
           break;
         case 'item':
           const itemStats = activity.params.item.stats$.getValue();
@@ -94,9 +122,7 @@ export class GameBattle {
 
           const damageDealt = getRandomInt(minDamage, maxDamage);
           action.history.push(`Dealing ${damageDealt} damage`);
-          const targetChar = this.gameStateService.enemyPlayersMap
-            .get(action.player)!
-            .chars.getValue()[0];
+
           this.dealPureDamageToUnit({
             char: targetChar,
             damage: damageDealt,
@@ -137,9 +163,14 @@ export class GameBattle {
     const newHealth = Math.max(health - damage, 0);
 
     char.stateSubject$.next({ ...charState, health: newHealth });
+  }
 
-    if (health === 0) {
-    }
+  healUnit({ char, health }: { readonly char: Character; readonly health: number }): void {
+    const charState = char.stateSubject$.getValue();
+    const initHealth = charState.health;
+    const newHealth = Math.min(initHealth + health, charState.maxHealth);
+
+    char.stateSubject$.next({ ...charState, health: newHealth });
   }
 
   rerollCharActions(char: Character): void {

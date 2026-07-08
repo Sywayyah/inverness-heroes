@@ -191,20 +191,20 @@ charsRegistry.register({
   baseActivities: [
     {
       name: 'Punch',
+      imgSrc: 'images/common/action.png',
       sources: [
         {
           source: OneHandActivitySource,
-          imgSrc: 'images/common/action.png',
           stats: { minDamage: 4, maxDamage: 7, accuracy: rangedNumber(35, 45) },
         },
       ],
     },
     {
       name: 'Kick',
+      imgSrc: 'images/common/speed.png',
       sources: [
         {
           source: LegActivitySource,
-          imgSrc: 'images/common/speed.png',
 
           stats: { minDamage: 6, maxDamage: 8, accuracy: rangedNumber(40, 45) },
         },
@@ -281,12 +281,21 @@ charsRegistry.register({
     vitality: 2,
   },
   baseValues: {
-    health: 50,
+    health: 25,
   },
   description: 'A common undead enemy without any outstanding stats',
 
   baseActivities: [
-    { name: 'Bite', imgSrc: 'images/common/claw-attack.png' },
+    {
+      name: 'Bite',
+      imgSrc: 'images/common/claw-attack.png',
+      sources: [
+        {
+          source: MouthActivitySource,
+          stats: { minDamage: rangedNumber(1, 3), maxDamage: rangedNumber(3, 4) },
+        },
+      ],
+    },
     {
       name: 'Punch',
       imgSrc: 'images/common/action.png',
@@ -343,8 +352,8 @@ charsRegistry.register({
 interface CharBattleActions {
   readonly charSpell: { readonly spell: Spell };
   readonly char: {
-    readonly activity: BaseAction;
-    readonly source?: Activity;
+    readonly action: BaseAction;
+    readonly activity?: Activity;
   };
   readonly item: {
     readonly item: Item;
@@ -439,8 +448,8 @@ export class Character {
       ...randomCharActivities.map((charActivity): CharBattleAction => ({
         type: 'char',
         params: {
-          activity: charActivity,
-          source: getRandomItem(charActivity.sources ?? []),
+          action: charActivity,
+          activity: getRandomItem(charActivity.sources ?? []),
         },
       })),
       ...randomSpells.map((spell): CharBattleAction => ({ type: 'charSpell', params: { spell } })),
