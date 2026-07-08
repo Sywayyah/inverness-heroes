@@ -23,6 +23,7 @@ import {
   getRandomItem,
 } from '../utils/common';
 import { Inventory } from './inventory';
+import { ModGroup } from '../modifiers/mod-group';
 
 export enum CharType {
   Playable,
@@ -391,6 +392,8 @@ export class Character {
 
   readonly spells = new ReactiveList<Spell>();
 
+  readonly mods = new ModGroup<Modifiers>();
+
   get base(): CharacterBase {
     return this.params.base;
   }
@@ -411,6 +414,12 @@ export class Character {
     this.inventory = new Inventory({
       width: params.base.inventoryBase?.width ?? 5,
       height: params.base.inventoryBase?.height ?? 2,
+      onItemAdded: (item) => {
+        this.mods.addParentGroup(item.mods);
+      },
+      onItemRemoved: (item) => {
+        this.mods.removeParentGroup(item.mods);
+      },
     });
 
     const spells = this.base.spells?.map(

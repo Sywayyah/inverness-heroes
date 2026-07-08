@@ -14,7 +14,14 @@ export class Inventory {
 
   readonly items$ = new BehaviorSubject<Item[]>([]);
 
-  constructor(readonly params: { readonly width: number; readonly height: number }) {
+  constructor(
+    readonly params: {
+      readonly width: number;
+      readonly height: number;
+      onItemAdded?(item: Item): void;
+      onItemRemoved?(item: Item): void;
+    },
+  ) {
     this.itemsGrid = new Grid2D<InventorySlot>({
       width: params.width,
       height: params.height,
@@ -44,6 +51,7 @@ export class Inventory {
         if (isEmptyCell) {
           cell.slot$.next(item);
           this.itemsSet.add(item);
+          this.params.onItemAdded?.(item);
         }
 
         return isEmptyCell;
@@ -71,6 +79,7 @@ export class Inventory {
         if (slotHasItem) {
           cell.slot$.next(null);
           this.itemsSet.delete(item);
+          this.params.onItemRemoved?.(item);
         }
 
         return slotHasItem;

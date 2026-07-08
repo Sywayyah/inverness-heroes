@@ -120,12 +120,14 @@ export class GameBattle {
 
           if (maxDamage === 0) break;
 
+          const enhancedDamage = action.char.mods.getNumericModValue('enhancedDamage') ?? 0;
           const damageDealt = getRandomInt(minDamage, maxDamage);
-          action.history.push(`Dealing ${damageDealt} damage`);
+          const finalDamage = Math.round(damageDealt + damageDealt * (enhancedDamage / 100));
+          action.history.push(`Dealing ${finalDamage} damage`);
 
           this.dealPureDamageToUnit({
             char: targetChar,
-            damage: damageDealt,
+            damage: finalDamage,
           });
 
           break;
