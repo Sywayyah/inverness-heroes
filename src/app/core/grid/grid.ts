@@ -3,6 +3,10 @@ import { BehaviorSubject } from 'rxjs';
 export class Grid2D<T> {
   readonly state$ = new BehaviorSubject<T[][]>([]);
 
+  get cells(): T[][] {
+    return this.state$.getValue();
+  }
+
   constructor(
     readonly params: { readonly width: number; readonly height: number; cellGenerator(): T },
   ) {
@@ -11,5 +15,9 @@ export class Grid2D<T> {
         Array.from({ length: params.width }, () => params.cellGenerator()),
       ),
     );
+  }
+
+  getXYCell(x: number, y: number): T {
+    return this.cells[x][y];
   }
 }

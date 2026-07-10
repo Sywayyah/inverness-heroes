@@ -60,8 +60,11 @@ spellsRegistry.register({
   getDescription(): string {
     return `Corrosive Fog`;
   },
-  onActivated({ action: activity }): void {
-    activity.history.push(`Debuff!`);
+  onActivated({ action: activity, actions, target }): void {
+    const damage = getRandomInt(2, 3);
+    activity.history.push(`Debuff! Dealing ${damage} damage`);
+    if (!target) return;
+    actions.dealPureDamage({ target, damage });
   },
 });
 

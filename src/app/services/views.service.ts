@@ -6,6 +6,7 @@ export enum View {
   Battle,
   Shop,
   Settings,
+  Map
 }
 
 @Service()

@@ -18,7 +18,7 @@ export class NewGame {
   readonly selectedCharacter = signal(this.characters[0]);
 
   startGame(): void {
-    this.viewsService.setActiveView(View.Shop);
+    this.viewsService.setActiveView(View.Map);
     this.gameStateService.mainPlayer.chars.next([
       new Character({ base: this.selectedCharacter() }),
     ]);
