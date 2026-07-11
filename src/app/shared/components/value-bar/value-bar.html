@@ -1,0 +1,8 @@
+<div class="bar">
+  <div class="sub-value" [style.width.%]="valueBarWidth()"></div>
+  <div class="value" [style.background]="color()" [style.width.%]="valueBarWidth()"></div>
+</div>
+
+@if (showNumbers()) {
+  <div class="label">{{ label() }}</div>
+}

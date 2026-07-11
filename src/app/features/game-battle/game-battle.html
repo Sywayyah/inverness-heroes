@@ -2,21 +2,20 @@
   @for (player of gameStateService.players; track $index) {
     <div class="player">
       @for (char of player.chars | async; track $index) {
-        {{ char.params.base.name }}
+        <!-- {{ char.params.base.name }}
 
         @let state = (char.stateSubject$ | async)!;
 
-        <img
-          class="char-img"
-          [class.inverted]="player.params.controlable"
-          [src]="char.base.imgSrc"
-          alt=""
-        />
+        <div class="char-portrait">
+          <img
+            class="char-img"
+            [class.inverted]="player.params.controlable"
+            [src]="char.base.imgSrc"
+            alt=""
+          />
 
-        <div class="health">
-          Health:
-          {{ state.health }}/{{ state.maxHealth }}
-        </div>
+          <app-value-bar [value]="state.health" [maxValue]="state.maxHealth" />
+        </div> -->
 
         <div class="inventory">
           @for (invRow of char.inventory.itemsGrid.state$ | async; track $index) {
@@ -32,9 +31,6 @@
             </div>
           }
         </div>
-
-
-
 
         @let battleActions = char.battleActions$ | async;
 
@@ -53,7 +49,7 @@
                     class="action-img"
                   />
 
-                   {{ action.params.action.name }}
+                  {{ action.params.action.name }}
 
                   @let actionSource = action.params.activity;
                   @if (actionSource) {
@@ -115,12 +111,32 @@
     </div>
   }
 
-  <div class="round-info">
-    @if (round() === 0) {
-      Begin the fight
-    } @else {
-      Round {{ round() }}
+  <div class="mid-players">
+    @for (player of gameStateService.players; track $index) {
+      <div class="player">
+        @for (char of player.chars.getValue(); track $index) {
+          @let state = (char.stateSubject$ | async)!;
+
+          <div class="char-portrait">
+            <img
+              class="char-img"
+              [class.inverted]="player.params.controlable"
+              [src]="char.base.imgSrc"
+              alt=""
+            />
+
+            <app-value-bar [value]="state.health" [maxValue]="state.maxHealth" />
+          </div>
+        }
+      </div>
     }
+    <div class="round-info">
+      @if (round() === 0) {
+        Begin the fight
+      } @else {
+        Round {{ round() }}
+      }
+    </div>
   </div>
 
   <div class="battle-actions">

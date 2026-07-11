@@ -11,10 +11,11 @@ import { getRandomInt } from '../../core/utils/common';
 import { GameStateService } from '../../services/game-state.service';
 import { View, ViewsService } from '../../services/views.service';
 import { ItemIcon } from '../../shared/components/item-icon/item-icon';
+import { ValueBar } from "../../shared/components/value-bar/value-bar";
 
 @Component({
   selector: 'app-game-battle',
-  imports: [AsyncPipe, ItemIcon],
+  imports: [AsyncPipe, ItemIcon, ValueBar],
   templateUrl: './game-battle.html',
   styleUrl: './game-battle.scss',
 })

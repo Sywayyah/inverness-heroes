@@ -98,3 +98,35 @@
     gap: 8px;
   }
 }
+
+.char-portrait {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  margin-bottom: 10px;
+
+  app-value-bar {
+    height: 10px;
+    width: 150px;
+    margin: auto;
+    margin-top: 20px;
+  }
+
+}
+
+.mid-players {
+  gap: 150px;
+  display: flex;
+  position: relative;
+  position: fixed;
+  bottom: 500px;
+
+
+  .round-info {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+  }
+}
