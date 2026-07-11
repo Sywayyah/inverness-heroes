@@ -1,5 +1,5 @@
 import { Service, signal, WritableSignal } from '@angular/core';
-import { GameArea, GameAreaRoom } from '../core/locations/game-area';
+import { GameArea, AreaObject } from '../core/locations/game-area';
 import { Player } from '../core/player';
 
 @Service()

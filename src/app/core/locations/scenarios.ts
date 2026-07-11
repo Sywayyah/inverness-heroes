@@ -1,7 +1,7 @@
 import type { GameStateService } from '../../services/game-state.service';
 import { View, type ViewsService } from '../../services/views.service';
 import { EntityRegistry } from '../registries';
-import { GameArea, GameAreaRoom } from './game-area';
+import { GameArea, AreaObject } from './game-area';
 
 export interface Scenario {
   readonly id: string;
@@ -20,6 +20,13 @@ export const DefaultScenario: Scenario = {
     gameState.mainPlayer.gold.set(100);
     views.setActiveView(View.Map);
 
+    const secondArea = new GameArea({
+      height: 7,
+      width: 7,
+      areaName: 'Catacombs',
+      defaultCellBgImage: 'images/tiles/black-area.png',
+    });
+
     const mainArea = new GameArea({
       height: 7,
       width: 7,
@@ -34,10 +41,16 @@ export const DefaultScenario: Scenario = {
       image: 'images/tiles/small-rocks.png',
     });
 
-    mainArea.addRoom({
+    mainArea.addAreaObject({
       x: 1,
       y: 1,
-      room: new GameAreaRoom({ img: 'images/units/zombie.png', name: 'Prison Cell' }),
+      room: new AreaObject({ img: 'images/units/zombie.png', name: 'Prison Cell' }),
+    });
+
+    mainArea.addAreaObject({
+      x: 5,
+      y: 3,
+      room: new AreaObject({ img: 'images/tiles/path.png', name: 'Path to Catacombs' }),
     });
 
     gameState.areas.push(mainArea);

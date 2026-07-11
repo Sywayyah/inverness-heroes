@@ -2,35 +2,35 @@ import { signal } from '@angular/core';
 import { Grid2D } from '../grid/grid';
 import { ReactiveList } from '../reactive/reactive-list';
 
-enum RoomType {
+enum AreaObjectType {
   Enemy,
   Shop,
   Decoration,
 }
 
-export class GameAreaRoom {
+export class AreaObject {
   constructor(readonly params: { readonly img: string; readonly name: string }) {}
 }
 
 export class GameAreaCell {
   readonly backgroundImg = signal<string>('');
-  readonly room = signal<GameAreaRoom | null>(null);
+  readonly room = signal<AreaObject | null>(null);
 
   constructor(params: { readonly bgImage?: string }) {
     this.backgroundImg.set(params.bgImage ?? '');
   }
 }
 
-interface RoomModel {
+interface AreaObjectModel {
   readonly x: number;
   readonly y: number;
-  readonly room: GameAreaRoom;
+  readonly room: AreaObject;
 }
 
 export class GameArea {
   readonly cells: Grid2D<GameAreaCell>;
 
-  readonly rooms = new ReactiveList<RoomModel>();
+  readonly rooms = new ReactiveList<AreaObjectModel>();
 
   constructor(
     readonly params: {
@@ -47,7 +47,7 @@ export class GameArea {
     });
   }
 
-  addRoom(data: RoomModel): void {
+  addAreaObject(data: AreaObjectModel): void {
     this.rooms.push(data);
     this.cells.getXYCell(data.x, data.y).room.set(data.room);
   }

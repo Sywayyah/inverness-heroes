@@ -18,6 +18,6 @@ export class Grid2D<T> {
   }
 
   getXYCell(x: number, y: number): T {
-    return this.cells[x][y];
+    return this.cells[y][x];
   }
 }
