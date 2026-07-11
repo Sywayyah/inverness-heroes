@@ -22,3 +22,17 @@
     background: rgba(0, 0, 0, 0.178);
   }
 }
+
+.scenario-description {
+  margin: 20px;
+}
+
+.scenario {
+  padding: 5px;
+  cursor: pointer;
+
+  &:hover,
+  &.selected {
+    background: rgba(22, 22, 22, 0.473);
+  }
+}

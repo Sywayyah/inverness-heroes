@@ -1,7 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { Character, charsRegistry, CharType } from '../../core/characters';
+import { DefaultScenario, scenariosRegistry } from '../../core/locations/scenarios';
 import { GameStateService } from '../../services/game-state.service';
-import { View, ViewsService } from '../../services/views.service';
+import { ViewsService } from '../../services/views.service';
 
 @Component({
   selector: 'app-new-game',
@@ -17,8 +18,11 @@ export class NewGame {
 
   readonly selectedCharacter = signal(this.characters[0]);
 
+  readonly scenarios = scenariosRegistry.entities;
+
+  readonly selectedScenario = signal(DefaultScenario);
+
   startGame(): void {
-    this.viewsService.setActiveView(View.Map);
     this.gameStateService.mainPlayer.chars.next([
       new Character({ base: this.selectedCharacter() }),
     ]);
@@ -26,7 +30,6 @@ export class NewGame {
       new Character({ base: charsRegistry.getEntityById('char-zombie') }),
     ]);
 
-    // this.gameStateService.mainPlayer.gold.set(20);
-    this.gameStateService.mainPlayer.gold.set(100);
+    this.selectedScenario().init({ gameState: this.gameStateService, views: this.viewsService });
   }
 }

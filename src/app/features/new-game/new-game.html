@@ -1,8 +1,31 @@
+<div class="scenarios">
+  Pick Scenario:
+
+  @for (scenario of scenarios; track $index) {
+    <div
+      class="scenario"
+      [class.selected]="scenario === selectedScenario()"
+      (click)="selectedScenario.set(scenario)"
+    >
+      {{ scenario.name }}
+    </div>
+  }
+
+  <div class="scenario-description">
+    Scenario Description:
+    {{ selectedScenario().getDescription() }}
+  </div>
+</div>
+
 <div>
   Select character:
 
   @for (char of characters; track $index) {
-    <div class="char" [class.selected]="char === selectedCharacter()" (click)="selectedCharacter.set(char)">
+    <div
+      class="char"
+      [class.selected]="char === selectedCharacter()"
+      (click)="selectedCharacter.set(char)"
+    >
       <img [src]="char.imgSrc" alt="" />
       {{ char.name }}
     </div>

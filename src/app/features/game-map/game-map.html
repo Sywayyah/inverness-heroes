@@ -1,8 +1,8 @@
 <div class="map">
-  {{ stateService.activeArea().params.areaName }}
+  {{ stateService.activeArea()!.params.areaName }}
 
   <div class="rows">
-    @for (row of stateService.activeArea().cells.cells; track $index) {
+    @for (row of stateService.activeArea()!.cells.cells; track $index) {
       <div class="row">
         @for (cell of row; track $index) {
           @let cellRoom = cell.room();

@@ -19,32 +19,9 @@ export class GameStateService {
   ]);
 
   readonly areas: GameArea[] = [];
-  readonly activeArea: WritableSignal<GameArea>;
+  readonly activeArea = signal<GameArea | null>(null);
 
-  constructor() {
-    const mainArea = new GameArea({
-      height: 7,
-      width: 7,
-      areaName: 'Dungeon',
-      defaultCellBgImage: 'images/tiles/black-area.png',
-    });
-    mainArea.setCellsBgImg({
-      fromX: 1,
-      fromY: 1,
-      toX: 6,
-      toY: 6,
-      image: 'images/tiles/small-rocks.png',
-    });
-
-    mainArea.addRoom({
-      x: 1,
-      y: 1,
-      room: new GameAreaRoom({ img: 'images/units/zombie.png', name: 'Prison Cell' }),
-    });
-
-    this.areas.push(mainArea);
-    this.activeArea = signal(mainArea);
-  }
+  constructor() {}
 
   getEnemyOfThePlayer(player: Player): Player {
     return this.enemyPlayersMap.get(player)!;
