@@ -29,6 +29,8 @@ export enum ItemBaseType {
   Charm = 'charm',
   Ring = 'ring',
   Amulet = 'amulet',
+
+  Tool = 'tool',
 }
 
 export interface ItemBaseStatsModel {
@@ -212,6 +214,24 @@ itemsRegistry.register({
 });
 
 itemsRegistry.register({
+  id: 'iron-pickaxe',
+  imgSrc: 'images/items/tools/pickaxe.png',
+  name: 'Pickaxe',
+  type: ItemBaseType.Tool,
+  buyPrice: rangedNumber(5, 10),
+  durability: rangedNumber(20, 30),
+});
+
+itemsRegistry.register({
+  id: 'iron-axe',
+  imgSrc: 'images/items/tools/axe.png',
+  name: 'Axe',
+  type: ItemBaseType.Tool,
+  buyPrice: rangedNumber(5, 10),
+  durability: rangedNumber(20, 30),
+});
+
+itemsRegistry.register({
   id: 'candle',
   name: 'Candle',
   type: ItemBaseType.Charm,
@@ -351,6 +371,8 @@ export class Item {
       [ItemBaseType.Charm]: 'Charm',
       [ItemBaseType.Amulet]: 'Amulet',
       [ItemBaseType.Ring]: 'Ring',
+
+      [ItemBaseType.Tool]: 'tool',
     };
 
     return [
