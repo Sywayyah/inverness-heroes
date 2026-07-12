@@ -1,7 +1,7 @@
 import type { GameStateService } from '../../services/game-state.service';
 import { View, type ViewsService } from '../../services/views.service';
 import { EntityRegistry } from '../registries';
-import { GameArea, AreaObject } from './game-area';
+import { GameArea, AreaObject } from '../locations/game-area';
 
 export interface Scenario {
   readonly id: string;
@@ -41,16 +41,60 @@ export const DefaultScenario: Scenario = {
       image: 'images/tiles/small-rocks.png',
     });
 
+    secondArea.setCellsBgImg({
+      fromX: 1,
+      fromY: 1,
+      toX: 6,
+      toY: 6,
+      image: 'images/tiles/rocky-floor.png',
+    });
+
     mainArea.addAreaObject({
       x: 1,
       y: 1,
-      room: new AreaObject({ img: 'images/units/zombie.png', name: 'Prison Cell' }),
+      object: new AreaObject({
+        img: 'images/units/zombie.png',
+        name: 'Prison Cell',
+        onClick() {
+          views.setActiveView(View.Battle);
+        },
+      }),
     });
 
     mainArea.addAreaObject({
       x: 5,
       y: 3,
-      room: new AreaObject({ img: 'images/tiles/path.png', name: 'Path to Catacombs' }),
+      object: new AreaObject({
+        img: 'images/tiles/path.png',
+        name: 'Path to Catacombs',
+        onClick: () => {
+          gameState.activeArea.set(secondArea);
+        },
+      }),
+    });
+
+    mainArea.addAreaObject({
+      x: 3,
+      y: 3,
+      object: new AreaObject({
+        img: 'images/tiles/sign.png',
+        name: 'Shop',
+        onClick() {
+          views.setActiveView(View.Shop);
+        },
+      }),
+    });
+
+    secondArea.addAreaObject({
+      x: 1,
+      y: 3,
+      object: new AreaObject({
+        img: 'images/tiles/path.png',
+        name: 'Path to Dungeon',
+        onClick() {
+          gameState.activeArea.set(mainArea);
+        },
+      }),
     });
 
     gameState.areas.push(mainArea);

@@ -182,6 +182,6 @@ export class GameBattle {
   }
 
   leaveTheBattle(): void {
-    this.viewsService.setActiveView(View.Shop);
+    this.viewsService.setActiveView(View.Map);
   }
 }

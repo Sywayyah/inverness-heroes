@@ -5,11 +5,13 @@
     @for (row of stateService.activeArea()!.cells.cells; track $index) {
       <div class="row">
         @for (cell of row; track $index) {
-          @let cellRoom = cell.room();
+          @let cellRoom = cell.areaObject();
           <div class="cell" [style.background-image]="`url('${cell.backgroundImg()}')`">
             @if (cellRoom) {
               <img
-                (click)="handleRoomClicked()"
+                (click)="handleRoomClicked(cellRoom)"
+                (mouseenter)="hoveredAreaObject.set(cellRoom)"
+                (mouseleave)="hoveredAreaObject.set(null)"
                 class="cell-room"
                 [src]="cellRoom.params.img"
                 alt=""
@@ -21,3 +23,11 @@
     }
   </div>
 </div>
+
+@let hoveredObject = hoveredAreaObject();
+
+@if (hoveredObject) {
+  <div class="hovered-description">
+    {{ hoveredObject.params.name }}
+  </div>
+}

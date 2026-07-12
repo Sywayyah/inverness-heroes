@@ -9,12 +9,12 @@ enum AreaObjectType {
 }
 
 export class AreaObject {
-  constructor(readonly params: { readonly img: string; readonly name: string }) {}
+  constructor(readonly params: { readonly img: string; readonly name: string, onClick?(): void }) {}
 }
 
 export class GameAreaCell {
   readonly backgroundImg = signal<string>('');
-  readonly room = signal<AreaObject | null>(null);
+  readonly areaObject = signal<AreaObject | null>(null);
 
   constructor(params: { readonly bgImage?: string }) {
     this.backgroundImg.set(params.bgImage ?? '');
@@ -24,7 +24,7 @@ export class GameAreaCell {
 interface AreaObjectModel {
   readonly x: number;
   readonly y: number;
-  readonly room: AreaObject;
+  readonly object: AreaObject;
 }
 
 export class GameArea {
@@ -49,7 +49,7 @@ export class GameArea {
 
   addAreaObject(data: AreaObjectModel): void {
     this.rooms.push(data);
-    this.cells.getXYCell(data.x, data.y).room.set(data.room);
+    this.cells.getXYCell(data.x, data.y).areaObject.set(data.object);
   }
 
   setCellsBgImg({

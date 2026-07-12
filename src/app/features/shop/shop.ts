@@ -133,7 +133,7 @@ export class Shop {
     this.shopArea.addItem({ item: item });
   }
 
-  startBattle(): void {
-    this.viewsService.setActiveView(View.Battle);
+  goToMap(): void {
+    this.viewsService.setActiveView(View.Map);
   }
 }

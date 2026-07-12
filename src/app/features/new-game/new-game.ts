@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { Character, charsRegistry, CharType } from '../../core/characters';
-import { DefaultScenario, scenariosRegistry } from '../../core/locations/scenarios';
+import { DefaultScenario, scenariosRegistry } from '../../core/scenarios/scenarios';
 import { GameStateService } from '../../services/game-state.service';
 import { ViewsService } from '../../services/views.service';
 
