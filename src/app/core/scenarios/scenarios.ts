@@ -2,6 +2,7 @@ import type { GameStateService } from '../../services/game-state.service';
 import { View, type ViewsService } from '../../services/views.service';
 import { EntityRegistry } from '../registries';
 import { GameArea, AreaObject } from '../locations/game-area';
+import { Character, charsRegistry } from '../characters';
 
 export interface Scenario {
   readonly id: string;
@@ -57,6 +58,26 @@ export const DefaultScenario: Scenario = {
         name: 'Prison Cell',
         onClick() {
           views.setActiveView(View.Battle);
+
+          gameState.neutralPlayer.chars.next([
+            new Character({ base: charsRegistry.getEntityById('char-zombie') }),
+          ]);
+        },
+      }),
+    });
+
+    mainArea.addAreaObject({
+      x: 1,
+      y: 3,
+      object: new AreaObject({
+        img: 'images/units/skeleton.png',
+        name: 'Prison Cell',
+        onClick() {
+          views.setActiveView(View.Battle);
+
+          gameState.neutralPlayer.chars.next([
+            new Character({ base: charsRegistry.getEntityById('char-skeleton-warrior') }),
+          ]);
         },
       }),
     });

@@ -26,9 +26,6 @@ export class NewGame {
     this.gameStateService.mainPlayer.chars.next([
       new Character({ base: this.selectedCharacter() }),
     ]);
-    this.gameStateService.neutralPlayer.chars.next([
-      new Character({ base: charsRegistry.getEntityById('char-zombie') }),
-    ]);
 
     this.selectedScenario().init({ gameState: this.gameStateService, views: this.viewsService });
   }
