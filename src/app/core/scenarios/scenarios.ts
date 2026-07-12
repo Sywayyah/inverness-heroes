@@ -50,36 +50,45 @@ export const DefaultScenario: Scenario = {
       image: 'images/tiles/rocky-floor.png',
     });
 
+    const zombieRoom = new AreaObject({
+      img: 'images/units/zombie.png',
+      name: 'Prison Cell',
+      onClick({ selfObject }) {
+        if (selfObject.completed()) return;
+        gameState.neutralPlayer.chars.next([
+          new Character({ base: charsRegistry.getEntityById('char-zombie') }),
+        ]);
+        views.setActiveView(View.Battle);
+
+        selfObject.completed.set(true);
+      },
+    });
     mainArea.addAreaObject({
       x: 1,
       y: 1,
-      object: new AreaObject({
-        img: 'images/units/zombie.png',
-        name: 'Prison Cell',
-        onClick() {
-          views.setActiveView(View.Battle);
+      object: zombieRoom,
+    });
 
-          gameState.neutralPlayer.chars.next([
-            new Character({ base: charsRegistry.getEntityById('char-zombie') }),
-          ]);
-        },
-      }),
+    const skeletonRoom = new AreaObject({
+      img: 'images/units/skeleton.png',
+      name: 'Prison Cell',
+      onClick({ selfObject }) {
+        if (selfObject.completed()) return;
+
+        gameState.neutralPlayer.chars.next([
+          new Character({ base: charsRegistry.getEntityById('char-skeleton-warrior') }),
+        ]);
+
+        views.setActiveView(View.Battle);
+
+        selfObject.completed.set(true);
+      },
     });
 
     mainArea.addAreaObject({
       x: 1,
       y: 3,
-      object: new AreaObject({
-        img: 'images/units/skeleton.png',
-        name: 'Prison Cell',
-        onClick() {
-          views.setActiveView(View.Battle);
-
-          gameState.neutralPlayer.chars.next([
-            new Character({ base: charsRegistry.getEntityById('char-skeleton-warrior') }),
-          ]);
-        },
-      }),
+      object: skeletonRoom,
     });
 
     mainArea.addAreaObject({
@@ -89,7 +98,9 @@ export const DefaultScenario: Scenario = {
         img: 'images/tiles/path.png',
         name: 'Path to Catacombs',
         onClick: () => {
-          gameState.activeArea.set(secondArea);
+          if (skeletonRoom.completed() && zombieRoom.completed()) {
+            gameState.activeArea.set(secondArea);
+          }
         },
       }),
     });

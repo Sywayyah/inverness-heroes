@@ -16,6 +16,8 @@ export class GameMap {
   readonly hoveredAreaObject = signal<AreaObject | null>(null);
 
   handleRoomClicked(areaObject: AreaObject): void {
-    areaObject.params.onClick?.();
+    areaObject.params.onClick?.({
+      selfObject: areaObject,
+    });
   }
 }

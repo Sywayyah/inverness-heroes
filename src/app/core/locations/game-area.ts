@@ -9,7 +9,15 @@ enum AreaObjectType {
 }
 
 export class AreaObject {
-  constructor(readonly params: { readonly img: string; readonly name: string, onClick?(): void }) {}
+  readonly completed = signal(false);
+
+  constructor(
+    readonly params: {
+      readonly img: string;
+      readonly name: string;
+      onClick?(params: { readonly selfObject: AreaObject }): void;
+    },
+  ) {}
 }
 
 export class GameAreaCell {
