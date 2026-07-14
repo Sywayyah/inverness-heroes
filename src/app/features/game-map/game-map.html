@@ -28,6 +28,11 @@
 
 @if (hoveredObject) {
   <div class="hovered-description">
-    {{ hoveredObject.params.name }}
+    <img [src]="hoveredObject.params.img" alt="">
+
+    <div>
+      {{ hoveredObject.params.name }}
+
+    </div>
   </div>
 }

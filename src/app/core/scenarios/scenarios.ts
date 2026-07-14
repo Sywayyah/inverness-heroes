@@ -106,6 +106,27 @@ export const DefaultScenario: Scenario = {
     });
 
     mainArea.addAreaObject({
+      x: 4,
+      y: 4,
+      object: new AreaObject({
+        img: 'images/tiles/skull-altar.png',
+        name: 'Altar',
+        onClick({ selfObject }) {
+          if (selfObject.completed()) return;
+
+          const result = confirm('Altar offers +10% to XP gain');
+
+          if (result) {
+            selfObject.completed.set(true);
+            gameState.mainPlayer.chars.getValue()[0].mods.addMods({
+              experienceGainedPercent: 10,
+            });
+          }
+        },
+      }),
+    });
+
+    mainArea.addAreaObject({
       x: 3,
       y: 3,
       object: new AreaObject({
