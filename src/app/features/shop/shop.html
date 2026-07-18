@@ -13,6 +13,10 @@
 
             @if (slotItem) {
               <app-item-icon [item]="slotItem" [showSellPrice]="true" />
+
+              @if (slotItem.isStackable) {
+                <div class="item-amount">{{ slotItem.amount() }}</div>
+              }
             }
           </div>
         }
@@ -29,7 +33,16 @@
     </div>
 
     <div>
-      Sell for {{ selectedPlayerItem.sellPrice() }} gold
+      Sell for {{ selectedPlayerItem.sellPrice() * sellAmount() }} gold
+
+      @if (selectedPlayerItem.isStackable) {
+        <input
+          type="number"
+          [min]="0"
+          [max]="selectedPlayerItem.amount()"
+          [(ngModel)]="sellAmount"
+        />
+      }
 
       <button (click)="sellItem()">Sell</button>
     </div>
@@ -44,11 +57,15 @@
       @for (row of shopArea.itemsGrid.state$ | async; track $index) {
         <div class="row">
           @for (item of row; track $index) {
-            <div class="cell" (click)="activeShopItem.set(cell)">
+            <div class="cell" (click)="activeShopItem.set(cell); buyAmount.set(1)">
               @let cell = item.cell$ | async;
 
               @if (cell) {
                 <app-item-icon [item]="cell.item" attachment="right" [showCost]="true" />
+
+                @if (cell.item.isStackable) {
+                  <div class="item-amount">{{ cell.item.amount() }}</div>
+                }
               }
             </div>
           }
@@ -63,7 +80,15 @@
       <div class="item-description">{{ selectedShopItem.item.getDescription() }}</div>
 
       <div>
-        Cost: {{ selectedShopItem.item.buyPrice() }}
+        Cost: {{ selectedShopItem.item.buyPrice() * buyAmount() }}
+        @if (selectedShopItem.item.isStackable) {
+          <input
+            type="number"
+            [max]="selectedShopItem.item.amount()"
+            [min]="0"
+            [(ngModel)]="buyAmount"
+          />
+        }
         <button [disabled]="player.gold() < selectedShopItem.item.buyPrice()" (click)="buyItem()">
           Buy
         </button>

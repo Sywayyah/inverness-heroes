@@ -31,6 +31,8 @@ export enum ItemBaseType {
   Amulet = 'amulet',
 
   Tool = 'tool',
+
+  Resource = 'resource',
 }
 
 export interface ItemBaseStatsModel {
@@ -59,6 +61,9 @@ export interface ItemBase {
   readonly actions?: BaseAction[];
 
   readonly sockets?: RangedNumber;
+
+  readonly stackable?: boolean;
+  readonly maxStackSize?: number;
 }
 
 export const itemsRegistry = new EntityRegistry<ItemBase>({ name: 'Items' });
@@ -241,6 +246,19 @@ itemsRegistry.register({
   buyPrice: rangedNumber(6, 8),
 });
 
+itemsRegistry.register({
+  id: 'res-wood',
+  name: 'Wood',
+  imgSrc: 'images/resources/wood.png',
+  type: ItemBaseType.Resource,
+
+  stackable: true,
+  maxStackSize: 99,
+
+  buyPrice: 5,
+  sellPrice: 2,
+});
+
 // heavy sword: actions damage increased by strength, if strengh is high enough - can give block/uninterruptable status while swinging
 
 export type ItemState = Readonly<{
@@ -287,14 +305,23 @@ export class Item {
   readonly buyPrice = signal(0);
   readonly sellPrice = signal(getRandomInt(1, 5));
 
+  readonly amount = signal(1);
+  readonly isStackable: boolean;
+
   constructor(
     readonly params: {
       readonly base: ItemBase;
       readonly ownerChar: Character;
       readonly itemLevel: number;
+      readonly count?: number;
     },
   ) {
     const base = params.base;
+    this.isStackable = base.stackable ?? false;
+
+    if (this.isStackable) {
+      this.amount.set(params.count ?? 1);
+    }
 
     const durability = base.durability ? rollRangedNumber(base.durability) : Infinity;
 
@@ -372,7 +399,8 @@ export class Item {
       [ItemBaseType.Amulet]: 'Amulet',
       [ItemBaseType.Ring]: 'Ring',
 
-      [ItemBaseType.Tool]: 'tool',
+      [ItemBaseType.Tool]: 'Tool',
+      [ItemBaseType.Resource]: 'Resource',
     };
 
     return [
