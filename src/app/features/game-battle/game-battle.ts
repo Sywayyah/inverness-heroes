@@ -11,7 +11,7 @@ import { getRandomInt } from '../../core/utils/common';
 import { GameStateService } from '../../services/game-state.service';
 import { View, ViewsService } from '../../services/views.service';
 import { ItemIcon } from '../../shared/components/item-icon/item-icon';
-import { ValueBar } from "../../shared/components/value-bar/value-bar";
+import { ValueBar } from '../../shared/components/value-bar/value-bar';
 
 @Component({
   selector: 'app-game-battle',
@@ -70,7 +70,7 @@ export class GameBattle {
       return;
     }
 
-    timer(500).subscribe(() => {
+    timer(650).subscribe(() => {
       action.performed.set(true);
 
       const targetChar = this.gameStateService.enemyPlayersMap
@@ -166,6 +166,8 @@ export class GameBattle {
     const newHealth = Math.max(health - damage, 0);
 
     char.stateSubject$.next({ ...charState, health: newHealth });
+
+    char.messages.push(`${damage}`);
   }
 
   healUnit({ char, health }: { readonly char: Character; readonly health: number }): void {
@@ -183,5 +185,8 @@ export class GameBattle {
 
   leaveTheBattle(): void {
     this.viewsService.setActiveView(View.Map);
+    this.gameStateService.players.forEach((player) =>
+      player.chars.getValue().forEach((char) => char.messages.clear()),
+    );
   }
 }

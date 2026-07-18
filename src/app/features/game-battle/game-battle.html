@@ -126,6 +126,12 @@
             />
 
             <app-value-bar [value]="state.health" [maxValue]="state.maxHealth" />
+
+            @for (msg of char.messages.value$ | async; track $index) {
+              <div class="char-msg">
+                {{ msg }}
+              </div>
+            }
           </div>
         }
       </div>

@@ -395,6 +395,8 @@ export class Character {
 
   readonly mods = new ModGroup<Modifiers>();
 
+  readonly messages = new ReactiveList<string>();
+
   get base(): CharacterBase {
     return this.params.base;
   }
