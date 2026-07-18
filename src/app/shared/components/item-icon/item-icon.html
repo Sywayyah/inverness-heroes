@@ -1,5 +1,9 @@
 <img [src]="item().base.imgSrc" />
 
+@if (item().isStackable) {
+  <div class="item-amount">{{ item().amount() }}</div>
+}
+
 @if (showHoverDescription()) {
   <div class="description" [class.right]="attachment() === 'right'">
     <img class="item-preview" [src]="item().base.imgSrc" />
@@ -15,5 +19,9 @@
     <div>
       {{ item().getDescription() }}
     </div>
+
+    @if (item().isStackable) {
+      <div>Amount: {{ item().amount() }}</div>
+    }
   </div>
 }

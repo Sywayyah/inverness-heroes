@@ -13,10 +13,6 @@
 
             @if (slotItem) {
               <app-item-icon [item]="slotItem" [showSellPrice]="true" />
-
-              @if (slotItem.isStackable) {
-                <div class="item-amount">{{ slotItem.amount() }}</div>
-              }
             }
           </div>
         }
@@ -62,10 +58,6 @@
 
               @if (cell) {
                 <app-item-icon [item]="cell.item" attachment="right" [showCost]="true" />
-
-                @if (cell.item.isStackable) {
-                  <div class="item-amount">{{ cell.item.amount() }}</div>
-                }
               }
             </div>
           }

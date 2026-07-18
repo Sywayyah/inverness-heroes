@@ -31,17 +31,6 @@
       font-size: 12px;
       position: relative;
 
-      app-item-icon {
-        width: 100%;
-        height: 100%;
-        image-rendering: pixelated;
-      }
-
-      .item-amount {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-      }
     }
   }
 }
