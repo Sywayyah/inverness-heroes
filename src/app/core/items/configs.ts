@@ -2,8 +2,8 @@ import { Modifiers } from '../modifiers';
 import { RangedNumber, formattedRangedNumber } from '../types/ranged';
 import { ItemModifiersDescriptionParams } from './item-modifiers';
 
-const modifiersMapping: {
-  readonly [K in keyof Modifiers]: { readonly label: string; readonly percent?: boolean };
+export  const modifiersConfigs: {
+  readonly [K in keyof Modifiers]: { readonly label: string; readonly percent?: boolean; readonly order?: number };
 } = {
   mana: {
     label: 'Mana',
@@ -71,6 +71,13 @@ const modifiersMapping: {
   },
 };
 
+export function getModStatLine(stat: keyof Modifiers, value: number): string {
+  const percent = modifiersConfigs[stat]!.percent;
+  const postfix = typeof percent === 'undefined' || percent ? '%' : '';
+
+  return `${modifiersConfigs[stat]!.label}: ${value + postfix}`;
+}
+
 export function getItemStatLine({
   stat,
   params,
@@ -80,10 +87,10 @@ export function getItemStatLine({
   readonly params: ItemModifiersDescriptionParams;
   readonly ranged: RangedNumber;
 }): string {
-  const percent = modifiersMapping[stat]!.percent;
+  const percent = modifiersConfigs[stat]!.percent;
   const postfix = typeof percent === 'undefined' || percent ? '%' : '';
 
-  return `${modifiersMapping[stat]!.label}: ${params.mods ? params.mods[stat] + postfix : ''} [${formattedRangedNumber(ranged)}${postfix}]`;
+  return `${modifiersConfigs[stat]!.label}: ${params.mods ? params.mods[stat] + postfix : ''} [${formattedRangedNumber(ranged)}${postfix}]`;
 }
 
 export function getItemStatsLines(

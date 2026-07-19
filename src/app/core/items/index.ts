@@ -2,6 +2,7 @@ import { signal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { BaseAction, OneHandActivitySource, TwoHandsActivitySource } from '../activities';
 import { Character } from '../characters';
+import { Grid2D } from '../grid/grid';
 import { Modifiers } from '../modifiers';
 import { ModGroup } from '../modifiers/mod-group';
 import { ReactiveList } from '../reactive/reactive-list';
@@ -13,8 +14,9 @@ import {
   rollRangedNumber,
 } from '../types/ranged';
 import { getRandomInt, rollChance } from '../utils/common';
+import { getEntries } from '../utils/objects';
+import { getModStatLine, modifiersConfigs } from './configs';
 import { ItemModifiers } from './item-modifiers';
-import { Grid2D } from '../grid/grid';
 
 export enum ItemBaseType {
   Weapon = 'weapon',
@@ -366,24 +368,24 @@ export class Item {
     const itemStats = this.stats$.getValue();
 
     const damage = rangedNumber(itemStats.minDamage, itemStats.maxDamage);
-    const statLines = [];
+    const itemStatLines = [];
 
     if (damage) {
-      statLines.push(`Damage: ${formattedRangedNumber(damage)}`);
+      itemStatLines.push(`Damage: ${formattedRangedNumber(damage)}`);
     }
 
     if (itemStats.defence) {
-      statLines.push(`Defence: ${itemStats.defence}`);
+      itemStatLines.push(`Defence: ${itemStats.defence}`);
     }
 
     const itemState = this.stateSubject$.getValue();
 
     if (itemState.durability !== Infinity) {
-      statLines.push(`Durability: ${itemState.durability}/${itemState.maxDurability}`);
+      itemStatLines.push(`Durability: ${itemState.durability}/${itemState.maxDurability}`);
     }
 
     if (this.sockets()) {
-      statLines.push(`Sockets: ${this.sockets()}`);
+      itemStatLines.push(`Sockets: ${this.sockets()}`);
     }
 
     const typeMapping: Record<ItemBaseType, string> = {
@@ -403,16 +405,33 @@ export class Item {
       [ItemBaseType.Resource]: 'Resource',
     };
 
+    const allMods = this.mods.getAllCombinedValues();
+
+    const combinedModsDescriptions = getEntries(allMods)
+      .map(([modName, modVal]) => {
+        return {
+          modName,
+          modVal,
+          config: modifiersConfigs[modName],
+          line: getModStatLine(modName, modVal!),
+        };
+      })
+      .sort((a, b) => (a.config?.order ?? 0) - (b.config?.order ?? 0));
+
+    // use with Alt key
+    // const modifiersDescriptions = this.modifiersList
+    //   .getValue()
+    //   .map((modItem) => modItem.itemModifier.getDescription({ item: this, mods: modItem.mods }))
+    //   .join('\n');
+
     return [
       `${this.base.name}`,
       `${typeMapping[this.base.type]}`,
 
-      ...statLines,
+      ...itemStatLines,
 
-      this.modifiersList
-        .getValue()
-        .map((modItem) => modItem.itemModifier.getDescription({ item: this, mods: modItem.mods }))
-        .join('\n'),
+      ...combinedModsDescriptions.map((desc) => desc.line),
+      // modifiersDescriptions,
     ].join('\n');
   }
 }
