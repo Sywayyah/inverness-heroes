@@ -39,7 +39,7 @@ export class GameBattle {
 
   initCharActions(): void {
     this.gameStateService.enemyPlayersMap.forEach((player) => {
-      player.chars.getValue().forEach((char) => char.initActions({ actionPoints: 10 }));
+      player.chars.getValue().forEach((char) => char.initActions());
     });
   }
 
@@ -50,10 +50,17 @@ export class GameBattle {
     this.gameStateService.players.forEach((player) => {
       player.chars.getValue().forEach((char) => {
         char.battleActions$.getValue().battleActions.forEach((action) => {
-          battleActions.push(new BattleAction(player, char, action));
+          if (!player.params.controlable) {
+            battleActions.push(new BattleAction(player, char, action));
+          } else {
+            if (action.isSelected()) {
+              battleActions.push(new BattleAction(player, char, action));
+            }
+          }
         });
       });
     });
+
     const shuffledActions = shuffleArray(battleActions);
     this.battleActions.set(shuffledActions);
     this.isFightInProgress.set(true);
@@ -179,7 +186,7 @@ export class GameBattle {
   }
 
   rerollCharActions(char: Character): void {
-    char.initActions({ actionPoints: 10 });
+    char.initActions();
     char.rerollsLeft.update((rerolls) => rerolls - 1);
   }
 

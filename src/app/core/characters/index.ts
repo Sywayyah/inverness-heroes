@@ -1,4 +1,4 @@
-import { signal } from '@angular/core';
+import { signal, WritableSignal } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import {
   Activity,
@@ -11,7 +11,9 @@ import {
 } from '../activities';
 import { Item } from '../items';
 import { Modifiers } from '../modifiers';
+import { ModGroup } from '../modifiers/mod-group';
 import { ReactiveList } from '../reactive/reactive-list';
+import { ReactiveState } from '../reactive/reactive-state';
 import { EntityRegistry } from '../registries';
 import { Spell, spellsRegistry } from '../spells';
 import { MappedRecordTypes } from '../types/mappings';
@@ -23,7 +25,6 @@ import {
   getRandomItem,
 } from '../utils/common';
 import { Inventory } from './inventory';
-import { ModGroup } from '../modifiers/mod-group';
 
 export enum CharType {
   Playable,
@@ -102,6 +103,9 @@ charsRegistry.register({
         {
           source: OneHandActivitySource,
           stats: { minDamage: 3, maxDamage: 5, accuracy: rangedNumber(25, 40) },
+          getRequirements() {
+            return { actionPoints: 1 };
+          },
         },
       ],
     },
@@ -113,6 +117,9 @@ charsRegistry.register({
         {
           source: LegActivitySource,
           stats: { minDamage: 5, maxDamage: 8, accuracy: rangedNumber(30, 45) },
+          getRequirements() {
+            return { actionPoints: 2 };
+          },
         },
       ],
     },
@@ -151,13 +158,23 @@ charsRegistry.register({
         {
           source: OneHandActivitySource,
           stats: { minDamage: 4, maxDamage: 9, accuracy: rangedNumber(30, 40) },
+          getRequirements() {
+            return { actionPoints: 2 };
+          },
         },
       ],
     },
     {
       name: 'Prayer',
       imgSrc: 'images/common/mind-action.png',
-      sources: [{ source: MouthActivitySource }],
+      sources: [
+        {
+          source: MouthActivitySource,
+          getRequirements() {
+            return { actionPoints: 1 };
+          },
+        },
+      ],
     },
   ],
 
@@ -198,6 +215,9 @@ charsRegistry.register({
         {
           source: OneHandActivitySource,
           stats: { minDamage: 4, maxDamage: 7, accuracy: rangedNumber(35, 45) },
+          getRequirements() {
+            return { actionPoints: 1 };
+          },
         },
       ],
     },
@@ -209,6 +229,9 @@ charsRegistry.register({
           source: LegActivitySource,
 
           stats: { minDamage: 6, maxDamage: 8, accuracy: rangedNumber(40, 45) },
+          getRequirements() {
+            return { actionPoints: 3 };
+          },
         },
       ],
     },
@@ -251,6 +274,9 @@ charsRegistry.register({
         {
           source: OneHandActivitySource,
           stats: { minDamage: 3, maxDamage: 4, accuracy: rangedNumber(20, 25) },
+          getRequirements() {
+            return { actionPoints: 1 };
+          },
         },
       ],
     },
@@ -261,6 +287,9 @@ charsRegistry.register({
         {
           source: LegActivitySource,
           stats: { minDamage: 3, maxDamage: 6, accuracy: rangedNumber(25, 30) },
+          getRequirements() {
+            return { actionPoints: 2 };
+          },
         },
       ],
     },
@@ -295,6 +324,9 @@ charsRegistry.register({
         {
           source: MouthActivitySource,
           stats: { minDamage: rangedNumber(1, 3), maxDamage: rangedNumber(3, 4) },
+          getRequirements() {
+            return { actionPoints: 2 };
+          },
         },
       ],
     },
@@ -306,10 +338,16 @@ charsRegistry.register({
         {
           source: OneHandActivitySource,
           stats: { minDamage: 3, maxDamage: 5, accuracy: rangedNumber(10, 20) },
+          getRequirements() {
+            return { actionPoints: 1 };
+          },
         },
         {
           source: TwoHandsActivitySource,
           stats: { minDamage: 4, maxDamage: 7, accuracy: rangedNumber(15, 25) },
+          getRequirements() {
+            return { actionPoints: 2 };
+          },
         },
       ],
     },
@@ -343,6 +381,9 @@ charsRegistry.register({
         {
           source: OneHandActivitySource,
           stats: { minDamage: 3, maxDamage: 6, accuracy: rangedNumber(30, 35) },
+          getRequirements() {
+            return { actionPoints: 2 };
+          },
         },
       ],
     },
@@ -365,7 +406,8 @@ interface CharBattleActions {
 }
 
 export type CharBattleAction = MappedRecordTypes<CharBattleActions> & {
-  readonly requirements: Partial<{ readonly actionPoints: number }>;
+  readonly requirements: { readonly actionPoints: number };
+  readonly isSelected: WritableSignal<boolean>;
 };
 
 export class Character {
@@ -374,6 +416,8 @@ export class Character {
     health: 0,
     maxMana: 0,
     mana: 0,
+    level: 1,
+    maxLevel: 99,
   });
 
   readonly statsSubject$ = new BehaviorSubject({
@@ -385,11 +429,14 @@ export class Character {
 
   readonly inventory: Inventory;
 
-  readonly battleActions$ = new BehaviorSubject<{
+  readonly battleActions$ = new ReactiveState<{
     battleActions: CharBattleAction[];
   }>({
     battleActions: [],
   });
+
+  readonly battleState = new ReactiveState<{ actionPoints: number }>({ actionPoints: 10 });
+  // readonly battleSelectedActions = new ReactiveList<CharBattleAction>();
 
   readonly rerollsLeft = signal(1);
 
@@ -412,6 +459,8 @@ export class Character {
       maxHealth: health,
       mana,
       maxMana: mana,
+      level: 1,
+      maxLevel: 99,
     });
 
     this.statsSubject$.next(params.base.baseStats);
@@ -440,7 +489,10 @@ export class Character {
     this.rerollsLeft.set(1);
   }
 
-  initActions(params: { readonly actionPoints: number }): void {
+  initActions(): void {
+    this.battleState.patch({ actionPoints: 10 });
+    // this.battleSelectedActions.clear();
+
     const itemsWithActions = this.inventory.getItems().filter((item) => item.base.actions?.length);
     const itemActions = itemsWithActions.flatMap((item) =>
       item.base.actions!.map((action) => ({ item, action })),
@@ -461,9 +513,11 @@ export class Character {
           type: 'item',
           params: { ...itemAction, source: source },
           requirements: {
-            actionPoints: source?.getRequirements?.({ item: itemAction.item, ownerChar: this })
-              .actionPoints,
+            actionPoints:
+              source?.getRequirements?.({ item: itemAction.item, ownerChar: this }).actionPoints ??
+              0,
           },
+          isSelected: signal(false),
         };
       }),
       ...randomCharActivities.map((charActivity): CharBattleAction => {
@@ -475,21 +529,47 @@ export class Character {
             activity: source,
           },
           requirements: {
-            actionPoints: source?.getRequirements?.({ ownerChar: this }).actionPoints,
+            actionPoints: source?.getRequirements?.({ ownerChar: this }).actionPoints ?? 0,
           },
+          isSelected: signal(false),
         };
       }),
       ...randomSpells.map((spell): CharBattleAction => ({
         type: 'charSpell',
         params: { spell },
         requirements: {
-          actionPoints: spell.base.getRequirements?.({ ownerChar: this, spell: spell })
-            .actionPoints,
+          actionPoints:
+            spell.base.getRequirements?.({ ownerChar: this, spell: spell }).actionPoints ?? 0,
         },
+        isSelected: signal(false),
       })),
     ];
 
     const randomizedFinalList = getNRandomUniqueItems(finalList, 6);
-    this.battleActions$.next({ battleActions: randomizedFinalList });
+    this.battleActions$.setValue({ battleActions: randomizedFinalList });
+  }
+
+  toggleBattleActionSelected(action: CharBattleAction): void {
+    if (!action.isSelected()) {
+      if (this.battleState.getValue().actionPoints >= (action.requirements.actionPoints ?? 0)) {
+        this.addBattleAction(action);
+      }
+    } else {
+      this.removeBattleAction(action);
+    }
+  }
+
+  addBattleAction(action: CharBattleAction): void {
+    action.isSelected.set(true);
+    this.battleState.patchWith((state) => ({
+      actionPoints: state.actionPoints - (action.requirements.actionPoints ?? 0),
+    }));
+  }
+
+  removeBattleAction(action: CharBattleAction): void {
+    action.isSelected.set(false);
+    this.battleState.patchWith((state) => ({
+      actionPoints: state.actionPoints + (action.requirements.actionPoints ?? 0),
+    }));
   }
 }

@@ -46,6 +46,9 @@ spellsRegistry.register({
   getDescription(): string {
     return `Firebolt`;
   },
+  getRequirements() {
+    return { actionPoints: 2 };
+  },
   onActivated({ actions, owner, target, action: activity, spell }): void {
     if (!target) {
       return;
@@ -64,6 +67,9 @@ spellsRegistry.register({
   getDescription(): string {
     return `Corrosive Fog`;
   },
+  getRequirements() {
+    return { actionPoints: 1 };
+  },
   onActivated({ action: activity, actions, target }): void {
     const damage = getRandomInt(2, 3);
     activity.history.push(`Debuff! Dealing ${damage} damage`);
@@ -79,6 +85,9 @@ spellsRegistry.register({
   activationType: SpellActivationType.Passive,
   getDescription(): string {
     return `Heal`;
+  },
+  getRequirements() {
+    return { actionPoints: 2 };
   },
   onActivated({ actions, action: activity, owner, spell }): void {
     const healValue = 5;

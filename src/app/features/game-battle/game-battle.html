@@ -32,7 +32,9 @@
           }
         </div>
 
-        @let battleActions = char.battleActions$ | async;
+        @let battleActions = char.battleActions$.value$ | async;
+
+        <div>Select Actions (Points left: {{ (char.battleState.value$ | async)?.actionPoints }})</div>
 
         <button (click)="rerollCharActions(char)" [disabled]="!char.rerollsLeft()">
           Rerolls left: {{ char.rerollsLeft() }}
@@ -40,7 +42,17 @@
 
         <div class="actions">
           @for (action of battleActions?.battleActions; track $index) {
-            <div class="action">
+            @let charBattleState = (char.battleState.value$ | async)!;
+            <div
+              class="action"
+              (click)="char.toggleBattleActionSelected(action)"
+              [class.selected]="action.isSelected()"
+              [class.disabled]="
+                (!action.isSelected() &&
+                  charBattleState.actionPoints < (action.requirements.actionPoints ?? 0)) ||
+                isFightInProgress()
+              "
+            >
               @switch (action.type) {
                 @case ('char') {
                   <img
