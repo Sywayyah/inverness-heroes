@@ -81,7 +81,7 @@
             [(ngModel)]="buyAmount"
           />
         }
-        <button [disabled]="player.gold() < selectedShopItem.item.buyPrice()" (click)="buyItem()">
+        <button [disabled]="player.gold() < selectedShopItem.item.buyPrice() * buyAmount()" (click)="buyItem()">
           Buy
         </button>
       </div>
