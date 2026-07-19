@@ -1,9 +1,14 @@
 import { Modifiers } from '../modifiers';
 import { RangedNumber, formattedRangedNumber } from '../types/ranged';
+import { getEntries } from '../utils/objects';
 import { ItemModifiersDescriptionParams } from './item-modifiers';
 
-export  const modifiersConfigs: {
-  readonly [K in keyof Modifiers]: { readonly label: string; readonly percent?: boolean; readonly order?: number };
+export const modifiersConfigs: {
+  readonly [K in keyof Modifiers]: {
+    readonly label: string;
+    readonly percent?: boolean;
+    readonly order?: number;
+  };
 } = {
   mana: {
     label: 'Mana',
@@ -76,6 +81,20 @@ export function getModStatLine(stat: keyof Modifiers, value: number): string {
   const postfix = typeof percent === 'undefined' || percent ? '%' : '';
 
   return `${modifiersConfigs[stat]!.label}: ${value + postfix}`;
+}
+
+export function getFormattedModValues(mods: Modifiers): string[] {
+  return getEntries(mods)
+    .map(([modName, modVal]) => {
+      return {
+        modName,
+        modVal,
+        config: modifiersConfigs[modName],
+        line: getModStatLine(modName, modVal!),
+      };
+    })
+    .sort((a, b) => (a.config?.order ?? 0) - (b.config?.order ?? 0))
+    .map((item) => item.line);
 }
 
 export function getItemStatLine({

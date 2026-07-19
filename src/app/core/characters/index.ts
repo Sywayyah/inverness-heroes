@@ -364,7 +364,9 @@ interface CharBattleActions {
   };
 }
 
-export type CharBattleAction = MappedRecordTypes<CharBattleActions>;
+export type CharBattleAction = MappedRecordTypes<CharBattleActions> & {
+  readonly requirements: Partial<{ readonly actionPoints: number }>;
+};
 
 export class Character {
   readonly stateSubject$ = new BehaviorSubject({
@@ -453,18 +455,38 @@ export class Character {
     const randomSpells = getNRandomItems(this.spells.getValue(), getRandomInt(0, 3));
 
     const finalList: CharBattleAction[] = [
-      ...randomItemActions.map((itemAction): CharBattleAction => ({
-        type: 'item',
-        params: { ...itemAction, source: getRandomItem(itemAction.action.sources ?? []) },
-      })),
-      ...randomCharActivities.map((charActivity): CharBattleAction => ({
-        type: 'char',
-        params: {
-          action: charActivity,
-          activity: getRandomItem(charActivity.sources ?? []),
+      ...randomItemActions.map((itemAction): CharBattleAction => {
+        const source = getRandomItem(itemAction.action.sources ?? []);
+        return {
+          type: 'item',
+          params: { ...itemAction, source: source },
+          requirements: {
+            actionPoints: source?.getRequirements?.({ item: itemAction.item, ownerChar: this })
+              .actionPoints,
+          },
+        };
+      }),
+      ...randomCharActivities.map((charActivity): CharBattleAction => {
+        const source = getRandomItem(charActivity.sources ?? []);
+        return {
+          type: 'char',
+          params: {
+            action: charActivity,
+            activity: source,
+          },
+          requirements: {
+            actionPoints: source?.getRequirements?.({ ownerChar: this }).actionPoints,
+          },
+        };
+      }),
+      ...randomSpells.map((spell): CharBattleAction => ({
+        type: 'charSpell',
+        params: { spell },
+        requirements: {
+          actionPoints: spell.base.getRequirements?.({ ownerChar: this, spell: spell })
+            .actionPoints,
         },
       })),
-      ...randomSpells.map((spell): CharBattleAction => ({ type: 'charSpell', params: { spell } })),
     ];
 
     const randomizedFinalList = getNRandomUniqueItems(finalList, 6);

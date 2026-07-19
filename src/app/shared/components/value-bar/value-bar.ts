@@ -11,12 +11,8 @@ export class ValueBar {
   readonly maxValue = input.required<number>();
 
   readonly color = input('red');
-
-  readonly showNumbers = input(true);
+  readonly showLabel = input(false);
 
   readonly valueBarWidth = computed(() => (this.value() / this.maxValue()) * 100);
 
-  readonly label = computed(() => {
-    return `${this.value()}/${this.maxValue()}`;
-  });
 }

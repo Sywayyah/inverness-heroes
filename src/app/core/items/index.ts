@@ -14,8 +14,7 @@ import {
   rollRangedNumber,
 } from '../types/ranged';
 import { getRandomInt, rollChance } from '../utils/common';
-import { getEntries } from '../utils/objects';
-import { getModStatLine, modifiersConfigs } from './configs';
+import { getFormattedModValues } from './configs';
 import { ItemModifiers } from './item-modifiers';
 
 export enum ItemBaseType {
@@ -96,6 +95,9 @@ itemsRegistry.register({
             maxDamage: rangedNumber(13, 15),
             accuracy: rangedNumber(15, 30),
           },
+          getRequirements() {
+            return { actionPoints: 3 };
+          },
         },
         {
           source: TwoHandsActivitySource,
@@ -103,6 +105,9 @@ itemsRegistry.register({
             minDamage: rangedNumber(18),
             maxDamage: rangedNumber(23),
             accuracy: rangedNumber(30, 35),
+          },
+          getRequirements() {
+            return { actionPoints: 7 };
           },
         },
       ],
@@ -115,11 +120,18 @@ itemsRegistry.register({
           stats: {
             accuracy: rangedNumber(27, 33),
           },
+
+          getRequirements() {
+            return { actionPoints: 2 };
+          },
         },
         {
           source: TwoHandsActivitySource,
           stats: {
             accuracy: rangedNumber(36, 45),
+          },
+          getRequirements() {
+            return { actionPoints: 4 };
           },
         },
       ],
@@ -170,6 +182,9 @@ itemsRegistry.register({
             minDamage: rangedNumber(3),
             maxDamage: rangedNumber(5, 6),
           },
+          getRequirements() {
+            return { actionPoints: 2 };
+          },
         },
         {
           source: TwoHandsActivitySource,
@@ -177,6 +192,10 @@ itemsRegistry.register({
             accuracy: rangedNumber(30, 35),
             minDamage: rangedNumber(4),
             maxDamage: rangedNumber(6, 8),
+          },
+
+          getRequirements() {
+            return { actionPoints: 3 };
           },
         },
       ],
@@ -208,11 +227,17 @@ itemsRegistry.register({
           stats: {
             accuracy: rangedNumber(15, 20),
           },
+          getRequirements() {
+            return { actionPoints: 3 };
+          },
         },
         {
           source: TwoHandsActivitySource,
           stats: {
             accuracy: rangedNumber(30, 35),
+          },
+          getRequirements() {
+            return { actionPoints: 5 };
           },
         },
       ],
@@ -309,6 +334,7 @@ export class Item {
 
   readonly amount = signal(1);
   readonly isStackable: boolean;
+  readonly hasDurability: boolean;
 
   constructor(
     readonly params: {
@@ -326,6 +352,7 @@ export class Item {
     }
 
     const durability = base.durability ? rollRangedNumber(base.durability) : Infinity;
+    this.hasDurability = durability !== Infinity;
 
     this.stateSubject$ = new BehaviorSubject<ItemState>({
       ownerCharacter: params.ownerChar,
@@ -407,16 +434,20 @@ export class Item {
 
     const allMods = this.mods.getAllCombinedValues();
 
-    const combinedModsDescriptions = getEntries(allMods)
-      .map(([modName, modVal]) => {
-        return {
-          modName,
-          modVal,
-          config: modifiersConfigs[modName],
-          line: getModStatLine(modName, modVal!),
-        };
-      })
-      .sort((a, b) => (a.config?.order ?? 0) - (b.config?.order ?? 0));
+    const modLines = getFormattedModValues(allMods);
+    if (this.base.actions) {
+      itemStatLines.push('\nActions:');
+
+      this.base.actions?.forEach((action) => {
+        action.sources?.forEach((source) => {
+          itemStatLines.push(`${action.name} - ${source.source.name}`);
+        });
+      });
+
+      if (modLines.length) {
+        itemStatLines.push('\n');
+      }
+    }
 
     // use with Alt key
     // const modifiersDescriptions = this.modifiersList
@@ -430,7 +461,7 @@ export class Item {
 
       ...itemStatLines,
 
-      ...combinedModsDescriptions.map((desc) => desc.line),
+      ...modLines,
       // modifiersDescriptions,
     ].join('\n');
   }

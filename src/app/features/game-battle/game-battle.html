@@ -40,9 +40,9 @@
 
         <div class="actions">
           @for (action of battleActions?.battleActions; track $index) {
-            @switch (action.type) {
-              @case ('char') {
-                <div class="action">
+            <div class="action">
+              @switch (action.type) {
+                @case ('char') {
                   <img
                     [src]="action.params.action.imgSrc ?? 'images/common/action.png'"
                     alt=""
@@ -56,10 +56,8 @@
                     -
                     {{ actionSource.source.name }}
                   }
-                </div>
-              }
-              @case ('item') {
-                <div class="action">
+                }
+                @case ('item') {
                   <app-item-icon [item]="action.params.item" />
                   {{ action.params.action.name }}
 
@@ -68,15 +66,14 @@
                     -
                     {{ actionSource.source.name }}
                   }
-                </div>
-              }
-              @case ('charSpell') {
-                <div class="action">
+                }
+                @case ('charSpell') {
                   <img [src]="action.params.spell.base.imgSrc" class="action-img" />
                   {{ char.base.name }} - {{ action.params.spell.base.name }}
-                </div>
+                }
               }
-            }
+              <div>| Points: {{ action.requirements.actionPoints ?? 0 }}</div>
+            </div>
           }
         </div>
       }
@@ -125,7 +122,9 @@
               alt=""
             />
 
-            <app-value-bar [value]="state.health" [maxValue]="state.maxHealth" />
+            <app-value-bar [value]="state.health" [maxValue]="state.maxHealth">
+              {{ state.health }}/{{ state.maxHealth }}
+            </app-value-bar>
 
             @for (msg of char.messages.value$ | async; track $index) {
               <div class="char-msg">

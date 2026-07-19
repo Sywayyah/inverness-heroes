@@ -1,8 +1,8 @@
 import { signal } from '@angular/core';
-import { EntityRegistry } from '../registries';
+import { ActivityRequirements, BattleAction } from '../activities';
 import { Character } from '../characters';
+import { EntityRegistry } from '../registries';
 import { getRandomInt } from '../utils/common';
-import { BattleAction } from '../activities';
 
 export enum SpellActivationType {
   Targeted,
@@ -26,6 +26,10 @@ export interface SpellBase {
   readonly name: string;
   readonly imgSrc: string;
   readonly activationType: SpellActivationType;
+  getRequirements?(params: {
+    readonly ownerChar: Character;
+    readonly spell: Spell;
+  }): ActivityRequirements;
   getDescription(params: { readonly spell: Spell }): string;
   // todo: should there be activities on spell level?
 

@@ -3,6 +3,6 @@
   <div class="value" [style.background]="color()" [style.width.%]="valueBarWidth()"></div>
 </div>
 
-@if (showNumbers()) {
-  <div class="label">{{ label() }}</div>
+@if (showLabel()) {
+  <div class="label"><ng-content /></div>
 }

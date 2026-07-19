@@ -3,6 +3,7 @@ import { Character, CharBattleAction } from '../characters';
 import { Player } from '../player';
 import { ReactiveList } from '../reactive/reactive-list';
 import { RangedNumber } from '../types/ranged';
+import { Item } from '../items';
 
 // various creatures may define other custom activity types
 export interface ActivitySource {
@@ -11,8 +12,8 @@ export interface ActivitySource {
 }
 
 export const OneHandActivitySource: ActivitySource = {
-  name: 'Hand',
-  shortName: 'H',
+  name: 'One Hand',
+  shortName: 'OH',
 };
 
 export const TwoHandsActivitySource: ActivitySource = {
@@ -48,9 +49,14 @@ export interface ActionStatsModel {
 
 export type ActionStats = Partial<Readonly<ActionStatsModel>>;
 
+export interface ActivityRequirements {
+  readonly actionPoints?: number;
+}
+
 export interface Activity {
   readonly source: ActivitySource;
   readonly stats?: ActionStats;
+  getRequirements?(params: { readonly ownerChar: Character; readonly item?: Item }): ActivityRequirements;
 }
 
 export interface BaseAction {
