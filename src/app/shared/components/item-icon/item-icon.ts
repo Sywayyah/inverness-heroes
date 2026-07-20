@@ -1,13 +1,12 @@
 import { Component, input } from '@angular/core';
 import { Item } from '../../../core/items';
-import { ValueBar } from "../value-bar/value-bar";
-import { AsyncPipe } from '@angular/common';
+import { ValueBar } from '../value-bar/value-bar';
 
 type DescriptionAttachment = 'left' | 'right' | 'middle';
 
 @Component({
   selector: 'app-item-icon',
-  imports: [ValueBar, AsyncPipe],
+  imports: [ValueBar],
   templateUrl: './item-icon.html',
   styleUrl: './item-icon.scss',
 })

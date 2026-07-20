@@ -23,7 +23,7 @@ export class NewGame {
   readonly selectedScenario = signal(DefaultScenario);
 
   startGame(): void {
-    this.gameStateService.mainPlayer.chars.next([
+    this.gameStateService.mainPlayer.chars.setValue([
       new Character({ base: this.selectedCharacter() }),
     ]);
 

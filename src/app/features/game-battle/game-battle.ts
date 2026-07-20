@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { timer } from 'rxjs';
 import { BattleAction } from '../../core/activities';
@@ -15,7 +14,7 @@ import { ValueBar } from '../../shared/components/value-bar/value-bar';
 
 @Component({
   selector: 'app-game-battle',
-  imports: [AsyncPipe, ItemIcon, ValueBar],
+  imports: [ItemIcon, ValueBar],
   templateUrl: './game-battle.html',
   styleUrl: './game-battle.scss',
 })
@@ -49,7 +48,7 @@ export class GameBattle {
     const battleActions: BattleAction[] = [];
     this.gameStateService.players.forEach((player) => {
       player.chars.getValue().forEach((char) => {
-        char.battleActions$.getValue().battleActions.forEach((action) => {
+        char.battleActions.getValue().battleActions.forEach((action) => {
           if (!player.params.controlable) {
             battleActions.push(new BattleAction(player, char, action));
           } else {
@@ -122,7 +121,7 @@ export class GameBattle {
 
           break;
         case 'item':
-          const itemStats = activity.params.item.stats$.getValue();
+          const itemStats = activity.params.item.stats.getValue();
           const minDamage = itemStats.minDamage;
           const maxDamage = itemStats.maxDamage;
 
@@ -147,7 +146,7 @@ export class GameBattle {
 
   checkWin(): void {
     const losingPlayer = this.gameStateService.players.find((player) => {
-      return player.chars.getValue().every((char) => char.stateSubject$.getValue().health === 0);
+      return player.chars.getValue().every((char) => char.charState.getValue().health === 0);
     });
 
     if (losingPlayer) {
@@ -168,21 +167,13 @@ export class GameBattle {
     readonly char: Character;
     readonly damage: number;
   }): void {
-    const charState = char.stateSubject$.getValue();
-    const health = charState.health;
-    const newHealth = Math.max(health - damage, 0);
-
-    char.stateSubject$.next({ ...charState, health: newHealth });
+    char.charState.patchWith((state) => ({ health: Math.max(state.health - damage, 0) }));
 
     char.messages.push(`${damage}`);
   }
 
   healUnit({ char, health }: { readonly char: Character; readonly health: number }): void {
-    const charState = char.stateSubject$.getValue();
-    const initHealth = charState.health;
-    const newHealth = Math.min(initHealth + health, charState.maxHealth);
-
-    char.stateSubject$.next({ ...charState, health: newHealth });
+    char.charState.patchWith((state) => ({ health: Math.min(health, state.maxHealth) }));
   }
 
   rerollCharActions(char: Character): void {

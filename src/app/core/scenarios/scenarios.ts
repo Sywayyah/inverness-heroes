@@ -55,7 +55,7 @@ export const DefaultScenario: Scenario = {
       name: 'Prison Cell',
       onClick({ selfObject }) {
         if (selfObject.completed()) return;
-        gameState.neutralPlayer.chars.next([
+        gameState.neutralPlayer.chars.setValue([
           new Character({ base: charsRegistry.getEntityById('char-zombie') }),
         ]);
         views.setActiveView(View.Battle);
@@ -75,7 +75,7 @@ export const DefaultScenario: Scenario = {
       onClick({ selfObject }) {
         if (selfObject.completed()) return;
 
-        gameState.neutralPlayer.chars.next([
+        gameState.neutralPlayer.chars.setValue([
           new Character({ base: charsRegistry.getEntityById('char-skeleton-warrior') }),
         ]);
 

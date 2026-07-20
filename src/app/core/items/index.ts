@@ -16,6 +16,7 @@ import {
 import { getRandomInt, rollChance } from '../utils/common';
 import { getFormattedModValues } from './configs';
 import { ItemModifiers } from './item-modifiers';
+import { ReactiveState } from '../reactive/reactive-state';
 
 export enum ItemBaseType {
   Weapon = 'weapon',
@@ -307,7 +308,7 @@ export class ItemSocket {
 }
 
 export class Item {
-  readonly stateSubject$: BehaviorSubject<ItemState>;
+  readonly state: ReactiveState<ItemState>;
 
   readonly mods = new ModGroup<Modifiers>();
 
@@ -323,7 +324,7 @@ export class Item {
     return this.params.base;
   }
 
-  readonly stats$ = new BehaviorSubject<RolledItemStats>({
+  readonly stats = new ReactiveState<RolledItemStats>({
     maxDamage: 0,
     minDamage: 0,
     defence: 0,
@@ -354,7 +355,7 @@ export class Item {
     const durability = base.durability ? rollRangedNumber(base.durability) : Infinity;
     this.hasDurability = durability !== Infinity;
 
-    this.stateSubject$ = new BehaviorSubject<ItemState>({
+    this.state = new ReactiveState<ItemState>({
       ownerCharacter: params.ownerChar,
       durability: durability,
       maxDurability: durability,
@@ -367,7 +368,7 @@ export class Item {
 
     if (maxDamage && minDamage === 0) minDamage = maxDamage;
 
-    this.stats$.next({
+    this.stats.setValue({
       minDamage: minDamage,
       maxDamage: maxDamage,
       defence: itemStats?.defence ? rollRangedNumber(itemStats.defence) : 0,
@@ -392,7 +393,7 @@ export class Item {
   }
 
   getDescription(): string {
-    const itemStats = this.stats$.getValue();
+    const itemStats = this.stats.getValue();
 
     const damage = rangedNumber(itemStats.minDamage, itemStats.maxDamage);
     const itemStatLines = [];
@@ -405,7 +406,7 @@ export class Item {
       itemStatLines.push(`Defence: ${itemStats.defence}`);
     }
 
-    const itemState = this.stateSubject$.getValue();
+    const itemState = this.state.getValue();
 
     if (itemState.durability !== Infinity) {
       itemStatLines.push(`Durability: ${itemState.durability}/${itemState.maxDurability}`);

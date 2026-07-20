@@ -5,7 +5,7 @@ import { ReactiveBase } from './reactive-base';
 // composition? take ReactiveValue as param instead of extending it? this way, ReactiveValue can be extended by other
 export class ReactiveList<T> extends ReactiveBase<T[]> {
   get length(): number {
-    return this.valueSubject$.getValue().length;
+    return this.getValue().length;
   }
 
   constructor(initialVal: T[] = []) {
@@ -25,11 +25,11 @@ export class ReactiveList<T> extends ReactiveBase<T[]> {
   }
 
   at(index: number): T | undefined {
-    return this.valueSubject$.getValue().at(index);
+    return this.getValue().at(index);
   }
 
   atIndex(index: number): T {
-    return assertValue(this.valueSubject$.getValue().at(index), `No item found at index ${index}`);
+    return assertValue(this.getValue().at(index), `No item found at index ${index}`);
   }
 
   push(...val: T[]): ReactiveList<T> {

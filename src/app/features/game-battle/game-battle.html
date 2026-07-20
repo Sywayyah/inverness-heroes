@@ -1,27 +1,13 @@
 <div class="players">
   @for (player of gameStateService.players; track $index) {
     <div class="player">
-      @for (char of player.chars | async; track $index) {
-        <!-- {{ char.params.base.name }}
-
-        @let state = (char.stateSubject$ | async)!;
-
-        <div class="char-portrait">
-          <img
-            class="char-img"
-            [class.inverted]="player.params.controlable"
-            [src]="char.base.imgSrc"
-            alt=""
-          />
-
-          <app-value-bar [value]="state.health" [maxValue]="state.maxHealth" />
-        </div> -->
+      @for (char of player.chars.value(); track $index) {
 
         <div class="inventory">
-          @for (invRow of char.inventory.itemsGrid.state$ | async; track $index) {
+          @for (invRow of char.inventory.itemsGrid.state.value(); track $index) {
             <div class="inv-row">
               @for (invCell of invRow; track $index) {
-                @let invItem = invCell.slot$ | async;
+                @let invItem = invCell.slot.value();
                 <div class="inv-cell">
                   @if (invItem) {
                     <app-item-icon [item]="invItem" />
@@ -32,9 +18,9 @@
           }
         </div>
 
-        @let battleActions = char.battleActions$.value$ | async;
+        @let battleActions = char.battleActions.value();
 
-        <div>Select Actions (Points left: {{ (char.battleState.value$ | async)?.actionPoints }})</div>
+        <div>Select Actions (Points left: {{ char.battleState.value().actionPoints }})</div>
 
         <button (click)="rerollCharActions(char)" [disabled]="!char.rerollsLeft()">
           Rerolls left: {{ char.rerollsLeft() }}
@@ -42,7 +28,7 @@
 
         <div class="actions">
           @for (action of battleActions?.battleActions; track $index) {
-            @let charBattleState = (char.battleState.value$ | async)!;
+            @let charBattleState = char.battleState.value()!;
             <div
               class="action"
               (click)="char.toggleBattleActionSelected(action)"
@@ -95,7 +81,7 @@
 
 <div class="battle-panel">
   <div class="history">
-    @for (entry of history.value$ | async; track $index) {
+    @for (entry of history.value(); track $index) {
       <div class="entry">
         {{ entry }}
       </div>
@@ -108,7 +94,7 @@
     <div>Winner:</div>
 
     <div class="winner-chars">
-      @for (char of winner()?.chars | async; track $index) {
+      @for (char of winner()?.chars?.value(); track $index) {
         <div class="winner" [style.background]="winner()?.color()">
           <img
             [src]="char.base.imgSrc"
@@ -124,7 +110,7 @@
     @for (player of gameStateService.players; track $index) {
       <div class="player">
         @for (char of player.chars.getValue(); track $index) {
-          @let state = (char.stateSubject$ | async)!;
+          @let state = char.charState.value()!;
 
           <div class="char-portrait">
             <img
@@ -138,7 +124,7 @@
               {{ state.health }}/{{ state.maxHealth }}
             </app-value-bar>
 
-            @for (msg of char.messages.value$ | async; track $index) {
+            @for (msg of char.messages.value(); track $index) {
               <div class="char-msg">
                 {{ msg }}
               </div>
@@ -207,7 +193,7 @@
         <hr />
 
         <div class="history">
-          @for (entry of action.history.value$ | async; track $index) {
+          @for (entry of action.history.value(); track $index) {
             {{ entry }}
           }
         </div>

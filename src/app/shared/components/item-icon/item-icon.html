@@ -1,9 +1,13 @@
 <img [src]="item().base.imgSrc" />
 
-@let itemStats = (item().stateSubject$ | async)!;
+@let itemStats = item().state.value();
 
 @if (item().hasDurability) {
-  <app-value-bar [maxValue]="itemStats.maxDurability" [value]="itemStats.durability" color="orange" />
+  <app-value-bar
+    [maxValue]="itemStats.maxDurability"
+    [value]="itemStats.durability"
+    color="orange"
+  />
 }
 
 @if (item().isStackable) {

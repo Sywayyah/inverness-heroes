@@ -1,9 +1,10 @@
 import { BehaviorSubject } from 'rxjs';
 import { Item } from '../items';
 import { Grid2D } from '../grid/grid';
+import { ReactiveValue } from '../reactive/reactive-value';
 
 export class InventorySlot {
-  readonly slot$ = new BehaviorSubject<Item | null>(null);
+  readonly slot = new ReactiveValue<Item | null>(null);
 }
 
 export class Inventory {
@@ -44,12 +45,12 @@ export class Inventory {
       return;
     }
 
-    const rowWithEmptyCell = this.itemsGrid.state$.getValue().find((row) =>
+    const rowWithEmptyCell = this.itemsGrid.state.getValue().find((row) =>
       row.find((cell) => {
-        const isEmptyCell = cell.slot$.getValue() === null;
+        const isEmptyCell = cell.slot.getValue() === null;
 
         if (isEmptyCell) {
-          cell.slot$.next(item);
+          cell.slot.setValue(item);
           this.itemsSet.add(item);
           this.params.onItemAdded?.(item);
         }
@@ -72,12 +73,12 @@ export class Inventory {
       return;
     }
 
-    const rowWithItem = this.itemsGrid.state$.getValue().find((row) =>
+    const rowWithItem = this.itemsGrid.state.getValue().find((row) =>
       row.find((cell) => {
-        const slotHasItem = cell.slot$.getValue() === item;
+        const slotHasItem = cell.slot.getValue() === item;
 
         if (slotHasItem) {
-          cell.slot$.next(null);
+          cell.slot.setValue(null);
           this.itemsSet.delete(item);
           this.params.onItemRemoved?.(item);
         }
@@ -95,7 +96,7 @@ export class Inventory {
 
   notify(): void {
     // basic reemit to notify about change
-    this.itemsGrid.state$.next(this.itemsGrid.state$.getValue());
+    this.itemsGrid.state.setValue(this.itemsGrid.state.getValue());
     this.items$.next(this.getItems());
   }
 }

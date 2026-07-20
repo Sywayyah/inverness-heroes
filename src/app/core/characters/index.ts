@@ -1,5 +1,4 @@
 import { signal, WritableSignal } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 import {
   Activity,
   ActivitySource,
@@ -411,7 +410,7 @@ export type CharBattleAction = MappedRecordTypes<CharBattleActions> & {
 };
 
 export class Character {
-  readonly stateSubject$ = new BehaviorSubject({
+  readonly charState = new ReactiveState({
     maxHealth: 0,
     health: 0,
     maxMana: 0,
@@ -420,7 +419,7 @@ export class Character {
     maxLevel: 99,
   });
 
-  readonly statsSubject$ = new BehaviorSubject({
+  readonly statsState = new ReactiveState({
     strength: 0,
     agility: 0,
     vitality: 0,
@@ -429,7 +428,7 @@ export class Character {
 
   readonly inventory: Inventory;
 
-  readonly battleActions$ = new ReactiveState<{
+  readonly battleActions = new ReactiveState<{
     battleActions: CharBattleAction[];
   }>({
     battleActions: [],
@@ -454,7 +453,7 @@ export class Character {
     const health = params.base.baseValues.health;
     const mana = params.base.baseValues.mana ?? 0;
 
-    this.stateSubject$.next({
+    this.charState.setValue({
       health: health,
       maxHealth: health,
       mana,
@@ -463,7 +462,7 @@ export class Character {
       maxLevel: 99,
     });
 
-    this.statsSubject$.next(params.base.baseStats);
+    this.statsState.setValue(params.base.baseStats);
 
     this.inventory = new Inventory({
       width: params.base.inventoryBase?.width ?? 5,
@@ -546,7 +545,7 @@ export class Character {
     ];
 
     const randomizedFinalList = getNRandomUniqueItems(finalList, 6);
-    this.battleActions$.setValue({ battleActions: randomizedFinalList });
+    this.battleActions.setValue({ battleActions: randomizedFinalList });
   }
 
   toggleBattleActionSelected(action: CharBattleAction): void {

@@ -1,13 +1,13 @@
-import { BehaviorSubject } from 'rxjs';
 import { Grid2D } from '../grid/grid';
 import { Item } from '../items';
+import { ReactiveValue } from '../reactive/reactive-value';
 
 export interface ShopSlotItem {
   readonly item: Item;
 }
 
 export class ShopAreaSlot {
-  readonly cell$ = new BehaviorSubject<ShopSlotItem | null>(null);
+  readonly slotItem = new ReactiveValue<ShopSlotItem | null>(null);
 }
 
 export class ShopArea {
@@ -24,9 +24,9 @@ export class ShopArea {
   getSlotsWithItems(): ShopSlotItem[] {
     const items: ShopSlotItem[] = [];
 
-    this.itemsGrid.state$.getValue().forEach((row) =>
+    this.itemsGrid.state.getValue().forEach((row) =>
       row.forEach((slot) => {
-        const cellItem = slot.cell$.getValue();
+        const cellItem = slot.slotItem.getValue();
         if (cellItem) items.push(cellItem);
       }),
     );
@@ -35,12 +35,12 @@ export class ShopArea {
   }
 
   addItem(item: ShopSlotItem): void {
-    this.itemsGrid.state$.getValue().find((row) =>
+    this.itemsGrid.state.getValue().find((row) =>
       row.find((cell) => {
-        const isEmptyCell = cell.cell$.getValue() === null;
+        const isEmptyCell = cell.slotItem.getValue() === null;
 
         if (isEmptyCell) {
-          cell.cell$.next(item);
+          cell.slotItem.setValue(item);
         }
 
         return isEmptyCell;
@@ -49,12 +49,12 @@ export class ShopArea {
   }
 
   removeItem(item: ShopSlotItem): void {
-    this.itemsGrid.state$.getValue().find((row) =>
+    this.itemsGrid.state.getValue().find((row) =>
       row.find((cell) => {
-        const cellHasItem = cell.cell$.getValue() === item;
+        const cellHasItem = cell.slotItem.getValue() === item;
 
         if (cellHasItem) {
-          cell.cell$.next(null);
+          cell.slotItem.setValue(null);
         }
 
         return cellHasItem;

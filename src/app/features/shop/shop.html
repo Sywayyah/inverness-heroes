@@ -5,11 +5,11 @@
   {{ char.params.base.name }}
 
   <div class="inventory">
-    @for (row of char.inventory.itemsGrid.state$ | async; track $index) {
+    @for (row of char.inventory.itemsGrid.state.value(); track $index) {
       <div class="row">
         @for (item of row; track $index) {
           <div class="cell" (click)="handlePlayerSlotClicked(item)">
-            @let slotItem = item.slot$ | async;
+            @let slotItem = item.slot.value();
 
             @if (slotItem) {
               <app-item-icon [item]="slotItem" [showSellPrice]="true" />
@@ -21,7 +21,7 @@
   </div>
 
   @let selectedPlayerSlot = activePlayerSlot();
-  @let selectedPlayerItem = selectedPlayerSlot?.slot$ | async;
+  @let selectedPlayerItem = selectedPlayerSlot?.slot?.value();
 
   @if (selectedPlayerItem) {
     <div class="item-description">
@@ -50,11 +50,11 @@
     <div>Trader:</div>
 
     <div class="inventory">
-      @for (row of shopArea.itemsGrid.state$ | async; track $index) {
+      @for (row of shopArea.itemsGrid.state.value(); track $index) {
         <div class="row">
           @for (item of row; track $index) {
             <div class="cell" (click)="activeShopItem.set(cell); buyAmount.set(1)">
-              @let cell = item.cell$ | async;
+              @let cell = item.slotItem.value();
 
               @if (cell) {
                 <app-item-icon [item]="cell.item" attachment="right" [showCost]="true" />
@@ -81,7 +81,10 @@
             [(ngModel)]="buyAmount"
           />
         }
-        <button [disabled]="player.gold() < selectedShopItem.item.buyPrice() * buyAmount()" (click)="buyItem()">
+        <button
+          [disabled]="player.gold() < selectedShopItem.item.buyPrice() * buyAmount()"
+          (click)="buyItem()"
+        >
           Buy
         </button>
       </div>

@@ -1,19 +1,18 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { InventorySlot } from '../../core/characters/inventory';
 import { Item, itemsRegistry } from '../../core/items';
 import { itemModifiersRegistry } from '../../core/items/item-modifiers';
 import { ShopArea, ShopSlotItem } from '../../core/shop/shop-area';
+import { rangedNumber, rollRangedNumber } from '../../core/types/ranged';
 import { getNRandomItems, getNRandomUniqueItems, getRandomInt } from '../../core/utils/common';
 import { GameStateService } from '../../services/game-state.service';
 import { View, ViewsService } from '../../services/views.service';
 import { ItemIcon } from '../../shared/components/item-icon/item-icon';
-import { rangedNumber, rollRangedNumber } from '../../core/types/ranged';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-shop',
-  imports: [AsyncPipe, ItemIcon, FormsModule],
+  imports: [ItemIcon, FormsModule],
   templateUrl: './shop.html',
   styleUrl: './shop.scss',
 })
@@ -108,7 +107,7 @@ export class Shop {
     this.sellAmount.set(1);
     const activePlayerSlot = this.activePlayerSlot();
 
-    const slotItem = targetSlot.slot$.getValue()!;
+    const slotItem = targetSlot.slot.getValue()!;
 
     if (!activePlayerSlot) {
       if (!slotItem) {
@@ -119,8 +118,8 @@ export class Shop {
       return;
     }
 
-    targetSlot.slot$.next(activePlayerSlot.slot$.getValue());
-    activePlayerSlot.slot$.next(slotItem);
+    targetSlot.slot.setValue(activePlayerSlot.slot.getValue());
+    activePlayerSlot.slot.setValue(slotItem);
 
     this.activePlayerSlot.set(null);
   }
@@ -161,7 +160,7 @@ export class Shop {
   }
 
   sellItem(): void {
-    const item = this.activePlayerSlot()?.slot$.getValue();
+    const item = this.activePlayerSlot()?.slot.getValue();
 
     if (!item) return;
 
