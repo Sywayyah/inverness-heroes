@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { timer } from 'rxjs';
 import { BattleAction } from '../../core/activities';
-import { Character } from '../../core/characters';
+import { ActionActivationType, Character, BattleMetaActionBase } from '../../core/characters';
 import { Player } from '../../core/player';
 import { ReactiveList } from '../../core/reactive/reactive-list';
 import { rollRangedNumber } from '../../core/types/ranged';
@@ -11,6 +11,7 @@ import { GameStateService } from '../../services/game-state.service';
 import { View, ViewsService } from '../../services/views.service';
 import { ItemIcon } from '../../shared/components/item-icon/item-icon';
 import { ValueBar } from '../../shared/components/value-bar/value-bar';
+import { ActionsApi } from '../../core/api';
 
 @Component({
   selector: 'app-game-battle',
@@ -40,6 +41,16 @@ export class GameBattle {
     this.gameStateService.enemyPlayersMap.forEach((player) => {
       player.chars.getValue().forEach((char) => char.initActions());
     });
+  }
+
+  handleMetaAction(player: Player, char: Character, metaAction: BattleMetaActionBase): void {
+    if (metaAction.activationType === ActionActivationType.Instant) {
+      metaAction.onInstantActivation?.({
+        actions: this.createActionsApi(),
+        ownerChar: char,
+        player,
+      });
+    }
   }
 
   beginFight(): void {
@@ -88,11 +99,7 @@ export class GameBattle {
         case 'charSpell':
           const spell = activity.params.spell;
           spell.base.onActivated?.({
-            actions: {
-              dealPureDamage: (params) =>
-                this.dealPureDamageToUnit({ char: params.target, damage: params.damage }),
-              healCharacter: (params) => this.healUnit(params),
-            },
+            actions: this.createActionsApi(),
             spell,
             target: targetChar,
             owner: action.char,
@@ -144,6 +151,14 @@ export class GameBattle {
     });
   }
 
+  createActionsApi(): ActionsApi {
+    return {
+      dealPureDamage: (params) =>
+        this.dealPureDamageToUnit({ char: params.target, damage: params.damage }),
+      healCharacter: (params) => this.healUnit(params),
+    };
+  }
+
   checkWin(): void {
     const losingPlayer = this.gameStateService.players.find((player) => {
       return player.chars.getValue().every((char) => char.charState.getValue().health === 0);
@@ -173,7 +188,9 @@ export class GameBattle {
   }
 
   healUnit({ char, health }: { readonly char: Character; readonly health: number }): void {
-    char.charState.patchWith((state) => ({ health: Math.min(health, state.maxHealth) }));
+    char.charState.patchWith((state) => ({
+      health: Math.min(state.health + health, state.maxHealth),
+    }));
   }
 
   rerollCharActions(char: Character): void {

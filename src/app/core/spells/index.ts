@@ -3,6 +3,7 @@ import { ActivityRequirements, BattleAction } from '../activities';
 import { Character } from '../characters';
 import { EntityRegistry } from '../registries';
 import { getRandomInt } from '../utils/common';
+import { ActionsApi } from '../api';
 
 export enum SpellActivationType {
   Targeted,
@@ -15,10 +16,7 @@ interface OnSpellActivatedParams {
   readonly target?: Character;
   readonly action: BattleAction;
   readonly spell: Spell;
-  readonly actions: {
-    dealPureDamage(params: { readonly target: Character; readonly damage: number }): void;
-    healCharacter(params: { readonly char: Character; readonly health: number }): void;
-  };
+  readonly actions: ActionsApi;
 }
 
 export interface SpellBase {

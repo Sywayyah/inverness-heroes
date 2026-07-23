@@ -116,6 +116,20 @@
   }
 }
 
+.meta-actions {
+  display: flex;
+  gap: 3px;
+  .meta-action {
+    border-radius: 3px;
+    padding: 3px;
+    display: flex;
+    flex-direction: column;
+    width: 100px;
+    text-align: center;
+    border: 1px solid white;
+  }
+}
+
 .char-portrait {
   display: flex;
   flex-direction: column;

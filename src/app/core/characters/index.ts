@@ -8,9 +8,11 @@ import {
   OneHandActivitySource,
   TwoHandsActivitySource,
 } from '../activities';
+import { ActionsApi } from '../api';
 import { Item } from '../items';
 import { Modifiers } from '../modifiers';
 import { ModGroup } from '../modifiers/mod-group';
+import { Player } from '../player';
 import { ReactiveList } from '../reactive/reactive-list';
 import { ReactiveState } from '../reactive/reactive-state';
 import { EntityRegistry } from '../registries';
@@ -28,6 +30,24 @@ import { Inventory } from './inventory';
 export enum CharType {
   Playable,
   Neutral,
+}
+
+export enum ActionActivationType {
+  Instant,
+  Target,
+  ItemTarget,
+}
+
+// todo: introduce class? maybe even subclasses
+export interface BattleMetaActionBase {
+  readonly title: string;
+  getDescription(): string;
+  readonly activationType: ActionActivationType;
+  onInstantActivation?(params: {
+    readonly player: Player;
+    readonly ownerChar: Character;
+    readonly actions: ActionsApi;
+  }): void;
 }
 
 export interface CharacterBase {
@@ -56,6 +76,8 @@ export interface CharacterBase {
     readonly width: number;
     readonly height: number;
   };
+
+  readonly baseActions?: BattleMetaActionBase[];
 
   readonly baseModifiers?: Modifiers;
 
@@ -147,6 +169,26 @@ charsRegistry.register({
     width: 7,
     height: 2,
   },
+
+  baseActions: [
+    {
+      title: 'Heal',
+      activationType: ActionActivationType.Instant,
+      getDescription() {
+        return `Heal 3-6 health, cost: 2 action points`;
+      },
+      onInstantActivation({ ownerChar, actions }) {
+        const actionPointsCost = 2;
+        if (ownerChar.battleState.getValue().actionPoints < actionPointsCost) {
+          return;
+        }
+        actions.healCharacter({ char: ownerChar, health: getRandomInt(3, 6) });
+        ownerChar.battleState.patchWith((state) => ({
+          actionPoints: state.actionPoints - actionPointsCost,
+        }));
+      },
+    },
+  ],
 
   baseActivities: [
     {
@@ -429,9 +471,11 @@ export class Character {
   readonly inventory: Inventory;
 
   readonly battleActions = new ReactiveState<{
-    battleActions: CharBattleAction[];
+    readonly battleActions: CharBattleAction[];
+    readonly metaActions: BattleMetaActionBase[];
   }>({
     battleActions: [],
+    metaActions: [],
   });
 
   readonly battleState = new ReactiveState<{ actionPoints: number }>({ actionPoints: 10 });
@@ -490,7 +534,7 @@ export class Character {
 
   initActions(): void {
     this.battleState.patch({ actionPoints: 10 });
-    // this.battleSelectedActions.clear();
+    this.battleActions.patch({ metaActions: this.base.baseActions });
 
     const itemsWithActions = this.inventory.getItems().filter((item) => item.base.actions?.length);
     const itemActions = itemsWithActions.flatMap((item) =>
@@ -545,7 +589,7 @@ export class Character {
     ];
 
     const randomizedFinalList = getNRandomUniqueItems(finalList, 6);
-    this.battleActions.setValue({ battleActions: randomizedFinalList });
+    this.battleActions.patch({ battleActions: randomizedFinalList });
   }
 
   toggleBattleActionSelected(action: CharBattleAction): void {

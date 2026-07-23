@@ -2,7 +2,6 @@
   @for (player of gameStateService.players; track $index) {
     <div class="player">
       @for (char of player.chars.value(); track $index) {
-
         <div class="inventory">
           @for (invRow of char.inventory.itemsGrid.state.value(); track $index) {
             <div class="inv-row">
@@ -74,6 +73,17 @@
             </div>
           }
         </div>
+        <div class="meta-actions">
+          @for (metaAction of battleActions.metaActions; track $index) {
+            <div class="meta-action" (click)="handleMetaAction(player, char, metaAction)">
+              {{ metaAction.title }}
+
+              <hr />
+
+              {{ metaAction.getDescription() }}
+            </div>
+          }
+        </div>
       }
     </div>
   }
@@ -120,7 +130,7 @@
               alt=""
             />
 
-            <app-value-bar [value]="state.health" [maxValue]="state.maxHealth">
+            <app-value-bar [value]="state.health" [maxValue]="state.maxHealth" [showLabel]="true">
               {{ state.health }}/{{ state.maxHealth }}
             </app-value-bar>
 
